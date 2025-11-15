@@ -11,6 +11,7 @@ import java.math.BigDecimal;
  * 产品DTO - 用于测试列宽、行高等样式功能
  */
 @Data
+@ContentRowHeight(25)
 public class ProductDTO {
 
     @ExcelProperty(value = "产品ID", index = 0)
@@ -35,6 +36,5 @@ public class ProductDTO {
 
     @ExcelProperty(value = "产品描述", index = 5)
     @ColumnWidth(50)
-    @ContentRowHeight(30)
     private String description;
 }

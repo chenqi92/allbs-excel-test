@@ -2,8 +2,8 @@ package cn.allbs.excel.test.entity;
 
 import cn.allbs.excel.annotation.Desensitize;
 import cn.allbs.excel.annotation.ExcelDict;
-import cn.allbs.excel.converter.DesensitizeConverter;
-import cn.allbs.excel.converter.DictConverter;
+import cn.allbs.excel.convert.DesensitizeConverter;
+import cn.allbs.excel.convert.DictConverter;
 import cn.allbs.excel.enums.DesensitizeType;
 import com.alibaba.excel.annotation.ExcelProperty;
 import lombok.Data;
