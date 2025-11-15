@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>allbs-excel 测试页面</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 1.8em;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .card h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.3em;
+        }
+
+        .card p {
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .card-controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .input-group label {
+            font-size: 0.9em;
+            color: #555;
+        }
+
+        .input-group input {
+            padding: 6px 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 80px;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .upload-btn {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .file-label {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .file-label:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(79, 172, 254, 0.4);
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 5px;
+            border-left: 4px solid #667eea;
+        }
+
+        .result.success {
+            border-left-color: #28a745;
+            background: #d4edda;
+        }
+
+        .result.error {
+            border-left-color: #dc3545;
+            background: #f8d7da;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 0.85em;
+            font-weight: bold;
+            margin-left: 8px;
+        }
+
+        .badge-new {
+            background: #28a745;
+            color: white;
+        }
+
+        .badge-advanced {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .import-section .card {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 allbs-excel 测试平台</h1>
+            <p>基于 EasyExcel 的 Spring Boot Excel 导入导出增强工具 v3.0.0</p>
+        </div>
+
+        <div class="content">
+            <!-- 基本导出功能 -->
+            <div class="section">
+                <h2 class="section-title">📤 基本导出功能</h2>
+                <div class="card-grid">
+                    <div class="card">
+                        <h3>1. 基本导出</h3>
+                        <p>最简单的导出方式，返回 List 即可自动导出 Excel</p>
+                        <div class="card-controls">
+                            <div class="input-group">
+                                <label>数据量:</label>
+                                <input type="number" id="simple-count" value="10" min="1" max="1000">
+                            </div>
+                            <button onclick="exportSimple()">导出</button>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3>2. 空数据导出 <span class="badge badge-new">NEW</span></h3>
+                        <p>导出只有表头的空 Excel，用于模板下载</p>
+                        <div class="card-controls">
+                            <button onclick="exportEmpty()">导出空表格</button>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3>3. 只导出注解字段 <span class="badge badge-new">NEW</span></h3>
+                        <p>只导出标注了 @ExcelProperty 的字段</p>
+                        <div class="card-controls">
+                            <div class="input-group">
+                                <label>数据量:</label>
+                                <input type="number" id="annotated-count" value="10" min="1" max="1000">
+                            </div>
+                            <button onclick="exportOnlyAnnotated()">导出</button>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3>4. 多 Sheet 导出</h3>
+                        <p>在一个 Excel 文件中导出多个 Sheet</p>
+                        <div class="card-controls">
+                            <div class="input-group">
+                                <label>用户:</label>
+                                <input type="number" id="multi-user" value="10" min="1" max="500">
+                            </div>
+                            <div class="input-group">
+                                <label>订单:</label>
+                                <input type="number" id="multi-order" value="20" min="1" max="500">
+                            </div>
+                            <button onclick="exportMultiSheet()">导出</button>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3>5. 多 Sheet 空数据 <span class="badge badge-new">NEW</span></h3>
+                        <p>导出多个 Sheet，每个 Sheet 都只有表头</p>
+                        <div class="card-controls">
+                            <button onclick="exportMultiSheetEmpty()">导出</button>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3>6. 列宽和行高设置</h3>
+                        <p>自定义列宽和行高，优化显示效果</p>
+                        <div class="card-controls">
+                            <div class="input-group">
+                                <label>数据量:</label>
+                                <input type="number" id="styled-count" value="15" min="1" max="1000">
+                            </div>
+                            <button onclick="exportStyled()">导出</button>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3>7. 动态文件名</h3>
+                        <p>使用 SpEL 表达式动态生成文件名</p>
+                        <div class="card-controls">
+                            <div class="input-group">
+                                <label>日期:</label>
+                                <input type="date" id="dynamic-date" value="">
+                            </div>
+                            <div class="input-group">
+                                <label>数据量:</label>
+                                <input type="number" id="dynamic-count" value="10" min="1" max="1000">
+                            </div>
+                            <button onclick="exportDynamic()">导出</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 高级导出功能 -->
+            <div class="section">
+                <h2 class="section-title">🔥 高级导出功能</h2>
+                <div class="card-grid">
+                    <div class="card">
+                        <h3>1. 合并单元格 <span class="badge badge-new">NEW</span></h3>
+                        <p>自动合并相同值的单元格，支持依赖关系合并</p>
+                        <div class="card-controls">
+                            <div class="input-group">
+                                <label>数据量:</label>
+                                <input type="number" id="merge-count" value="20" min="1" max="1000">
+                            </div>
+                            <button onclick="exportMerge()">导出</button>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3>2. 数据脱敏 + 字典转换 <span class="badge badge-new">NEW</span></h3>
+                        <p>支持手机号、身份证等敏感数据脱敏，字典值自动转换</p>
+                        <div class="card-controls">
+                            <div class="input-group">
+                                <label>数据量:</label>
+                                <input type="number" id="desensitize-count" value="10" min="1" max="1000">
+                            </div>
+                            <button onclick="exportDesensitize()">导出</button>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3>3. 导出进度回调 <span class="badge badge-advanced">高级</span></h3>
+                        <p>实时监听导出进度，适用于大数据量导出（查看控制台日志）</p>
+                        <div class="card-controls">
+                            <div class="input-group">
+                                <label>数据量:</label>
+                                <input type="number" id="progress-count" value="100" min="10" max="10000">
+                            </div>
+                            <button onclick="exportWithProgress()">导出</button>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3>4. 大数据量导出 <span class="badge badge-advanced">高级</span></h3>
+                        <p>测试大数据量导出性能（查看控制台日志）</p>
+                        <div class="card-controls">
+                            <div class="input-group">
+                                <label>数据量:</label>
+                                <input type="number" id="large-count" value="1000" min="100" max="50000">
+                            </div>
+                            <button onclick="exportLargeData()">导出</button>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3>5. 合并 + 进度 <span class="badge badge-advanced">高级</span></h3>
+                        <p>合并单元格功能结合进度回调</p>
+                        <div class="card-controls">
+                            <div class="input-group">
+                                <label>数据量:</label>
+                                <input type="number" id="merge-progress-count" value="50" min="10" max="10000">
+                            </div>
+                            <button onclick="exportMergeWithProgress()">导出</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 导入功能 -->
+            <div class="section import-section">
+                <h2 class="section-title">📥 导入功能测试</h2>
+                <div class="card-grid">
+                    <div class="card">
+                        <h3>1. 基本导入</h3>
+                        <p>上传 Excel 文件，自动解析为 Java 对象</p>
+                        <div class="card-controls">
+                            <input type="file" id="simple-import-file" class="file-input" accept=".xlsx,.xls">
+                            <label for="simple-import-file" class="file-label">选择文件</label>
+                            <button class="upload-btn" onclick="importSimple()">上传导入</button>
+                        </div>
+                        <div id="simple-import-result"></div>
+                    </div>
+
+                    <div class="card">
+                        <h3>2. 带验证的导入</h3>
+                        <p>导入时自动进行数据校验（JSR-303）</p>
+                        <div class="card-controls">
+                            <input type="file" id="validate-import-file" class="file-input" accept=".xlsx,.xls">
+                            <label for="validate-import-file" class="file-label">选择文件</label>
+                            <button class="upload-btn" onclick="importValidate()">上传导入</button>
+                        </div>
+                        <div id="validate-import-result"></div>
+                    </div>
+
+                    <div class="card">
+                        <h3>3. 跳过空行导入</h3>
+                        <p>导入时自动跳过空行</p>
+                        <div class="card-controls">
+                            <input type="file" id="skip-import-file" class="file-input" accept=".xlsx,.xls">
+                            <label for="skip-import-file" class="file-label">选择文件</label>
+                            <button class="upload-btn" onclick="importSkipEmpty()">上传导入</button>
+                        </div>
+                        <div id="skip-import-result"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 设置默认日期
+        document.getElementById('dynamic-date').valueAsDate = new Date();
+
+        const API_BASE = 'http://localhost:8080';
+
+        // 导出函数
+        function exportSimple() {
+            const count = document.getElementById('simple-count').value;
+            window.open(`${API_BASE}/api/export/basic/simple?count=${count}`);
+        }
+
+        function exportEmpty() {
+            window.open(`${API_BASE}/api/export/basic/empty`);
+        }
+
+        function exportOnlyAnnotated() {
+            const count = document.getElementById('annotated-count').value;
+            window.open(`${API_BASE}/api/export/basic/only-annotated?count=${count}`);
+        }
+
+        function exportMultiSheet() {
+            const userCount = document.getElementById('multi-user').value;
+            const orderCount = document.getElementById('multi-order').value;
+            window.open(`${API_BASE}/api/export/basic/multi-sheet?userCount=${userCount}&orderCount=${orderCount}`);
+        }
+
+        function exportMultiSheetEmpty() {
+            window.open(`${API_BASE}/api/export/basic/multi-sheet-empty`);
+        }
+
+        function exportStyled() {
+            const count = document.getElementById('styled-count').value;
+            window.open(`${API_BASE}/api/export/basic/styled?count=${count}`);
+        }
+
+        function exportDynamic() {
+            const date = document.getElementById('dynamic-date').value;
+            const count = document.getElementById('dynamic-count').value;
+            window.open(`${API_BASE}/api/export/basic/dynamic-name?date=${date}&count=${count}`);
+        }
+
+        function exportMerge() {
+            const count = document.getElementById('merge-count').value;
+            window.open(`${API_BASE}/api/export/advanced/merge?count=${count}`);
+        }
+
+        function exportDesensitize() {
+            const count = document.getElementById('desensitize-count').value;
+            window.open(`${API_BASE}/api/export/advanced/desensitize?count=${count}`);
+        }
+
+        function exportWithProgress() {
+            const count = document.getElementById('progress-count').value;
+            console.log('开始导出，请查看后端控制台日志...');
+            window.open(`${API_BASE}/api/export/advanced/with-progress?count=${count}`);
+        }
+
+        function exportLargeData() {
+            const count = document.getElementById('large-count').value;
+            console.log('开始大数据量导出，请查看后端控制台日志...');
+            window.open(`${API_BASE}/api/export/advanced/large-data?count=${count}`);
+        }
+
+        function exportMergeWithProgress() {
+            const count = document.getElementById('merge-progress-count').value;
+            console.log('开始导出，请查看后端控制台日志...');
+            window.open(`${API_BASE}/api/export/advanced/merge-with-progress?count=${count}`);
+        }
+
+        // 导入函数
+        function importSimple() {
+            uploadFile('simple-import-file', '/api/import/simple', 'simple-import-result');
+        }
+
+        function importValidate() {
+            uploadFile('validate-import-file', '/api/import/validate', 'validate-import-result');
+        }
+
+        function importSkipEmpty() {
+            uploadFile('skip-import-file', '/api/import/skip-empty', 'skip-import-result');
+        }
+
+        function uploadFile(fileInputId, apiUrl, resultId) {
+            const fileInput = document.getElementById(fileInputId);
+            const file = fileInput.files[0];
+
+            if (!file) {
+                showResult(resultId, '请先选择文件', 'error');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            fetch(API_BASE + apiUrl, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showResult(resultId,
+                        `✅ ${data.message}<br>导入数据量: ${data.count} 条<br>` +
+                        `<pre>${JSON.stringify(data.data, null, 2)}</pre>`,
+                        'success'
+                    );
+                } else {
+                    showResult(resultId,
+                        `❌ ${data.message}<br>错误详情: ${data.errors.join('<br>')}`,
+                        'error'
+                    );
+                }
+            })
+            .catch(error => {
+                showResult(resultId, `❌ 上传失败: ${error.message}`, 'error');
+            });
+        }
+
+        function showResult(elementId, message, type) {
+            const resultDiv = document.getElementById(elementId);
+            resultDiv.className = `result ${type}`;
+            resultDiv.innerHTML = message;
+        }
+    </script>
+</body>
+</html>

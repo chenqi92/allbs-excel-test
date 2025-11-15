@@ -1,0 +1,24 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: allbs-excel-test
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+
+# allbs-excel 配置
+allbs:
+  excel:
+    template-path: excel/
+    i18n-enabled: false
+
+# 日志配置
+logging:
+  level:
+    cn.allbs.excel: DEBUG
+    root: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
