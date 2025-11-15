@@ -1,6 +1,8 @@
 package cn.allbs.excel.test.controller;
 
+import cn.allbs.excel.annotation.ExportExcel;
 import cn.allbs.excel.annotation.ImportExcel;
+import cn.allbs.excel.annotation.Sheet;
 import cn.allbs.excel.test.entity.UserDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -19,6 +21,26 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/import")
 @CrossOrigin(origins = "*")
 public class ImportController {
+
+    /**
+     * 0. 下载导入模板（先导出一个示例文件用于导入测试）
+     */
+    @GetMapping("/template")
+    @ExportExcel(
+        name = "导入模板",
+        sheets = @Sheet(sheetName = "用户信息", clazz = UserDTO.class)
+    )
+    public List<UserDTO> downloadTemplate() {
+        // 返回一个示例数据，方便用户了解格式
+        UserDTO example = new UserDTO();
+        example.setId(1L);
+        example.setUsername("张三");
+        example.setEmail("zhangsan@example.com");
+        example.setCreateTime(java.time.LocalDateTime.now());
+        example.setAge(25);
+        example.setStatus("正常");
+        return java.util.Collections.singletonList(example);
+    }
 
     /**
      * 1. 基本导入

@@ -365,10 +365,64 @@
                 </div>
             </div>
 
+            <!-- 字典转换示例 -->
+            <div class="section">
+                <h2 class="section-title">📖 字典转换示例</h2>
+                <div class="card-grid">
+                    <div class="card">
+                        <h3>1. 导出字典转换 <span class="badge badge-new">NEW</span></h3>
+                        <p>数据库值(0/1/2) → Excel标签(女/男/未知)</p>
+                        <div class="card-controls">
+                            <div class="input-group">
+                                <label>数据量:</label>
+                                <input type="number" id="dict-export-count" value="10" min="1" max="100">
+                            </div>
+                            <button onclick="exportDictExample()">导出示例</button>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3>2. 下载字典模板 <span class="badge badge-new">NEW</span></h3>
+                        <p>下载包含字典转换示例的模板文件</p>
+                        <div class="card-controls">
+                            <button onclick="downloadDictTemplate()">下载模板</button>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3>3. 导入字典转换 <span class="badge badge-new">NEW</span></h3>
+                        <p>Excel标签(女/男/未知) → 数据库值(0/1/2)</p>
+                        <div class="card-controls">
+                            <input type="file" id="dict-import-file" class="file-input" accept=".xlsx,.xls">
+                            <label for="dict-import-file" class="file-label">选择文件</label>
+                            <button class="upload-btn" onclick="importDictExample()">上传导入</button>
+                        </div>
+                        <div id="dict-import-result"></div>
+                    </div>
+
+                    <div class="card">
+                        <h3>4. 查看字典配置 <span class="badge badge-new">NEW</span></h3>
+                        <p>查看系统中配置的所有字典</p>
+                        <div class="card-controls">
+                            <button onclick="viewDictConfig()">查看配置</button>
+                        </div>
+                        <div id="dict-config-result"></div>
+                    </div>
+                </div>
+            </div>
+
             <!-- 导入功能 -->
             <div class="section import-section">
                 <h2 class="section-title">📥 导入功能测试</h2>
                 <div class="card-grid">
+                    <div class="card">
+                        <h3>0. 下载导入模板 <span class="badge badge-new">NEW</span></h3>
+                        <p>下载标准格式的导入模板（包含示例数据）</p>
+                        <div class="card-controls">
+                            <button onclick="downloadTemplate()">下载模板</button>
+                        </div>
+                    </div>
+
                     <div class="card">
                         <h3>1. 基本导入</h3>
                         <p>上传 Excel 文件，自动解析为 Java 对象</p>
@@ -448,6 +502,11 @@
             window.open(`${API_BASE}/api/export/basic/dynamic-name?date=${date}&count=${count}`);
         }
 
+        // 下载导入模板
+        function downloadTemplate() {
+            window.open(`${API_BASE}/api/import/template`);
+        }
+
         function exportMerge() {
             const count = document.getElementById('merge-count').value;
             window.open(`${API_BASE}/api/export/advanced/merge?count=${count}`);
@@ -487,6 +546,35 @@
 
         function importSkipEmpty() {
             uploadFile('skip-import-file', '/api/import/skip-empty', 'skip-import-result');
+        }
+
+        // 字典转换示例函数
+        function exportDictExample() {
+            const count = document.getElementById('dict-export-count').value;
+            window.open(`${API_BASE}/api/dict/export?count=${count}`);
+        }
+
+        function downloadDictTemplate() {
+            window.open(`${API_BASE}/api/dict/template`);
+        }
+
+        function importDictExample() {
+            uploadFile('dict-import-file', '/api/dict/import', 'dict-import-result');
+        }
+
+        function viewDictConfig() {
+            fetch(`${API_BASE}/api/dict/config`)
+                .then(response => response.json())
+                .then(data => {
+                    let html = '<div class="result-content">';
+                    html += '<h4>字典配置信息：</h4>';
+                    html += '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                    html += '</div>';
+                    document.getElementById('dict-config-result').innerHTML = html;
+                })
+                .catch(error => {
+                    showResult('dict-config-result', '获取字典配置失败: ' + error.message, 'error');
+                });
         }
 
         function uploadFile(fileInputId, apiUrl, resultId) {

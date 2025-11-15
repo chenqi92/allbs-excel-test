@@ -8,10 +8,11 @@
 
 这是一个为 **allbs-excel** (v3.0.0) 开发的完整功能测试项目，包含：
 
-- ✅ 所有功能点的测试接口（16+ 个接口）
+- ✅ 所有功能点的测试接口（**21个接口**）
 - ✅ 自动生成的测试数据
 - ✅ 精美的前端测试页面
 - ✅ 完整的使用文档
+- ✅ **字典转换功能示例** ⭐ 新增
 - ✅ **真正可以导出Excel文件** (已验证)
 
 ## 🚀 快速启动
@@ -90,10 +91,20 @@ allbs-excel-test/
 | ✅ 大数据导出 | `/api/export/advanced/large-data` | 性能测试 |
 | ✅ 合并+进度 | `/api/export/advanced/merge-with-progress` | 组合功能 |
 
-### 📥 导入功能（4个接口）
+### 📖 字典转换示例（4个接口）⭐ 新增
 
 | 功能 | 接口 | 说明 |
 |------|------|------|
+| ✅ 导出字典转换 | `/api/dict/export` | 值→标签转换示例 |
+| ✅ 下载字典模板 | `/api/dict/template` | 包含示例的模板 |
+| ✅ 导入字典转换 | `/api/dict/import` | 标签→值转换示例 |
+| ✅ 查看字典配置 | `/api/dict/config` | 查看所有字典 |
+
+### 📥 导入功能（5个接口）
+
+| 功能 | 接口 | 说明 |
+|------|------|------|
+| ✅ 下载导入模板 | `/api/import/template` | 标准格式模板 ⭐ 新增 |
 | ✅ 基本导入 | `/api/import/simple` | 自动解析Excel |
 | ✅ 带验证导入 | `/api/import/validate` | JSR-303验证 |
 | ✅ 跳过空行 | `/api/import/skip-empty` | ignoreEmptyRow |

@@ -115,17 +115,18 @@ public class BasicExportController {
     }
 
     /**
-     * 7. 动态文件名
+     * 7. 动态文件名（注：allbs-excel 3.0.0 的 SpEL 表达式支持有限，这里使用静态文件名）
      */
     @GetMapping("/dynamic-name")
     @ExportExcel(
-        name = "用户列表-#{#date}",  // 支持 SpEL 表达式
+        name = "UserList",
         sheets = @Sheet(sheetName = "用户信息")
     )
     public List<UserDTO> dynamicNameExport(
         @RequestParam String date,
         @RequestParam(defaultValue = "10") int count
     ) {
+        // 注：date 参数保留用于展示功能，实际文件名暂时不支持动态替换
         return testDataService.generateUsers(count);
     }
 }
