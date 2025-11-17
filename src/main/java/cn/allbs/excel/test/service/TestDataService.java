@@ -328,4 +328,73 @@ public class TestDataService {
         }
         return list;
     }
+
+    /**
+     * 生成条件样式示例数据
+     */
+    public List<ConditionalStyleDTO> generateConditionalStyleData(int count) {
+        List<ConditionalStyleDTO> list = new ArrayList<>();
+        String[] statuses = {"已完成", "进行中", "已取消"};
+        String[] grades = {"A+", "A", "B+", "B", "C+", "C"};
+
+        for (int i = 1; i <= count; i++) {
+            ConditionalStyleDTO dto = new ConditionalStyleDTO();
+            dto.setStudentName(NAMES[i % NAMES.length] + i);
+            dto.setScore(RandomUtil.randomInt(30, 100));
+            dto.setStatus(statuses[i % statuses.length]);
+            dto.setSalesAmount(new BigDecimal(RandomUtil.randomInt(1000, 20000)));
+            dto.setGrade(grades[i % grades.length]);
+            list.add(dto);
+        }
+        return list;
+    }
+
+    /**
+     * 生成动态表头示例数据
+     */
+    public List<DynamicHeaderDTO> generateDynamicHeaderData(int count) {
+        List<DynamicHeaderDTO> list = new ArrayList<>();
+        String[] categories = {"电子产品", "家居用品", "服装鞋帽"};
+
+        for (int i = 1; i <= count; i++) {
+            DynamicHeaderDTO dto = new DynamicHeaderDTO();
+            dto.setProductId((long) i);
+            dto.setProductName("产品" + i);
+            dto.setCategory(categories[i % categories.length]);
+
+            // 动态属性（不同产品的属性不同）
+            Map<String, Object> properties = new LinkedHashMap<>();
+            if (categories[i % categories.length].equals("电子产品")) {
+                properties.put("品牌", "品牌" + (i % 5 + 1));
+                properties.put("型号", "Model-" + i);
+                properties.put("颜色", i % 2 == 0 ? "黑色" : "白色");
+                properties.put("内存", (i % 4 + 2) * 4 + "GB");
+                properties.put("屏幕尺寸", (i % 3 + 5) + "英寸");
+            } else if (categories[i % categories.length].equals("家居用品")) {
+                properties.put("材质", i % 2 == 0 ? "木质" : "金属");
+                properties.put("尺寸", (i % 3 + 1) + "米");
+                properties.put("颜色", i % 2 == 0 ? "原木色" : "白色");
+                properties.put("产地", "中国");
+            } else {
+                properties.put("品牌", "品牌" + (i % 3 + 1));
+                properties.put("尺码", (i % 5 + 36) + "码");
+                properties.put("颜色", i % 2 == 0 ? "黑色" : "蓝色");
+                properties.put("材质", "棉质");
+                properties.put("季节", i % 2 == 0 ? "春秋" : "夏季");
+            }
+            dto.setProperties(properties);
+
+            // 扩展字段（使用预定义表头）
+            Map<String, Object> extFields = new LinkedHashMap<>();
+            extFields.put("备注1", "备注信息" + i);
+            extFields.put("备注2", RandomUtil.randomInt(1, 100));
+            if (i % 3 == 0) {
+                extFields.put("备注3", "特殊标记");
+            }
+            dto.setExtFields(extFields);
+
+            list.add(dto);
+        }
+        return list;
+    }
 }

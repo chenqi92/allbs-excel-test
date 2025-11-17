@@ -2,11 +2,15 @@ package cn.allbs.excel.test.controller;
 
 import cn.allbs.excel.annotation.ExportExcel;
 import cn.allbs.excel.annotation.Sheet;
+import cn.allbs.excel.handle.ConditionalStyleWriteHandler;
+import cn.allbs.excel.test.entity.ConditionalStyleDTO;
+import cn.allbs.excel.test.entity.DynamicHeaderDTO;
 import cn.allbs.excel.test.entity.FlattenListOrderDTO;
 import cn.allbs.excel.test.entity.FlattenListStudentDTO;
 import cn.allbs.excel.test.entity.FlattenPropertyExampleDTO;
 import cn.allbs.excel.test.entity.NestedPropertyExampleDTO;
 import cn.allbs.excel.test.service.TestDataService;
+import cn.allbs.excel.util.DynamicHeaderProcessor;
 import cn.allbs.excel.util.ListEntityExpander;
 import com.alibaba.excel.EasyExcel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -139,6 +143,67 @@ public class NestedExportController {
             .head(head)
             .registerWriteHandler(new cn.allbs.excel.handle.ListMergeCellWriteHandler(mergeRegions))
             .sheet("学生信息")
+            .doWrite(expandedData);
+    }
+
+    /**
+     * 5. @ConditionalStyle 示例 - 条件样式
+     * 演示根据单元格值自动应用不同样式
+     */
+    @GetMapping("/conditional-style")
+    public void conditionalStyleExport(
+        @RequestParam(defaultValue = "20") int count,
+        HttpServletResponse response
+    ) throws IOException {
+        // 1. 获取测试数据
+        List<ConditionalStyleDTO> data = testDataService.generateConditionalStyleData(count);
+
+        // 2. 设置响应
+        response.setContentType("application/vnd.ms-excel");
+        response.setCharacterEncoding("utf-8");
+        String fileName = URLEncoder.encode("条件样式示例", "UTF-8");
+        response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xlsx");
+
+        // 3. 导出（需要手动注册 ConditionalStyleWriteHandler）
+        EasyExcel.write(response.getOutputStream(), ConditionalStyleDTO.class)
+            .registerWriteHandler(new ConditionalStyleWriteHandler(ConditionalStyleDTO.class))
+            .sheet("条件样式示例")
+            .doWrite(data);
+    }
+
+    /**
+     * 6. @DynamicHeaders 示例 - 动态表头
+     * 演示根据数据动态生成表头列
+     */
+    @GetMapping("/dynamic-header")
+    public void dynamicHeaderExport(
+        @RequestParam(defaultValue = "15") int count,
+        HttpServletResponse response
+    ) throws IOException {
+        // 1. 获取原始数据
+        List<DynamicHeaderDTO> products = testDataService.generateDynamicHeaderData(count);
+
+        // 2. 展开动态字段
+        DynamicHeaderProcessor.DynamicHeaderMetadata metadata =
+            DynamicHeaderProcessor.analyzeClass(DynamicHeaderDTO.class, products);
+        List<Map<String, Object>> expandedData = DynamicHeaderProcessor.expandData(products);
+
+        // 3. 生成表头
+        List<String> headers = DynamicHeaderProcessor.generateHeaders(metadata);
+        List<List<String>> head = headers.stream()
+            .map(Collections::singletonList)
+            .collect(Collectors.toList());
+
+        // 4. 设置响应
+        response.setContentType("application/vnd.ms-excel");
+        response.setCharacterEncoding("utf-8");
+        String fileName = URLEncoder.encode("动态表头示例", "UTF-8");
+        response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xlsx");
+
+        // 5. 导出
+        EasyExcel.write(response.getOutputStream())
+            .head(head)
+            .sheet("产品列表")
             .doWrite(expandedData);
     }
 }

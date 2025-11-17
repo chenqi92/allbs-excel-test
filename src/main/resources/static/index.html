@@ -521,6 +521,36 @@
                             💡 演示：多个 List 字段同时展开，按最长 List 的长度展开
                         </p>
                     </div>
+
+                    <div class="card">
+                        <h3>5. @ConditionalStyle - 条件样式</h3>
+                        <p>根据单元格值自动应用不同样式（颜色、字体等）</p>
+                        <div class="card-controls">
+                            <div class="input-group">
+                                <label>数据量:</label>
+                                <input type="number" id="conditional-style-count" value="20" min="1" max="100">
+                            </div>
+                            <button onclick="exportConditionalStyle()">导出</button>
+                        </div>
+                        <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
+                            💡 演示：分数>=90绿色、>=60黄色、<60红色；状态不同颜色
+                        </p>
+                    </div>
+
+                    <div class="card">
+                        <h3>6. @DynamicHeaders - 动态表头</h3>
+                        <p>根据数据动态生成表头列（适用于属性不固定的场景）</p>
+                        <div class="card-controls">
+                            <div class="input-group">
+                                <label>数据量:</label>
+                                <input type="number" id="dynamic-header-count" value="15" min="1" max="100">
+                            </div>
+                            <button onclick="exportDynamicHeader()">导出</button>
+                        </div>
+                        <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
+                            💡 演示：不同产品类别有不同属性，表头自动生成
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -705,6 +735,16 @@
         function exportFlattenListStudent() {
             const count = document.getElementById('flatten-list-student-count').value;
             window.open(`${API_BASE}/api/export/nested/flatten-list-student?count=${count}`);
+        }
+
+        function exportConditionalStyle() {
+            const count = document.getElementById('conditional-style-count').value;
+            window.open(`${API_BASE}/api/export/nested/conditional-style?count=${count}`);
+        }
+
+        function exportDynamicHeader() {
+            const count = document.getElementById('dynamic-header-count').value;
+            window.open(`${API_BASE}/api/export/nested/dynamic-header?count=${count}`);
         }
     </script>
 </body>
