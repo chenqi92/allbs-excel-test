@@ -1,14 +1,16 @@
 package cn.allbs.excel.test.service;
 
 import cn.allbs.excel.test.entity.*;
+import cn.allbs.excel.test.entity.flatten.*;
+import cn.allbs.excel.test.entity.nested.Department;
+import cn.allbs.excel.test.entity.nested.Leader;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.RandomUtil;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * 测试数据生成服务
@@ -141,5 +143,189 @@ public class TestDataService {
             products.add(product);
         }
         return products;
+    }
+
+    // ==================== 新功能测试数据生成 ====================
+
+    private static final String[] SKILLS = {"Java", "Python", "Go", "JavaScript", "TypeScript", "React", "Vue", "Spring Boot"};
+    private static final String[] CITIES = {"北京", "上海", "广州", "深圳", "杭州", "成都", "武汉", "西安"};
+    private static final String[] DEPT_CODES = {"TECH", "FIN", "HR", "MARKET", "ADMIN"};
+    private static final String[] DEPT_TYPES = {"研发", "行政", "业务", "支持"};
+    private static final String[] PRODUCTS = {"iPhone15", "MacBook Pro", "AirPods Pro", "iPad Air", "Apple Watch", "小米手机", "华为手机", "联想笔记本"};
+    private static final String[] COURSE_NAMES = {"数学", "英语", "物理", "化学", "历史", "地理"};
+    private static final String[] AWARD_NAMES = {"一等奖学金", "二等奖学金", "三等奖学金", "优秀学生", "优秀干部", "学习标兵"};
+
+    /**
+     * 生成 @NestedProperty 示例数据
+     */
+    public List<NestedPropertyExampleDTO> generateNestedPropertyExamples(int count) {
+        List<NestedPropertyExampleDTO> list = new ArrayList<>();
+        for (int i = 1; i <= count; i++) {
+            NestedPropertyExampleDTO dto = new NestedPropertyExampleDTO();
+            dto.setId((long) i);
+            dto.setName(NAMES[i % NAMES.length] + i);
+
+            // 创建部门对象
+            Department dept = new Department();
+            dept.setCode(DEPT_CODES[i % DEPT_CODES.length]);
+            dept.setName(DEPARTMENTS[i % DEPARTMENTS.length]);
+            dept.setType(DEPT_TYPES[i % DEPT_TYPES.length]);
+            dept.setInternalId("INTERNAL-" + i);
+
+            // 创建领导对象
+            Leader leader = new Leader();
+            leader.setName(NAMES[(i + 5) % NAMES.length] + "经理");
+            leader.setPosition("部门经理");
+            leader.setPhone("138" + String.format("%08d", RandomUtil.randomInt(10000000, 99999999)));
+            dept.setLeader(leader);
+
+            dto.setDepartment(dept);
+            dto.setDepartment2(dept);
+            dto.setDepartment3(dept);
+            dto.setDepartment4(dept);
+
+            // 技能列表
+            List<String> skills = new ArrayList<>();
+            int skillCount = RandomUtil.randomInt(1, 5);
+            for (int j = 0; j < skillCount; j++) {
+                skills.add(SKILLS[(i + j) % SKILLS.length]);
+            }
+            dto.setSkills(skills);
+            dto.setMainSkill(skills);
+            dto.setAllSkills(skills);
+
+            // Map 属性
+            Map<String, Object> properties = new HashMap<>();
+            properties.put("city", CITIES[i % CITIES.length]);
+            properties.put("joinYear", 2020 + (i % 5));
+            dto.setProperties(properties);
+            dto.setCity(properties);
+            dto.setJoinYear(properties);
+
+            list.add(dto);
+        }
+        return list;
+    }
+
+    /**
+     * 生成 @FlattenProperty 示例数据
+     */
+    public List<FlattenPropertyExampleDTO> generateFlattenPropertyExamples(int count) {
+        List<FlattenPropertyExampleDTO> list = new ArrayList<>();
+        for (int i = 1; i <= count; i++) {
+            FlattenPropertyExampleDTO dto = new FlattenPropertyExampleDTO();
+            dto.setId((long) i);
+            dto.setName(NAMES[i % NAMES.length] + i);
+            dto.setAge(25 + (i % 20));
+
+            // 部门
+            Department dept = new Department();
+            dept.setCode(DEPT_CODES[i % DEPT_CODES.length]);
+            dept.setName(DEPARTMENTS[i % DEPARTMENTS.length]);
+            dept.setType(DEPT_TYPES[i % DEPT_TYPES.length]);
+            dto.setDepartment(dept);
+
+            // 上级部门
+            Department parentDept = new Department();
+            parentDept.setCode(DEPT_CODES[(i + 1) % DEPT_CODES.length]);
+            parentDept.setName(DEPARTMENTS[(i + 1) % DEPARTMENTS.length] + "-总部");
+            parentDept.setType(DEPT_TYPES[(i + 1) % DEPT_TYPES.length]);
+            dto.setParentDept(parentDept);
+
+            // 主管部门（带领导，用于测试递归）
+            Department managerDept = new Department();
+            managerDept.setCode(DEPT_CODES[(i + 2) % DEPT_CODES.length]);
+            managerDept.setName(DEPARTMENTS[(i + 2) % DEPARTMENTS.length]);
+            managerDept.setType(DEPT_TYPES[(i + 2) % DEPT_TYPES.length]);
+
+            Leader leader = new Leader();
+            leader.setName(NAMES[(i + 3) % NAMES.length] + "总监");
+            leader.setPosition("总监");
+            leader.setPhone("139" + String.format("%08d", RandomUtil.randomInt(10000000, 99999999)));
+            managerDept.setLeader(leader);
+            dto.setManagerDept(managerDept);
+
+            list.add(dto);
+        }
+        return list;
+    }
+
+    /**
+     * 生成 @FlattenList 订单示例数据
+     */
+    public List<FlattenListOrderDTO> generateFlattenListOrders(int count) {
+        List<FlattenListOrderDTO> list = new ArrayList<>();
+        for (int i = 1; i <= count; i++) {
+            FlattenListOrderDTO dto = new FlattenListOrderDTO();
+            dto.setOrderNo("ORDER" + String.format("%06d", i));
+            dto.setOrderTime(LocalDateTime.now().minusDays(RandomUtil.randomInt(1, 30)));
+            dto.setStatus(ORDER_STATUSES[i % ORDER_STATUSES.length]);
+
+            // 客户信息
+            Customer customer = new Customer();
+            customer.setName(NAMES[i % NAMES.length]);
+            customer.setPhone("138" + String.format("%08d", RandomUtil.randomInt(10000000, 99999999)));
+            customer.setCity(CITIES[i % CITIES.length]);
+            dto.setCustomer(customer);
+
+            // 订单明细
+            List<OrderItem> items = new ArrayList<>();
+            int itemCount = RandomUtil.randomInt(1, 5);
+            for (int j = 0; j < itemCount; j++) {
+                OrderItem item = new OrderItem();
+                item.setProductName(PRODUCTS[(i + j) % PRODUCTS.length]);
+                item.setSku("SKU-" + (i * 100 + j));
+                item.setQuantity(RandomUtil.randomInt(1, 10));
+                BigDecimal price = new BigDecimal(RandomUtil.randomDouble(100, 5000)).setScale(2, BigDecimal.ROUND_HALF_UP);
+                item.setPrice(price);
+                item.setSubtotal(price.multiply(new BigDecimal(item.getQuantity())));
+                items.add(item);
+            }
+            dto.setItems(items);
+
+            list.add(dto);
+        }
+        return list;
+    }
+
+    /**
+     * 生成 @FlattenList 学生示例数据（多 List）
+     */
+    public List<FlattenListStudentDTO> generateFlattenListStudents(int count) {
+        List<FlattenListStudentDTO> list = new ArrayList<>();
+        for (int i = 1; i <= count; i++) {
+            FlattenListStudentDTO dto = new FlattenListStudentDTO();
+            dto.setName(NAMES[i % NAMES.length]);
+            dto.setStudentNo("STU" + String.format("%06d", i));
+            dto.setClassName("2024级" + (i % 5 + 1) + "班");
+
+            // 课程列表
+            List<Course> courses = new ArrayList<>();
+            int courseCount = RandomUtil.randomInt(3, 6);
+            for (int j = 0; j < courseCount; j++) {
+                Course course = new Course();
+                course.setCourseName(COURSE_NAMES[j % COURSE_NAMES.length]);
+                course.setScore(RandomUtil.randomInt(60, 100));
+                courses.add(course);
+            }
+            dto.setCourses(courses);
+
+            // 奖项列表
+            List<Award> awards = new ArrayList<>();
+            int awardCount = RandomUtil.randomInt(1, 4);
+            for (int j = 0; j < awardCount; j++) {
+                Award award = new Award();
+                award.setAwardName(AWARD_NAMES[j % AWARD_NAMES.length]);
+                award.setAwardDate(DateUtil.format(
+                    DateUtil.offsetMonth(DateUtil.date(), -RandomUtil.randomInt(1, 24)),
+                    "yyyy-MM-dd"
+                ));
+                awards.add(award);
+            }
+            dto.setAwards(awards);
+
+            list.add(dto);
+        }
+        return list;
     }
 }

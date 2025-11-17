@@ -457,6 +457,72 @@
                     </div>
                 </div>
             </div>
+
+            <!-- 嵌套对象导出功能 -->
+            <div class="section">
+                <h2 class="section-title">🆕 嵌套对象导出功能 <span class="badge badge-new">NEW</span></h2>
+                <div class="card-grid">
+                    <div class="card">
+                        <h3>1. @NestedProperty - 嵌套对象字段提取</h3>
+                        <p>从嵌套对象、集合、Map 中提取指定字段值导出</p>
+                        <div class="card-controls">
+                            <div class="input-group">
+                                <label>数据量:</label>
+                                <input type="number" id="nested-property-count" value="10" min="1" max="100">
+                            </div>
+                            <button onclick="exportNestedProperty()">导出</button>
+                        </div>
+                        <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
+                            💡 演示：提取部门名称、领导电话、技能列表、Map中的城市等
+                        </p>
+                    </div>
+
+                    <div class="card">
+                        <h3>2. @FlattenProperty - 嵌套对象自动展开</h3>
+                        <p>自动展开嵌套对象的所有 @ExcelProperty 字段</p>
+                        <div class="card-controls">
+                            <div class="input-group">
+                                <label>数据量:</label>
+                                <input type="number" id="flatten-property-count" value="10" min="1" max="100">
+                            </div>
+                            <button onclick="exportFlattenProperty()">导出</button>
+                        </div>
+                        <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
+                            💡 演示：自动展开部门对象的所有字段，支持前缀和递归展开
+                        </p>
+                    </div>
+
+                    <div class="card">
+                        <h3>3. @FlattenList - 订单明细展开</h3>
+                        <p>将订单的 List&lt;OrderItem&gt; 展开为多行，自动合并单元格</p>
+                        <div class="card-controls">
+                            <div class="input-group">
+                                <label>订单数:</label>
+                                <input type="number" id="flatten-list-order-count" value="5" min="1" max="20">
+                            </div>
+                            <button onclick="exportFlattenListOrder()">导出</button>
+                        </div>
+                        <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
+                            💡 演示：一个订单有多个商品明细，展开为多行并自动合并
+                        </p>
+                    </div>
+
+                    <div class="card">
+                        <h3>4. @FlattenList - 学生多 List 展开</h3>
+                        <p>学生有多个课程和多个奖项，展开为多行（取最长策略）</p>
+                        <div class="card-controls">
+                            <div class="input-group">
+                                <label>学生数:</label>
+                                <input type="number" id="flatten-list-student-count" value="5" min="1" max="20">
+                            </div>
+                            <button onclick="exportFlattenListStudent()">导出</button>
+                        </div>
+                        <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
+                            💡 演示：多个 List 字段同时展开，按最长 List 的长度展开
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -617,6 +683,28 @@
             const resultDiv = document.getElementById(elementId);
             resultDiv.className = `result ${type}`;
             resultDiv.innerHTML = message;
+        }
+
+        // ==================== 嵌套对象导出函数 ====================
+
+        function exportNestedProperty() {
+            const count = document.getElementById('nested-property-count').value;
+            window.open(`${API_BASE}/api/export/nested/nested-property?count=${count}`);
+        }
+
+        function exportFlattenProperty() {
+            const count = document.getElementById('flatten-property-count').value;
+            window.open(`${API_BASE}/api/export/nested/flatten-property?count=${count}`);
+        }
+
+        function exportFlattenListOrder() {
+            const count = document.getElementById('flatten-list-order-count').value;
+            window.open(`${API_BASE}/api/export/nested/flatten-list-order?count=${count}`);
+        }
+
+        function exportFlattenListStudent() {
+            const count = document.getElementById('flatten-list-student-count').value;
+            window.open(`${API_BASE}/api/export/nested/flatten-list-student?count=${count}`);
         }
     </script>
 </body>
