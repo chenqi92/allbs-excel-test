@@ -397,4 +397,81 @@ public class TestDataService {
         }
         return list;
     }
+
+    /**
+     * 生成数据验证示例数据
+     */
+    public List<DataValidationDTO> generateDataValidationData(int count) {
+        List<DataValidationDTO> list = new ArrayList<>();
+        String[] genders = {"男", "女"};
+        String[] depts = {"技术部", "销售部", "人事部", "财务部", "运营部"};
+        String[] positions = {"初级工程师", "中级工程师", "高级工程师", "技术经理", "技术总监"};
+
+        for (int i = 1; i <= count; i++) {
+            DataValidationDTO dto = DataValidationDTO.builder()
+                .name(NAMES[i % NAMES.length])
+                .gender(genders[i % genders.length])
+                .age(RandomUtil.randomInt(18, 65))
+                .salary((double) RandomUtil.randomInt(3000, 50000))
+                .hireDate(java.time.LocalDate.now().minusDays(RandomUtil.randomInt(1, 3650)))
+                .department(depts[i % depts.length])
+                .position(positions[i % positions.length])
+                .workYears(RandomUtil.randomInt(0, 30))
+                .performanceScore(RandomUtil.randomDouble(0.0, 10.0))
+                .email("employee" + i + "@company.com")
+                .build();
+            list.add(dto);
+        }
+        return list;
+    }
+
+    /**
+     * 生成多 Sheet 关联订单数据
+     */
+    public List<MultiSheetOrderDTO> generateMultiSheetOrders(int count) {
+        List<MultiSheetOrderDTO> list = new ArrayList<>();
+
+        for (int i = 1; i <= count; i++) {
+            String orderNo = "ORD" + String.format("%06d", i);
+
+            // 生成订单明细
+            List<MultiSheetOrderItemDTO> items = new ArrayList<>();
+            int itemCount = RandomUtil.randomInt(2, 6);
+            BigDecimal totalAmount = BigDecimal.ZERO;
+
+            for (int j = 1; j <= itemCount; j++) {
+                BigDecimal price = new BigDecimal(RandomUtil.randomDouble(100, 5000))
+                    .setScale(2, BigDecimal.ROUND_HALF_UP);
+                int quantity = RandomUtil.randomInt(1, 10);
+                BigDecimal subtotal = price.multiply(new BigDecimal(quantity));
+                totalAmount = totalAmount.add(subtotal);
+
+                MultiSheetOrderItemDTO item = MultiSheetOrderItemDTO.builder()
+                    .orderNo(orderNo)
+                    .itemNo(j)
+                    .productName(PRODUCTS[(i + j - 1) % PRODUCTS.length])
+                    .sku("SKU-" + (i * 100 + j))
+                    .quantity(quantity)
+                    .price(price)
+                    .subtotal(subtotal)
+                    .remark(j % 2 == 0 ? "赠品" : "")
+                    .build();
+                items.add(item);
+            }
+
+            // 生成订单
+            MultiSheetOrderDTO order = MultiSheetOrderDTO.builder()
+                .orderNo(orderNo)
+                .customerName(NAMES[i % NAMES.length])
+                .totalAmount(totalAmount)
+                .status(ORDER_STATUSES[i % ORDER_STATUSES.length])
+                .createTime(LocalDateTime.now().minusDays(RandomUtil.randomInt(1, 90)))
+                .itemCount(itemCount)
+                .items(items)
+                .build();
+
+            list.add(order);
+        }
+        return list;
+    }
 }

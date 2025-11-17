@@ -591,6 +591,63 @@
                     </div>
                 </div>
             </div>
+
+            <!-- 数据验证功能 -->
+            <div class="section">
+                <h2 class="section-title">✅ 数据验证功能 <span class="badge badge-new">NEW</span></h2>
+                <div class="card-grid">
+                    <div class="card">
+                        <h3>1. @ExcelValidation - 基础数据验证</h3>
+                        <p>为 Excel 列添加数据验证规则（下拉列表、数值范围、日期、文本长度等）</p>
+                        <div class="card-controls">
+                            <div class="input-group">
+                                <label>数据量:</label>
+                                <input type="number" id="validation-count" value="10" min="1" max="100">
+                            </div>
+                            <button onclick="exportValidation()">导出</button>
+                        </div>
+                        <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
+                            💡 演示：性别下拉、年龄范围18-65、工资范围、日期验证、文本长度等
+                        </p>
+                    </div>
+
+                    <div class="card">
+                        <h3>2. @ExcelValidation - 自定义验证范围</h3>
+                        <p>自定义数据验证的行范围（适用于不同业务场景）</p>
+                        <div class="card-controls">
+                            <div class="input-group">
+                                <label>数据量:</label>
+                                <input type="number" id="validation-custom-count" value="10" min="1" max="100">
+                            </div>
+                            <button onclick="exportValidationCustom()">导出</button>
+                        </div>
+                        <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
+                            💡 演示：验证范围从第2行到第1000行（支持大数据量）
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 多 Sheet 关联导出功能 -->
+            <div class="section">
+                <h2 class="section-title">🔗 多 Sheet 关联导出 <span class="badge badge-new">NEW</span></h2>
+                <div class="card-grid">
+                    <div class="card">
+                        <h3>1. @RelatedSheet - 关联 Sheet 导出</h3>
+                        <p>将主表和关联明细导出到不同 Sheet，自动建立关联关系</p>
+                        <div class="card-controls">
+                            <div class="input-group">
+                                <label>订单数:</label>
+                                <input type="number" id="multi-sheet-count" value="5" min="1" max="20">
+                            </div>
+                            <button onclick="exportMultiSheet()">导出</button>
+                        </div>
+                        <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
+                            💡 演示：订单主表和订单明细分别导出到不同 Sheet，并创建关联
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -852,6 +909,23 @@
             .catch(error => {
                 resultDiv.innerHTML = `<p style="color: red;">✗ 导入失败：${error.message}</p>`;
             });
+        }
+
+        // 数据验证导出函数
+        function exportValidation() {
+            const count = document.getElementById('validation-count').value;
+            window.location.href = `${API_BASE}/api/export/advanced/validation?count=${count}`;
+        }
+
+        function exportValidationCustom() {
+            const count = document.getElementById('validation-custom-count').value;
+            window.location.href = `${API_BASE}/api/export/advanced/validation-custom?count=${count}`;
+        }
+
+        // 多 Sheet 关联导出函数
+        function exportMultiSheet() {
+            const count = document.getElementById('multi-sheet-count').value;
+            window.location.href = `${API_BASE}/api/export/advanced/multi-sheet?count=${count}`;
         }
     </script>
 </body>
