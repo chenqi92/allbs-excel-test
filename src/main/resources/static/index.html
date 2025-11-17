@@ -553,6 +553,44 @@
                     </div>
                 </div>
             </div>
+
+            <!-- 嵌套对象导入功能 -->
+            <div class="section">
+                <h2 class="section-title">📥 嵌套对象导入功能 <span class="badge badge-new">NEW</span></h2>
+                <div class="card-grid">
+                    <div class="card">
+                        <h3>1. @NestedProperty - 嵌套对象导入</h3>
+                        <p>导入Excel时自动填充嵌套对象字段</p>
+                        <div class="card-controls">
+                            <div class="input-group">
+                                <label>选择文件:</label>
+                                <input type="file" id="nested-property-import-file" accept=".xlsx,.xls">
+                            </div>
+                            <button onclick="importNestedProperty()">导入</button>
+                        </div>
+                        <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
+                            💡 先导出一个文件，然后可以尝试导入
+                        </p>
+                        <div id="nested-property-import-result" style="margin-top: 10px;"></div>
+                    </div>
+
+                    <div class="card">
+                        <h3>2. @FlattenList - 多行聚合导入</h3>
+                        <p>将多行明细数据聚合回List对象</p>
+                        <div class="card-controls">
+                            <div class="input-group">
+                                <label>选择文件:</label>
+                                <input type="file" id="flatten-list-import-file" accept=".xlsx,.xls">
+                            </div>
+                            <button onclick="importFlattenListOrder()">导入</button>
+                        </div>
+                        <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
+                            💡 先导出订单明细，然后导入测试聚合功能
+                        </p>
+                        <div id="flatten-list-import-result" style="margin-top: 10px;"></div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -745,6 +783,75 @@
         function exportDynamicHeader() {
             const count = document.getElementById('dynamic-header-count').value;
             window.open(`${API_BASE}/api/export/nested/dynamic-header?count=${count}`);
+        }
+
+        // 导入函数
+        function importNestedProperty() {
+            const fileInput = document.getElementById('nested-property-import-file');
+            const resultDiv = document.getElementById('nested-property-import-result');
+
+            if (!fileInput.files || fileInput.files.length === 0) {
+                resultDiv.innerHTML = '<p style="color: red;">请先选择文件</p>';
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+
+            resultDiv.innerHTML = '<p style="color: blue;">导入中...</p>';
+
+            fetch(`${API_BASE}/api/import/nested/nested-property`, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    resultDiv.innerHTML = `
+                        <p style="color: green;">✓ ${data.message}</p>
+                        <pre style="max-height: 200px; overflow: auto; font-size: 0.85em;">${JSON.stringify(data.data, null, 2)}</pre>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `<p style="color: red;">✗ 导入失败：${data.message}</p>`;
+                }
+            })
+            .catch(error => {
+                resultDiv.innerHTML = `<p style="color: red;">✗ 导入失败：${error.message}</p>`;
+            });
+        }
+
+        function importFlattenListOrder() {
+            const fileInput = document.getElementById('flatten-list-import-file');
+            const resultDiv = document.getElementById('flatten-list-import-result');
+
+            if (!fileInput.files || fileInput.files.length === 0) {
+                resultDiv.innerHTML = '<p style="color: red;">请先选择文件</p>';
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+
+            resultDiv.innerHTML = '<p style="color: blue;">导入中...</p>';
+
+            fetch(`${API_BASE}/api/import/nested/flatten-list-order`, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    resultDiv.innerHTML = `
+                        <p style="color: green;">✓ ${data.message}</p>
+                        <pre style="max-height: 200px; overflow: auto; font-size: 0.85em;">${JSON.stringify(data.data, null, 2)}</pre>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `<p style="color: red;">✗ 导入失败：${data.message}</p>`;
+                }
+            })
+            .catch(error => {
+                resultDiv.innerHTML = `<p style="color: red;">✗ 导入失败：${error.message}</p>`;
+            });
         }
     </script>
 </body>
