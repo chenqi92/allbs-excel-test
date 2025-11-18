@@ -89,18 +89,21 @@ public class NestedExportController {
             .map(Collections::singletonList)
             .collect(Collectors.toList());
 
-        // 6. 设置响应
+        // 6. 转换数据格式（将 Map 转换为 List，确保列顺序正确）
+        List<List<Object>> listData = ListEntityExpander.convertToListData(expandedData, headers);
+
+        // 7. 设置响应
         response.setContentType("application/vnd.ms-excel");
         response.setCharacterEncoding("utf-8");
         String fileName = URLEncoder.encode("订单明细列表", "UTF-8");
         response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xlsx");
 
-        // 7. 导出
+        // 8. 导出
         EasyExcel.write(response.getOutputStream())
             .head(head)
             .registerWriteHandler(new cn.allbs.excel.handle.ListMergeCellWriteHandler(mergeRegions))
             .sheet("订单明细")
-            .doWrite(expandedData);
+            .doWrite(listData);
     }
 
     /**
@@ -132,18 +135,21 @@ public class NestedExportController {
             .map(Collections::singletonList)
             .collect(Collectors.toList());
 
-        // 6. 设置响应
+        // 6. 转换数据格式（将 Map 转换为 List，确保列顺序正确）
+        List<List<Object>> listData = ListEntityExpander.convertToListData(expandedData, headers);
+
+        // 7. 设置响应
         response.setContentType("application/vnd.ms-excel");
         response.setCharacterEncoding("utf-8");
         String fileName = URLEncoder.encode("学生课程奖项列表", "UTF-8");
         response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xlsx");
 
-        // 7. 导出
+        // 8. 导出
         EasyExcel.write(response.getOutputStream())
             .head(head)
             .registerWriteHandler(new cn.allbs.excel.handle.ListMergeCellWriteHandler(mergeRegions))
             .sheet("学生信息")
-            .doWrite(expandedData);
+            .doWrite(listData);
     }
 
     /**
@@ -194,16 +200,19 @@ public class NestedExportController {
             .map(Collections::singletonList)
             .collect(Collectors.toList());
 
-        // 4. 设置响应
+        // 4. 转换数据格式（将 Map 转换为 List，确保列顺序正确）
+        List<List<Object>> listData = ListEntityExpander.convertToListData(expandedData, headers);
+
+        // 5. 设置响应
         response.setContentType("application/vnd.ms-excel");
         response.setCharacterEncoding("utf-8");
         String fileName = URLEncoder.encode("动态表头示例", "UTF-8");
         response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xlsx");
 
-        // 5. 导出
+        // 6. 导出
         EasyExcel.write(response.getOutputStream())
             .head(head)
             .sheet("产品列表")
-            .doWrite(expandedData);
+            .doWrite(listData);
     }
 }
