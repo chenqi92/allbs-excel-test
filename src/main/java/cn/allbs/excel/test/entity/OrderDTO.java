@@ -1,17 +1,23 @@
 package cn.allbs.excel.test.entity;
 
+import cn.allbs.excel.annotation.RelatedSheet;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.annotation.format.DateTimeFormat;
 import com.alibaba.excel.annotation.format.NumberFormat;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 订单DTO - 用于测试多Sheet导出
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class OrderDTO {
 
     @ExcelProperty(value = "订单号", index = 0)
@@ -33,4 +39,11 @@ public class OrderDTO {
 
     @ExcelProperty(value = "备注", index = 5)
     private String remark;
+
+    /**
+     * 订单明细列表（关联到 "订单明细" Sheet）
+     */
+    @ExcelProperty(value = "查看明细", index = 6)
+    @RelatedSheet(sheetName = "订单明细", relationKey = "orderNo", dataType = OrderItemDTO.class, createHyperlink = true)
+    private List<OrderItemDTO> items;
 }
