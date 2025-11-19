@@ -474,4 +474,152 @@ public class TestDataService {
         }
         return list;
     }
+
+    /**
+     * 生成公式示例数据
+     */
+    public List<FormulaDataDTO> generateFormulaData(int count) {
+        List<FormulaDataDTO> list = new ArrayList<>();
+        for (int i = 1; i <= count; i++) {
+            FormulaDataDTO dto = new FormulaDataDTO();
+            dto.setProductName(PRODUCTS[i % PRODUCTS.length]);
+            dto.setUnitPrice(new BigDecimal(RandomUtil.randomDouble(100, 2000)).setScale(2, BigDecimal.ROUND_HALF_UP));
+            dto.setQuantity(RandomUtil.randomInt(1, 20));
+            list.add(dto);
+        }
+        return list;
+    }
+
+    /**
+     * 生成性能数据（用于条件格式）
+     */
+    public List<PerformanceDataDTO> generatePerformanceData(int count) {
+        List<PerformanceDataDTO> list = new ArrayList<>();
+        for (int i = 1; i <= count; i++) {
+            PerformanceDataDTO dto = new PerformanceDataDTO();
+            dto.setEmployeeName(NAMES[i % NAMES.length] + i);
+            dto.setDepartment(DEPARTMENTS[i % DEPARTMENTS.length]);
+            dto.setScore(60 + RandomUtil.randomInt(40));  // 60-100
+            dto.setSales(new BigDecimal(10000 + RandomUtil.randomInt(90000)));  // 10k-100k
+            dto.setCompletionRate(50.0 + RandomUtil.randomDouble() * 50.0);  // 50%-100%
+            list.add(dto);
+        }
+        return list;
+    }
+
+    /**
+     * 生成带批注的产品数据
+     */
+    public List<CommentDataDTO> generateCommentData(int count) {
+        List<CommentDataDTO> list = new ArrayList<>();
+        for (int i = 1; i <= count; i++) {
+            CommentDataDTO dto = new CommentDataDTO();
+            dto.setProductId("P" + String.format("%04d", i));
+            dto.setProductName(PRODUCTS[i % PRODUCTS.length]);
+            dto.setPrice(new BigDecimal(RandomUtil.randomDouble(50, 2000)).setScale(2, BigDecimal.ROUND_HALF_UP));
+            dto.setStock(RandomUtil.randomInt(10, 500));
+            list.add(dto);
+        }
+        return list;
+    }
+
+    /**
+     * 生成水印测试数据
+     */
+    public List<cn.allbs.excel.test.entity.WatermarkDataDTO> generateWatermarkData(int count) {
+        List<cn.allbs.excel.test.entity.WatermarkDataDTO> list = new ArrayList<>();
+        String[] levels = {"Public", "Internal", "Confidential", "Top Secret"};
+        String[] categories = {"Financial", "Technical", "HR", "Marketing", "Legal"};
+        String[] statuses = {"Draft", "Review", "Approved", "Archived"};
+
+        for (int i = 1; i <= count; i++) {
+            cn.allbs.excel.test.entity.WatermarkDataDTO dto = new cn.allbs.excel.test.entity.WatermarkDataDTO();
+            dto.setDocumentId("DOC" + String.format("%06d", i));
+            dto.setTitle("Document Title " + i);
+            dto.setCategory(categories[i % categories.length]);
+            dto.setAuthor(NAMES[i % NAMES.length]);
+            dto.setDepartment(DEPARTMENTS[i % DEPARTMENTS.length]);
+            dto.setCreationDate("2025-" + String.format("%02d", (i % 12) + 1) + "-" + String.format("%02d", (i % 28) + 1));
+            dto.setConfidentialLevel(levels[i % levels.length]);
+            dto.setFileSize(RandomUtil.randomInt(100, 10000));
+            dto.setBudgetAmount(new BigDecimal(RandomUtil.randomDouble(10000, 500000)).setScale(2, BigDecimal.ROUND_HALF_UP));
+            dto.setStatus(statuses[i % statuses.length]);
+            list.add(dto);
+        }
+        return list;
+    }
+
+    /**
+     * 生成图表测试数据
+     */
+    public List<cn.allbs.excel.test.entity.ChartDataDTO> generateChartData(int count) {
+        List<cn.allbs.excel.test.entity.ChartDataDTO> list = new ArrayList<>();
+        String[] months = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+
+        BigDecimal prevSales = new BigDecimal(50000);
+        for (int i = 0; i < Math.min(count, 12); i++) {
+            cn.allbs.excel.test.entity.ChartDataDTO dto = new cn.allbs.excel.test.entity.ChartDataDTO();
+            dto.setMonth(months[i]);
+
+            // Generate sales with growth trend
+            BigDecimal sales = prevSales.add(new BigDecimal(RandomUtil.randomDouble(-5000, 15000)))
+                .setScale(2, BigDecimal.ROUND_HALF_UP);
+            BigDecimal cost = sales.multiply(new BigDecimal(0.6 + RandomUtil.randomDouble() * 0.1))
+                .setScale(2, BigDecimal.ROUND_HALF_UP);
+            BigDecimal profit = sales.subtract(cost).setScale(2, BigDecimal.ROUND_HALF_UP);
+
+            dto.setSales(sales);
+            dto.setCost(cost);
+            dto.setProfit(profit);
+
+            // Calculate growth rate
+            if (i > 0) {
+                double growthRate = sales.subtract(prevSales)
+                    .divide(prevSales, 4, BigDecimal.ROUND_HALF_UP)
+                    .multiply(new BigDecimal(100))
+                    .doubleValue();
+                dto.setGrowthRate(growthRate);
+            } else {
+                dto.setGrowthRate(0.0);
+            }
+
+            dto.setUnitsSold((int) (sales.doubleValue() / 50));
+            prevSales = sales;
+            list.add(dto);
+        }
+        return list;
+    }
+
+    /**
+     * 生成带图片的产品数据
+     */
+    public List<cn.allbs.excel.test.entity.ProductWithImageDTO> generateProductWithImageData(int count) {
+        List<cn.allbs.excel.test.entity.ProductWithImageDTO> list = new ArrayList<>();
+        String[] categories = {"电子产品", "家居用品", "服装鞋帽", "食品饮料", "图书音像"};
+
+        for (int i = 1; i <= count; i++) {
+            cn.allbs.excel.test.entity.ProductWithImageDTO dto = new cn.allbs.excel.test.entity.ProductWithImageDTO();
+            dto.setProductId("P" + String.format("%04d", i));
+            dto.setProductName(PRODUCTS[i % PRODUCTS.length]);
+            dto.setCategory(categories[i % categories.length]);
+            dto.setPrice(new BigDecimal(RandomUtil.randomDouble(50, 5000)).setScale(2, BigDecimal.ROUND_HALF_UP));
+            dto.setStock(RandomUtil.randomInt(10, 500));
+
+            // 使用占位图片 URL (300x300)
+            dto.setMainImage("https://via.placeholder.com/300x300.png?text=Product+" + i);
+
+            // 图片列表（缩略图）
+            List<String> imageList = new ArrayList<>();
+            for (int j = 1; j <= 3; j++) {
+                imageList.add("https://via.placeholder.com/150x150.png?text=Image+" + j);
+            }
+            dto.setImageList(imageList);
+
+            // 生成二维码图片（字节数组）
+            dto.setQrCode(cn.allbs.excel.test.ExcelImageTest.createTestImage(100, 100, "QR-" + i));
+
+            list.add(dto);
+        }
+        return list;
+    }
 }
