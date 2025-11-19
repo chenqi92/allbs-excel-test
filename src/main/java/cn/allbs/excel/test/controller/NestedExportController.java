@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -50,14 +51,49 @@ public class NestedExportController {
 
     /**
      * 2. @FlattenProperty 示例 - 嵌套对象自动展开
+     * 注意：@FlattenProperty 不能直接使用 @ExportExcel 注解，需要手动处理
      */
     @GetMapping("/flatten-property")
-    @ExportExcel(
-        name = "对象展开示例",
-        sheets = @Sheet(sheetName = "员工信息")
-    )
-    public List<FlattenPropertyExampleDTO> flattenPropertyExport(@RequestParam(defaultValue = "10") int count) {
-        return testDataService.generateFlattenPropertyExamples(count);
+    public void flattenPropertyExport(
+        @RequestParam(defaultValue = "10") int count,
+        HttpServletResponse response
+    ) throws IOException {
+        // 1. 获取原始数据
+        List<FlattenPropertyExampleDTO> dataList = testDataService.generateFlattenPropertyExamples(count);
+
+        // 2. 获取字段信息
+        cn.allbs.excel.util.FlattenFieldProcessor.processFlattenFields(FlattenPropertyExampleDTO.class);
+        List<cn.allbs.excel.util.FlattenFieldProcessor.FlattenFieldInfo> fieldInfos =
+            cn.allbs.excel.util.FlattenFieldProcessor.processFlattenFields(FlattenPropertyExampleDTO.class);
+
+        // 3. 生成表头
+        List<List<String>> head = new ArrayList<>();
+        for (cn.allbs.excel.util.FlattenFieldProcessor.FlattenFieldInfo info : fieldInfos) {
+            head.add(Collections.singletonList(info.getHeadName()));
+        }
+
+        // 4. 转换数据
+        List<List<Object>> rows = new ArrayList<>();
+        for (FlattenPropertyExampleDTO dto : dataList) {
+            List<Object> row = new ArrayList<>();
+            for (cn.allbs.excel.util.FlattenFieldProcessor.FlattenFieldInfo info : fieldInfos) {
+                Object value = cn.allbs.excel.util.FlattenFieldProcessor.extractValue(dto, info);
+                row.add(value != null ? value : "");
+            }
+            rows.add(row);
+        }
+
+        // 5. 设置响应
+        response.setContentType("application/vnd.ms-excel");
+        response.setCharacterEncoding("utf-8");
+        String fileName = URLEncoder.encode("对象展开示例", "UTF-8");
+        response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xlsx");
+
+        // 6. 导出
+        EasyExcel.write(response.getOutputStream())
+                .head(head)
+                .sheet("员工信息")
+                .doWrite(rows);
     }
 
     /**

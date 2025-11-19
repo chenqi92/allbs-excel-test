@@ -3,6 +3,7 @@ package cn.allbs.excel.test.entity;
 import cn.allbs.excel.annotation.NestedProperty;
 import cn.allbs.excel.convert.NestedObjectConverter;
 import cn.allbs.excel.test.entity.nested.Department;
+import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -48,7 +49,8 @@ public class NestedPropertyExampleDTO {
 
     // ==================== 集合类型 ====================
 
-    // 技能列表
+    // 技能列表（内部字段，不导出）
+    @ExcelIgnore
     private List<String> skills;
 
     @ExcelProperty(value = "主要技能", converter = NestedObjectConverter.class)
@@ -61,6 +63,8 @@ public class NestedPropertyExampleDTO {
 
     // ==================== Map 类型 ====================
 
+    // 扩展属性（内部字段，不导出）
+    @ExcelIgnore
     private Map<String, Object> properties;
 
     @ExcelProperty(value = "工作城市", converter = NestedObjectConverter.class)
