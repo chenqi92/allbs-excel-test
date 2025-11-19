@@ -367,7 +367,7 @@ public class AdvancedExportController {
         // 使用 EasyExcel 导出，并添加图片处理器
         EasyExcel.write(response.getOutputStream(), cn.allbs.excel.test.entity.ProductWithImageDTO.class)
             .sheet("商品列表")
-            .registerWriteHandler(new cn.allbs.excel.handle.ImageWriteHandler())
+            .registerWriteHandler(new cn.allbs.excel.handle.ImageWriteHandler(cn.allbs.excel.test.entity.ProductWithImageDTO.class))
             .doWrite(data);
     }
 

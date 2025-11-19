@@ -60,7 +60,7 @@ public class ExcelImageTest {
 
 		EasyExcel.write(fileName, ProductWithImageDTO.class)
 			.sheet("商品列表")
-			.registerWriteHandler(new ImageWriteHandler())
+			.registerWriteHandler(new ImageWriteHandler(ProductWithImageDTO.class))
 			.doWrite(data);
 
 		System.out.println("   ✓ Created file: " + fileName);

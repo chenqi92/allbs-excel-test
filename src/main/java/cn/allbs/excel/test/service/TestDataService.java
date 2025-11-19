@@ -595,15 +595,14 @@ public class TestDataService {
      */
     public List<cn.allbs.excel.test.entity.ProductWithImageDTO> generateProductWithImageData(int count) {
         List<cn.allbs.excel.test.entity.ProductWithImageDTO> list = new ArrayList<>();
-        String[] categories = {"电子产品", "家居用品", "服装鞋帽", "食品饮料", "图书音像"};
 
         for (int i = 1; i <= count; i++) {
             cn.allbs.excel.test.entity.ProductWithImageDTO dto = new cn.allbs.excel.test.entity.ProductWithImageDTO();
-            dto.setProductId("P" + String.format("%04d", i));
+            dto.setProductId((long) i);
             dto.setProductName(PRODUCTS[i % PRODUCTS.length]);
-            dto.setCategory(categories[i % categories.length]);
             dto.setPrice(new BigDecimal(RandomUtil.randomDouble(50, 5000)).setScale(2, BigDecimal.ROUND_HALF_UP));
             dto.setStock(RandomUtil.randomInt(10, 500));
+            dto.setDescription("这是商品 " + i + " 的详细描述信息");
 
             // 使用占位图片 URL (300x300)
             dto.setMainImage("https://via.placeholder.com/300x300.png?text=Product+" + i);
