@@ -768,6 +768,80 @@
                 </div>
             </div>
 
+            <!-- 行号和动态文件名功能 -->
+            <div class="section">
+                <h2 class="section-title">🔢 行号与动态文件名 <span class="badge badge-new">NEW</span></h2>
+                <div class="card-grid">
+                    <div class="card">
+                        <h3>1. @ExcelLine - 自动行号</h3>
+                        <p>使用 @ExcelLine 注解为导出数据自动添加行号</p>
+                        <div class="card-controls">
+                            <label>数据条数:</label>
+                            <div class="input-group">
+                                <input type="number" id="row-number-count" value="50" min="10" max="500" step="10">
+                            </div>
+                            <button onclick="exportRowNumber()">导出带行号</button>
+                        </div>
+                        <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
+                            💡 演示：每行数据自动生成序号，无需手动赋值
+                        </p>
+                    </div>
+
+                    <div class="card">
+                        <h3>2. 动态文件名 - SpEL表达式</h3>
+                        <p>支持 #{#today}, #{#now}, #{#参数名} 等表达式</p>
+                        <div class="card-controls">
+                            <label>用户名:</label>
+                            <div class="input-group">
+                                <input type="text" id="dynamic-username" value="admin" placeholder="输入用户名">
+                            </div>
+                            <label>数据条数:</label>
+                            <div class="input-group">
+                                <input type="number" id="dynamic-count" value="20" min="5" max="100">
+                            </div>
+                            <button onclick="exportDynamicFilename()">导出(日期+用户名)</button>
+                        </div>
+                        <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
+                            💡 文件名格式: UserList-20251120-admin.xlsx
+                        </p>
+                    </div>
+
+                    <div class="card">
+                        <h3>3. 动态文件名 - 时间戳</h3>
+                        <p>使用时间戳作为文件名，确保唯一性</p>
+                        <div class="card-controls">
+                            <label>数据条数:</label>
+                            <div class="input-group">
+                                <input type="number" id="timestamp-count" value="30" min="5" max="100">
+                            </div>
+                            <button onclick="exportTimestampFilename()">导出(时间戳)</button>
+                        </div>
+                        <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
+                            💡 文件名格式: ExportData-1732067123456.xlsx
+                        </p>
+                    </div>
+
+                    <div class="card">
+                        <h3>4. 动态文件名 - 方法参数</h3>
+                        <p>使用方法参数值动态生成文件名</p>
+                        <div class="card-controls">
+                            <label>部门名称:</label>
+                            <div class="input-group">
+                                <input type="text" id="dept-name" value="Tech" placeholder="输入部门名称(英文)">
+                            </div>
+                            <label>数据条数:</label>
+                            <div class="input-group">
+                                <input type="number" id="dept-count" value="25" min="5" max="100">
+                            </div>
+                            <button onclick="exportParamFilename()">导出(部门+日期时间)</button>
+                        </div>
+                        <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
+                            💡 文件名格式: Tech-Employees-20251120-153045.xlsx
+                        </p>
+                    </div>
+                </div>
+            </div>
+
             <!-- 嵌套对象导入功能 -->
             <div class="section">
                 <h2 class="section-title">📥 嵌套对象导入功能 <span class="badge badge-new">NEW</span></h2>
@@ -1207,6 +1281,34 @@
         function exportImage() {
             const count = document.getElementById('image-count').value;
             window.location.href = `${API_BASE}/api/export/advanced/image?count=${count}`;
+        }
+
+        // ========== 行号和动态文件名功能 ==========
+
+        // @ExcelLine - 自动行号导出
+        function exportRowNumber() {
+            const count = document.getElementById('row-number-count').value;
+            window.location.href = `${API_BASE}/api/export/advanced/row-number?count=${count}`;
+        }
+
+        // 动态文件名 - SpEL表达式
+        function exportDynamicFilename() {
+            const username = document.getElementById('dynamic-username').value;
+            const count = document.getElementById('dynamic-count').value;
+            window.location.href = `${API_BASE}/api/export/advanced/dynamic-filename?username=${encodeURIComponent(username)}&count=${count}`;
+        }
+
+        // 动态文件名 - 时间戳
+        function exportTimestampFilename() {
+            const count = document.getElementById('timestamp-count').value;
+            window.location.href = `${API_BASE}/api/export/advanced/dynamic-filename-timestamp?count=${count}`;
+        }
+
+        // 动态文件名 - 方法参数
+        function exportParamFilename() {
+            const department = document.getElementById('dept-name').value;
+            const count = document.getElementById('dept-count').value;
+            window.location.href = `${API_BASE}/api/export/advanced/dynamic-filename-param?department=${encodeURIComponent(department)}&count=${count}`;
         }
 
         // 日志管理函数

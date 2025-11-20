@@ -21,6 +21,7 @@ import cn.allbs.excel.test.entity.EmployeeDTO;
 import cn.allbs.excel.test.entity.FormulaDataDTO;
 import cn.allbs.excel.test.entity.MultiSheetOrderDTO;
 import cn.allbs.excel.test.entity.PerformanceDataDTO;
+import cn.allbs.excel.test.entity.RowNumberDTO;
 import cn.allbs.excel.test.entity.SensitiveUserDTO;
 import cn.allbs.excel.test.entity.WatermarkDataDTO;
 import cn.allbs.excel.test.listener.ConsoleProgressListener;
@@ -468,5 +469,86 @@ public class AdvancedExportController {
                 return ExcelChart.class;
             }
         };
+    }
+
+    /**
+     * 测试 @ExcelLine 注解 - 自动行号功能
+     *
+     * @ExcelLine 注解会为每一行数据自动填充行号(从1开始)
+     */
+    @GetMapping("/row-number")
+    @ExportExcel(
+        name = "产品清单-带行号",
+        sheets = @Sheet(sheetName = "产品列表")
+    )
+    public List<RowNumberDTO> exportWithRowNumber(@RequestParam(defaultValue = "50") int count) {
+        List<RowNumberDTO> products = new java.util.ArrayList<>();
+
+        String[] categories = {"电子产品", "家居用品", "食品饮料", "图书文具", "运动户外"};
+        for (int i = 1; i <= count; i++) {
+            String category = categories[(i - 1) % categories.length];
+            products.add(new RowNumberDTO(
+                "产品-" + i,
+                "P" + String.format("%04d", i),
+                Math.round(Math.random() * 1000 * 100.0) / 100.0,
+                (int) (Math.random() * 1000),
+                category
+            ));
+        }
+
+        return products;
+    }
+
+    /**
+     * 测试动态文件名 - 使用SpEL表达式
+     *
+     * 支持的变量:
+     * - #today: 当前日期
+     * - #now: 当前日期时间
+     * - #timestamp: 时间戳
+     * - #uuid: UUID
+     * - #formatDate(#today, 'yyyyMMdd'): 格式化日期
+     * - #参数名: 方法参数值
+     */
+    @GetMapping("/dynamic-filename")
+    @ExportExcel(
+        name = "'UserList-' + #formatDate(#today, 'yyyyMMdd') + '-' + #username",
+        sheets = @Sheet(sheetName = "UserData")
+    )
+    public List<SensitiveUserDTO> exportWithDynamicFilename(
+        @RequestParam(defaultValue = "admin") String username,
+        @RequestParam(defaultValue = "20") int count
+    ) {
+        return testDataService.generateSensitiveUsers(count);
+    }
+
+    /**
+     * 测试动态文件名 - 使用时间戳
+     */
+    @GetMapping("/dynamic-filename-timestamp")
+    @ExportExcel(
+        name = "'ExportData-' + #timestamp",
+        sheets = @Sheet(sheetName = "Data")
+    )
+    public List<EmployeeDTO> exportWithTimestamp(@RequestParam(defaultValue = "30") int count) {
+        return testDataService.generateEmployees(count);
+    }
+
+    /**
+     * 测试动态文件名 - 使用方法参数
+     */
+    @GetMapping("/dynamic-filename-param")
+    @ExportExcel(
+        name = "#department + '-Employees-' + #formatDateTime(#now, 'yyyyMMdd-HHmmss')",
+        sheets = @Sheet(sheetName = "EmployeeData")
+    )
+    public List<EmployeeDTO> exportWithParamFilename(
+        @RequestParam String department,
+        @RequestParam(defaultValue = "25") int count
+    ) {
+        List<EmployeeDTO> employees = testDataService.generateEmployees(count);
+        // 设置所有员工为指定部门
+        employees.forEach(emp -> emp.setDepartment(department));
+        return employees;
     }
 }
