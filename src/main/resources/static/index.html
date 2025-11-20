@@ -199,7 +199,6 @@
         .import-section .card {
             background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
         }
-    </style>
 
         /* 日志查看区域样式 */
         .log-container {
@@ -296,6 +295,7 @@
             border-left-color: #dc3545;
             color: #ff6b6b;
         }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -1208,7 +1208,6 @@
             const count = document.getElementById('image-count').value;
             window.location.href = `${API_BASE}/api/export/advanced/image?count=${count}`;
         }
-    </script>
 
         // 日志管理函数
         function clearLog() {
@@ -1218,7 +1217,7 @@
 
         function addLog(message, type = 'info') {
             const logDiv = document.getElementById('export-log');
-            
+
             // 移除提示信息
             const hint = logDiv.querySelector('.log-hint');
             if (hint) {
@@ -1229,11 +1228,12 @@
             const logEntry = document.createElement('div');
             logEntry.className = `log-entry ${type}`;
             logEntry.textContent = `[${timestamp}] ${message}`;
-            
+
             logDiv.appendChild(logEntry);
-            
+
             // 自动滚动到底部
             logDiv.scrollTop = logDiv.scrollHeight;
         }
+    </script>
 </body>
 </html>
