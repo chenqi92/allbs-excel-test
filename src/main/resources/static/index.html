@@ -200,6 +200,102 @@
             background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
         }
     </style>
+
+        /* 日志查看区域样式 */
+        .log-container {
+            background: #f8f9fa;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .log-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+        }
+
+        .clear-log-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+
+        .clear-log-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .log-content {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 0.9em;
+            line-height: 1.6;
+            max-height: 400px;
+            overflow-y: auto;
+            min-height: 200px;
+        }
+
+        /* 自定义滚动条样式 */
+        .log-content::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        .log-content::-webkit-scrollbar-track {
+            background: #2d2d2d;
+            border-radius: 6px;
+        }
+
+        .log-content::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 6px;
+        }
+
+        .log-content::-webkit-scrollbar-thumb:hover {
+            background: #764ba2;
+        }
+
+        .log-hint {
+            color: #888;
+            font-style: italic;
+        }
+
+        .log-entry {
+            margin: 5px 0;
+            padding: 5px;
+            border-left: 3px solid #667eea;
+            padding-left: 10px;
+        }
+
+        .log-entry.success {
+            border-left-color: #28a745;
+            color: #4dff4d;
+        }
+
+        .log-entry.info {
+            border-left-color: #17a2b8;
+            color: #4dd0e1;
+        }
+
+        .log-entry.warning {
+            border-left-color: #ffc107;
+            color: #ffd54f;
+        }
+
+        .log-entry.error {
+            border-left-color: #dc3545;
+            color: #ff6b6b;
+        }
 </head>
 <body>
     <div class="container">
@@ -333,7 +429,7 @@
                         <div class="card-controls">
                             <div class="input-group">
                                 <label>数据量:</label>
-                                <input type="number" id="progress-count" value="100" min="10" max="10000">
+                                <input type="number" id="progress-count" value="5000" min="100" max="50000" step="100">
                             </div>
                             <button onclick="exportWithProgress()">导出</button>
                         </div>
@@ -345,7 +441,7 @@
                         <div class="card-controls">
                             <div class="input-group">
                                 <label>数据量:</label>
-                                <input type="number" id="large-count" value="1000" min="100" max="50000">
+                                <input type="number" id="large-count" value="20000" min="1000" max="100000" step="1000">
                             </div>
                             <button onclick="exportLargeData()">导出</button>
                         </div>
@@ -357,7 +453,7 @@
                         <div class="card-controls">
                             <div class="input-group">
                                 <label>数据量:</label>
-                                <input type="number" id="merge-progress-count" value="50" min="10" max="10000">
+                                <input type="number" id="merge-progress-count" value="3000" min="100" max="30000" step="100">
                             </div>
                             <button onclick="exportMergeWithProgress()">导出</button>
                         </div>
@@ -767,6 +863,20 @@
                 </div>
             </div>
         </div>
+
+            <!-- 导出进度日志查看区域 -->
+            <div class="section" style="margin-top: 40px;">
+                <h2 class="section-title">📊 导出进度日志 <span class="badge badge-info">实时</span></h2>
+                <div class="log-container" id="export-log-container">
+                    <div class="log-header">
+                        <span>后端导出进度日志 (自动刷新)</span>
+                        <button onclick="clearLog()" class="clear-log-btn">清空日志</button>
+                    </div>
+                    <div class="log-content" id="export-log">
+                        <div class="log-hint">💡 提示: 点击上方 "导出进度回调"、"大数据量导出" 或 "合并 + 进度" 按钮后，此处将显示后端导出进度日志</div>
+                    </div>
+                </div>
+            </div>
     </div>
 
     <script>
@@ -828,7 +938,7 @@
 
         function exportWithProgress() {
             const count = document.getElementById('progress-count').value;
-            console.log('开始导出，请查看后端控制台日志...');
+            addLog('开始导出 ' + count + ' 条数据，请查看后端控制台获取详细进度...', 'info');
             window.open(`${API_BASE}/api/export/advanced/with-progress?count=${count}`);
         }
 
@@ -840,7 +950,7 @@
 
         function exportMergeWithProgress() {
             const count = document.getElementById('merge-progress-count').value;
-            console.log('开始导出，请查看后端控制台日志...');
+            addLog('开始导出 ' + count + ' 条数据，请查看后端控制台获取详细进度...', 'info');
             window.open(`${API_BASE}/api/export/advanced/merge-with-progress?count=${count}`);
         }
 
@@ -1103,5 +1213,31 @@
             window.location.href = `${API_BASE}/api/export/advanced/image?count=${count}`;
         }
     </script>
+
+        // 日志管理函数
+        function clearLog() {
+            const logDiv = document.getElementById('export-log');
+            logDiv.innerHTML = '<div class="log-hint">💡 提示: 点击上方 "导出进度回调"、"大数据量导出" 或 "合并 + 进度" 按钮后，此处将显示后端导出进度日志</div>';
+        }
+
+        function addLog(message, type = 'info') {
+            const logDiv = document.getElementById('export-log');
+            
+            // 移除提示信息
+            const hint = logDiv.querySelector('.log-hint');
+            if (hint) {
+                hint.remove();
+            }
+
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.className = `log-entry ${type}`;
+            logEntry.textContent = `[${timestamp}] ${message}`;
+            
+            logDiv.appendChild(logEntry);
+            
+            // 自动滚动到底部
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
 </body>
 </html>

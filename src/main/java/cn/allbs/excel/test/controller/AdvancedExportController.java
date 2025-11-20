@@ -87,9 +87,9 @@ public class AdvancedExportController {
     )
     @ExportProgress(
         listener = ConsoleProgressListener.class,
-        interval = 10  // 每 10 行触发一次进度回调
+        interval = 100  // 每 100 行触发一次进度回调
     )
-    public List<SensitiveUserDTO> exportWithProgress(@RequestParam(defaultValue = "100") int count) {
+    public List<SensitiveUserDTO> exportWithProgress(@RequestParam(defaultValue = "5000") int count) {
         return testDataService.generateSensitiveUsers(count);
     }
 
@@ -103,9 +103,9 @@ public class AdvancedExportController {
     )
     @ExportProgress(
         listener = ConsoleProgressListener.class,
-        interval = 100
+        interval = 500  // 每 500 行触发一次进度回调
     )
-    public List<SensitiveUserDTO> largeDataExport(@RequestParam(defaultValue = "1000") int count) {
+    public List<SensitiveUserDTO> largeDataExport(@RequestParam(defaultValue = "20000") int count) {
         return testDataService.generateSensitiveUsers(count);
     }
 
@@ -122,9 +122,9 @@ public class AdvancedExportController {
     )
     @ExportProgress(
         listener = ConsoleProgressListener.class,
-        interval = 5
+        interval = 100  // 每 100 行触发一次进度回调
     )
-    public List<EmployeeDTO> mergeWithProgressExport(@RequestParam(defaultValue = "50") int count) {
+    public List<EmployeeDTO> mergeWithProgressExport(@RequestParam(defaultValue = "3000") int count) {
         return testDataService.generateEmployees(count);
     }
 
