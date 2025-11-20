@@ -776,11 +776,9 @@
                         <h3>1. @NestedProperty - 嵌套对象导入</h3>
                         <p>导入Excel时自动填充嵌套对象字段</p>
                         <div class="card-controls">
-                            <div class="input-group">
-                                <label>选择文件:</label>
-                                <input type="file" id="nested-property-import-file" accept=".xlsx,.xls">
-                            </div>
-                            <button onclick="importNestedProperty()">导入</button>
+                            <input type="file" id="nested-property-import-file" class="file-input" accept=".xlsx,.xls">
+                            <label for="nested-property-import-file" class="file-label">选择文件</label>
+                            <button class="upload-btn" onclick="importNestedProperty()">上传导入</button>
                         </div>
                         <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
                             💡 先导出一个文件，然后可以尝试导入
@@ -792,11 +790,9 @@
                         <h3>2. @FlattenList - 多行聚合导入</h3>
                         <p>将多行明细数据聚合回List对象</p>
                         <div class="card-controls">
-                            <div class="input-group">
-                                <label>选择文件:</label>
-                                <input type="file" id="flatten-list-import-file" accept=".xlsx,.xls">
-                            </div>
-                            <button onclick="importFlattenListOrder()">导入</button>
+                            <input type="file" id="flatten-list-import-file" class="file-input" accept=".xlsx,.xls">
+                            <label for="flatten-list-import-file" class="file-label">选择文件</label>
+                            <button class="upload-btn" onclick="importFlattenListOrder()">上传导入</button>
                         </div>
                         <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
                             💡 先导出订单明细，然后导入测试聚合功能
