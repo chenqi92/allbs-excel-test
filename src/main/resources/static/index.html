@@ -741,6 +741,184 @@ private List&lt;String&gt; imageList;</pre>
                 </div>
             </div>
 
+            <!-- 图表导出功能 -->
+            <div class="section">
+                <h2 class="section-title">📊 Excel 图表导出 <span class="badge badge-new">NEW</span></h2>
+                <p class="section-description">支持 6 种图表类型，通过注解配置 X/Y 轴、标题、图例等所有绘制因素</p>
+                <div class="card-grid">
+                    <div class="card">
+                        <h3>1. 折线图 <span class="badge badge-hot">推荐</span></h3>
+                        <p>展示数据随时间的变化趋势，适合销售趋势、温度变化等</p>
+                        <div class="card-controls">
+                            <div class="input-group">
+                                <label>月份数:</label>
+                                <input type="number" id="line-chart-months" value="12" min="3" max="12">
+                            </div>
+                            <button onclick="exportLineChart()">导出折线图</button>
+                        </div>
+                        <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
+                            📈 包含 3 条线：Sales、Cost、Profit
+                        </p>
+                    </div>
+
+                    <div class="card">
+                        <h3>2. 柱状图（纵向）</h3>
+                        <p>比较不同类别的数据，适合销售对比、成本分析等</p>
+                        <div class="card-controls">
+                            <div class="input-group">
+                                <label>月份数:</label>
+                                <input type="number" id="column-chart-months" value="12" min="3" max="12">
+                            </div>
+                            <button onclick="exportColumnChart()">导出柱状图</button>
+                        </div>
+                        <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
+                            📊 对比：Sales vs Cost
+                        </p>
+                    </div>
+
+                    <div class="card">
+                        <h3>3. 条形图（横向）</h3>
+                        <p>横向展示，适合部门对比、产品销量排行等</p>
+                        <div class="card-controls">
+                            <div class="input-group">
+                                <label>月份数:</label>
+                                <input type="number" id="bar-chart-months" value="12" min="3" max="12">
+                            </div>
+                            <button onclick="exportBarChart()">导出条形图</button>
+                        </div>
+                        <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
+                            📉 分析：Monthly Profit
+                        </p>
+                    </div>
+
+                    <div class="card">
+                        <h3>4. 饼图</h3>
+                        <p>展示各部分占总体的比例，适合市场份额、销售占比等</p>
+                        <div class="card-controls">
+                            <div class="input-group">
+                                <label>月份数:</label>
+                                <input type="number" id="pie-chart-months" value="12" min="3" max="12">
+                            </div>
+                            <button onclick="exportPieChart()">导出饼图</button>
+                        </div>
+                        <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
+                            🥧 显示：Sales Distribution
+                        </p>
+                    </div>
+
+                    <div class="card">
+                        <h3>5. 面积图</h3>
+                        <p>展示数量随时间的累积变化，适合累计销售额、用户增长等</p>
+                        <div class="card-controls">
+                            <div class="input-group">
+                                <label>月份数:</label>
+                                <input type="number" id="area-chart-months" value="12" min="3" max="12">
+                            </div>
+                            <button onclick="exportAreaChart()">导出面积图</button>
+                        </div>
+                        <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
+                            📐 累计：Sales & Cost
+                        </p>
+                    </div>
+
+                    <div class="card">
+                        <h3>6. 散点图</h3>
+                        <p>展示两个变量的相关性，适合数据分布、相关性分析等</p>
+                        <div class="card-controls">
+                            <div class="input-group">
+                                <label>月份数:</label>
+                                <input type="number" id="scatter-chart-months" value="12" min="3" max="12">
+                            </div>
+                            <button onclick="exportScatterChart()">导出散点图</button>
+                        </div>
+                        <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
+                            ⚫ 相关性：Sales vs Cost
+                        </p>
+                    </div>
+
+                    <div class="card">
+                        <h3>7. 多系列图表</h3>
+                        <p>一个图表显示多个数据系列，完整展示财务数据</p>
+                        <div class="card-controls">
+                            <div class="input-group">
+                                <label>月份数:</label>
+                                <input type="number" id="multi-chart-months" value="12" min="3" max="12">
+                            </div>
+                            <button onclick="exportMultiSeriesChart()">导出多系列</button>
+                        </div>
+                        <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
+                            📊 包含：Sales、Cost、Profit
+                        </p>
+                    </div>
+
+                    <div class="card">
+                        <h3>8. 自定义尺寸图表</h3>
+                        <p>自定义图表位置和大小，演示大尺寸图表效果</p>
+                        <div class="card-controls">
+                            <div class="input-group">
+                                <label>月份数:</label>
+                                <input type="number" id="custom-chart-months" value="12" min="3" max="12">
+                            </div>
+                            <button onclick="exportCustomPositionChart()">导出大图表</button>
+                        </div>
+                        <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
+                            🖼️ 大尺寸显示
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 图表配置说明 -->
+                <div class="card" style="margin-top: 20px;">
+                    <h3>📋 图表配置说明</h3>
+                    <button onclick="toggleChartGuide()" style="margin-bottom: 15px;">查看配置示例</button>
+                    <div id="chart-guide" style="display:none;">
+                        <div style="background:#f8f9fa; padding:20px; border-radius:8px; margin-top:15px;">
+                            <h4 style="color:#2196F3; margin-bottom:15px;">✨ 通过注解完整控制图表</h4>
+                            <pre style="background:white; padding:15px; border-radius:5px; overflow-x:auto; font-size:0.9em;">@ExportExcel(
+    name = "销售趋势图表",
+    chart = @ExcelChart(
+        <span style="color:#e91e63">title</span> = "Monthly Sales Trend",      // 图表标题
+        <span style="color:#e91e63">enabled</span> = true,                     // 是否启用
+        <span style="color:#e91e63">type</span> = ChartType.LINE,              // 图表类型 ✅
+        <span style="color:#e91e63">xAxisField</span> = "Month",               // X 轴字段 ✅
+        <span style="color:#e91e63">yAxisFields</span> = {"Sales", "Cost"},    // Y 轴字段 ✅
+        <span style="color:#e91e63">startRow</span> = 0, <span style="color:#e91e63">startColumn</span> = 8,   // 图表位置
+        <span style="color:#e91e63">endRow</span> = 20, <span style="color:#e91e63">endColumn</span> = 18,
+        <span style="color:#e91e63">xAxisTitle</span> = "月份",                // X 轴标题 ✅
+        <span style="color:#e91e63">yAxisTitle</span> = "金额",                // Y 轴标题 ✅
+        <span style="color:#e91e63">showLegend</span> = true,                  // 显示图例 ✅
+        <span style="color:#e91e63">legendPosition</span> = LegendPosition.BOTTOM  // 图例位置 ✅
+    )
+)</pre>
+                            <div style="margin-top:20px; display:grid; grid-template-columns: repeat(2, 1fr); gap:15px;">
+                                <div>
+                                    <h5 style="color:#4CAF50; margin-bottom:8px;">📊 支持的图表类型</h5>
+                                    <ul style="font-size:0.9em; line-height:1.8;">
+                                        <li>✅ LINE - 折线图</li>
+                                        <li>✅ COLUMN - 柱状图（纵向）</li>
+                                        <li>✅ BAR - 条形图（横向）</li>
+                                        <li>✅ PIE - 饼图</li>
+                                        <li>✅ AREA - 面积图</li>
+                                        <li>✅ SCATTER - 散点图</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h5 style="color:#4CAF50; margin-bottom:8px;">🎯 配置要点</h5>
+                                    <ul style="font-size:0.9em; line-height:1.8;">
+                                        <li>✅ xAxisField 对应表头列名</li>
+                                        <li>✅ yAxisFields 支持多个系列</li>
+                                        <li>✅ 字段名支持忽略大小写</li>
+                                        <li>✅ 图例位置：TOP/BOTTOM/LEFT/RIGHT</li>
+                                        <li>✅ 图表位置和尺寸可自定义</li>
+                                        <li>✅ 支持中英文标题和字段名</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- 嵌套对象导出功能 -->
             <div class="section">
                 <h2 class="section-title">🆕 嵌套对象导出功能 <span class="badge badge-new">NEW</span></h2>
@@ -1441,6 +1619,66 @@ private List&lt;String&gt; imageList;</pre>
         // 显示/隐藏图片尺寸说明
         function showImageSizeGuide() {
             const guideDiv = document.getElementById('image-size-guide');
+            if (guideDiv.style.display === 'none') {
+                guideDiv.style.display = 'block';
+            } else {
+                guideDiv.style.display = 'none';
+            }
+        }
+
+        // ========== 图表导出功能 ==========
+
+        // 1. 导出折线图
+        function exportLineChart() {
+            const months = document.getElementById('line-chart-months').value;
+            window.location.href = `${API_BASE}/api/chart/line?months=${months}`;
+        }
+
+        // 2. 导出柱状图
+        function exportColumnChart() {
+            const months = document.getElementById('column-chart-months').value;
+            window.location.href = `${API_BASE}/api/chart/column?months=${months}`;
+        }
+
+        // 3. 导出条形图
+        function exportBarChart() {
+            const months = document.getElementById('bar-chart-months').value;
+            window.location.href = `${API_BASE}/api/chart/bar?months=${months}`;
+        }
+
+        // 4. 导出饼图
+        function exportPieChart() {
+            const months = document.getElementById('pie-chart-months').value;
+            window.location.href = `${API_BASE}/api/chart/pie?months=${months}`;
+        }
+
+        // 5. 导出面积图
+        function exportAreaChart() {
+            const months = document.getElementById('area-chart-months').value;
+            window.location.href = `${API_BASE}/api/chart/area?months=${months}`;
+        }
+
+        // 6. 导出散点图
+        function exportScatterChart() {
+            const months = document.getElementById('scatter-chart-months').value;
+            window.location.href = `${API_BASE}/api/chart/scatter?months=${months}`;
+        }
+
+        // 7. 导出多系列图表
+        function exportMultiSeriesChart() {
+            const months = document.getElementById('multi-chart-months').value;
+            window.location.href = `${API_BASE}/api/chart/multi-series?months=${months}`;
+        }
+
+        // 8. 导出自定义位置图表
+        function exportCustomPositionChart() {
+            const months = document.getElementById('custom-chart-months').value;
+            window.location.href = `${API_BASE}/api/chart/custom-position?months=${months}`;
+        }
+
+        // 切换图表配置说明
+        function toggleChartGuide() {
+            const guideDiv = document.getElementById('chart-guide');
             if (guideDiv.style.display === 'none') {
                 guideDiv.style.display = 'block';
             } else {
