@@ -151,26 +151,16 @@ public class AdvancedExportController {
 
     /**
      * 8. 多 Sheet 关联导出
+     * 使用注解方式，自动检测 @RelatedSheet 注解并处理关联关系
+     * 实体类中的 @RelatedSheet 字段会自动导出到关联 Sheet，并创建超链接
      */
     @GetMapping("/multi-sheet")
-    public void multiSheetExport(@RequestParam(defaultValue = "5") int count, HttpServletResponse response) throws IOException {
-        List<MultiSheetOrderDTO> orders = testDataService.generateMultiSheetOrders(count);
-
-        // 设置响应头
-        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-        response.setCharacterEncoding("utf-8");
-        String fileName = URLEncoder.encode("订单及明细-多Sheet", "UTF-8").replaceAll("\\+", "%20");
-        response.setHeader("Content-disposition", "attachment;filename*=utf-8''" + fileName + ".xlsx");
-
-        // 使用 MultiSheetRelationProcessor 导出多 Sheet 关联数据
-        ExcelWriter excelWriter = EasyExcel.write(response.getOutputStream()).build();
-        try {
-            MultiSheetRelationProcessor.exportWithRelations(excelWriter, orders, "订单", MultiSheetOrderDTO.class);
-        } finally {
-            if (excelWriter != null) {
-                excelWriter.finish();
-            }
-        }
+    @ExportExcel(
+        name = "订单及明细-多Sheet",
+        sheets = @Sheet(sheetName = "订单")
+    )
+    public List<MultiSheetOrderDTO> multiSheetExport(@RequestParam(defaultValue = "5") int count) {
+        return testDataService.generateMultiSheetOrders(count);
     }
 
     /**
