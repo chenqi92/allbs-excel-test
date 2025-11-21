@@ -222,6 +222,9 @@ public class ExcelChartTest {
 			public String title() { return title; }
 
 			@Override
+			public boolean enabled() { return true; }
+
+			@Override
 			public ChartType type() { return type; }
 
 			@Override

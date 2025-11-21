@@ -1,18 +1,7 @@
 package cn.allbs.excel.test.controller;
 
-import cn.allbs.excel.annotation.ExcelEncryption;
-import cn.allbs.excel.annotation.ExcelWatermark;
-import cn.allbs.excel.annotation.ExcelChart;
-import cn.allbs.excel.annotation.ExportExcel;
-import cn.allbs.excel.annotation.ExportProgress;
-import cn.allbs.excel.annotation.Sheet;
-import cn.allbs.excel.handle.ConditionalFormatWriteHandler;
-import cn.allbs.excel.handle.ExcelChartWriteHandler;
-import cn.allbs.excel.handle.ExcelCommentWriteHandler;
-import cn.allbs.excel.handle.ExcelFormulaWriteHandler;
-import cn.allbs.excel.handle.ExcelSheetStyleWriteHandler;
-import cn.allbs.excel.handle.ExcelValidationWriteHandler;
-import cn.allbs.excel.handle.ExcelWatermarkWriteHandler;
+import cn.allbs.excel.annotation.*;
+import cn.allbs.excel.handle.*;
 import cn.allbs.excel.template.ExcelTemplateGenerator;
 import cn.allbs.excel.test.entity.ChartDataDTO;
 import cn.allbs.excel.test.entity.CommentDataDTO;
@@ -145,22 +134,19 @@ public class AdvancedExportController {
 
     /**
      * 7. 数据验证导出（自定义验证范围）
+     * 使用注解方式，通过 @Sheet 的 validationStartRow 和 validationEndRow 指定验证范围
      */
     @GetMapping("/validation-custom")
-    public void validationCustomExport(@RequestParam(defaultValue = "10") int count, HttpServletResponse response) throws IOException {
-        List<DataValidationDTO> data = testDataService.generateDataValidationData(count);
-
-        // 设置响应头
-        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-        response.setCharacterEncoding("utf-8");
-        String fileName = URLEncoder.encode("员工信息-自定义验证", "UTF-8").replaceAll("\\+", "%20");
-        response.setHeader("Content-disposition", "attachment;filename*=utf-8''" + fileName + ".xlsx");
-
-        // 使用自定义验证范围（从第 2 行到第 1000 行）
-        EasyExcel.write(response.getOutputStream(), DataValidationDTO.class)
-            .sheet("员工信息")
-            .registerWriteHandler(new ExcelValidationWriteHandler(DataValidationDTO.class, 1, 1000))
-            .doWrite(data);
+    @ExportExcel(
+        name = "员工信息-自定义验证",
+        sheets = @Sheet(
+            sheetName = "员工信息",
+            validationStartRow = 1,
+            validationEndRow = 1000
+        )
+    )
+    public List<DataValidationDTO> validationCustomExport(@RequestParam(defaultValue = "10") int count) {
+        return testDataService.generateDataValidationData(count);
     }
 
     /**
@@ -265,60 +251,54 @@ public class AdvancedExportController {
 
     /**
      * 14. 水印导出
+     * 使用注解方式，通过 @ExportExcel 的 watermark 属性配置水印
      */
     @GetMapping("/watermark")
-    public void watermarkExport(@RequestParam(defaultValue = "30") int count, HttpServletResponse response) throws IOException {
-        List<WatermarkDataDTO> data = testDataService.generateWatermarkData(count);
-
-        // 设置响应头
-        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-        response.setCharacterEncoding("utf-8");
-        String fileName = URLEncoder.encode("机密文档-水印", "UTF-8").replaceAll("\\+", "%20");
-        response.setHeader("Content-disposition", "attachment;filename*=utf-8''" + fileName + ".xlsx");
-
-        // 创建水印配置
-        ExcelWatermark watermark = createWatermark(
-            "CONFIDENTIAL - " + System.getProperty("user.name"),
-            true, "Arial", 48, "#D3D3D3", -45, 0.3, 200, 150, 0, 0
-        );
-
-        // 使用 EasyExcel 导出，并添加水印处理器
-        EasyExcel.write(response.getOutputStream(), WatermarkDataDTO.class)
-            .sheet("机密文档")
-            .registerWriteHandler(new ExcelWatermarkWriteHandler(watermark))
-            .doWrite(data);
+    @ExportExcel(
+        name = "机密文档-水印",
+        sheets = @Sheet(sheetName = "机密文档"),
+        watermark = @ExcelWatermark(
+            text = "CONFIDENTIAL",
+            enabled = true,
+            fontName = "Arial",
+            fontSize = 48,
+            color = "#D3D3D3",
+            rotation = -45,
+            opacity = 0.3,
+            horizontalSpacing = 200,
+            verticalSpacing = 150
+        )
+    )
+    public List<WatermarkDataDTO> watermarkExport(@RequestParam(defaultValue = "30") int count) {
+        return testDataService.generateWatermarkData(count);
     }
 
     /**
      * 15. 图表导出
+     * 使用注解方式，通过 @ExportExcel 的 chart 属性配置图表
      */
     @GetMapping("/chart")
-    public void chartExport(@RequestParam(defaultValue = "12") int count, HttpServletResponse response) throws IOException {
-        List<ChartDataDTO> data = testDataService.generateChartData(Math.min(count, 12));
-
-        // 设置响应头
-        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-        response.setCharacterEncoding("utf-8");
-        String fileName = URLEncoder.encode("销售趋势图表", "UTF-8").replaceAll("\\+", "%20");
-        response.setHeader("Content-disposition", "attachment;filename*=utf-8''" + fileName + ".xlsx");
-
-        // 创建图表配置
-        ExcelChart chartConfig = createChart(
-            "Monthly Sales Trend",
-            ExcelChart.ChartType.LINE,
-            "Month",
-            new String[]{"Sales", "Cost", "Profit"},
-            0, 11, 20, 20,
-            "Month", "Amount (USD)",
-            true,
-            ExcelChart.LegendPosition.BOTTOM
-        );
-
-        // 使用 EasyExcel 导出，并添加图表处理器
-        EasyExcel.write(response.getOutputStream(), ChartDataDTO.class)
-            .sheet("Sales Data")
-            .registerWriteHandler(new ExcelChartWriteHandler(chartConfig, ChartDataDTO.class, 1, data.size()))
-            .doWrite(data);
+    @ExportExcel(
+        name = "销售趋势图表",
+        sheets = @Sheet(sheetName = "Sales Data"),
+        chart = @ExcelChart(
+            title = "Monthly Sales Trend",
+            enabled = true,
+            type = ExcelChart.ChartType.LINE,
+            xAxisField = "month",
+            yAxisFields = {"sales", "cost", "profit"},
+            startRow = 0,
+            startColumn = 11,
+            endRow = 20,
+            endColumn = 20,
+            xAxisTitle = "Month",
+            yAxisTitle = "Amount (USD)",
+            showLegend = true,
+            legendPosition = ExcelChart.LegendPosition.BOTTOM
+        )
+    )
+    public List<ChartDataDTO> chartExport(@RequestParam(defaultValue = "12") int count) {
+        return testDataService.generateChartData(Math.min(count, 12));
     }
 
     /**
@@ -381,57 +361,6 @@ public class AdvancedExportController {
         // 清理临时文件
         tempFile.delete();
         encryptedFile.delete();
-    }
-
-    // Helper methods to create annotations
-    private ExcelWatermark createWatermark(
-        String text, boolean enabled, String fontName, int fontSize,
-        String color, int rotation, double opacity,
-        int horizontalSpacing, int verticalSpacing,
-        int startRow, int startColumn
-    ) {
-        return new ExcelWatermark() {
-            @Override public String text() { return text; }
-            @Override public boolean enabled() { return enabled; }
-            @Override public String fontName() { return fontName; }
-            @Override public int fontSize() { return fontSize; }
-            @Override public String color() { return color; }
-            @Override public int rotation() { return rotation; }
-            @Override public double opacity() { return opacity; }
-            @Override public int horizontalSpacing() { return horizontalSpacing; }
-            @Override public int verticalSpacing() { return verticalSpacing; }
-            @Override public int startRow() { return startRow; }
-            @Override public int startColumn() { return startColumn; }
-            @Override public Class<? extends java.lang.annotation.Annotation> annotationType() {
-                return ExcelWatermark.class;
-            }
-        };
-    }
-
-    private ExcelChart createChart(
-        String title, ExcelChart.ChartType type,
-        String xAxisField, String[] yAxisFields,
-        int startRow, int startColumn, int endRow, int endColumn,
-        String xAxisTitle, String yAxisTitle,
-        boolean showLegend, ExcelChart.LegendPosition legendPosition
-    ) {
-        return new ExcelChart() {
-            @Override public String title() { return title; }
-            @Override public ChartType type() { return type; }
-            @Override public String xAxisField() { return xAxisField; }
-            @Override public String[] yAxisFields() { return yAxisFields; }
-            @Override public int startRow() { return startRow; }
-            @Override public int startColumn() { return startColumn; }
-            @Override public int endRow() { return endRow; }
-            @Override public int endColumn() { return endColumn; }
-            @Override public String xAxisTitle() { return xAxisTitle; }
-            @Override public String yAxisTitle() { return yAxisTitle; }
-            @Override public boolean showLegend() { return showLegend; }
-            @Override public LegendPosition legendPosition() { return legendPosition; }
-            @Override public Class<? extends java.lang.annotation.Annotation> annotationType() {
-                return ExcelChart.class;
-            }
-        };
     }
 
     /**
