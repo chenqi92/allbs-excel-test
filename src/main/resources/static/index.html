@@ -545,20 +545,24 @@
 
                     <div class="card">
                         <h3>13. Excel 加密 <span class="badge badge-new">NEW</span></h3>
-                        <p>导出加密的 Excel 文件（AES-256 加密）</p>
+                        <p>两种加密方式：简单密码保护 & AGILE高级加密</p>
                         <div class="card-controls">
                             <div class="input-group">
                                 <label>数据量:</label>
                                 <input type="number" id="encrypted-count" value="20" min="1" max="1000">
                             </div>
-                            <div class="input-group">
-                                <label>密码:</label>
-                                <input type="text" id="encrypted-password" value="password123" style="width: 120px">
-                            </div>
-                            <button onclick="exportEncrypted()">导出</button>
+                        </div>
+                        <div class="card-controls" style="margin-top: 10px;">
+                            <button onclick="exportEncrypted()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                                🔒 简单加密 (password123)
+                            </button>
+                            <button onclick="exportEncryptedAdvanced()" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                                🔐 AGILE 高级加密
+                            </button>
                         </div>
                         <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
-                            💡 文件名会包含密码，记得用对应密码打开
+                            💡 <strong>简单加密</strong>: 使用 @ExportExcel password 属性，密码固定为 password123<br>
+                            💡 <strong>AGILE加密</strong>: 使用 ExcelEncryptionUtil，密码为 password123，更安全
                         </p>
                     </div>
 
@@ -1270,11 +1274,16 @@
             window.location.href = `${API_BASE}/api/export/advanced/chart?count=${count}`;
         }
 
-        // Excel 加密导出
+        // Excel 加密导出 - 简单加密（使用 @ExportExcel password 属性）
         function exportEncrypted() {
             const count = document.getElementById('encrypted-count').value;
-            const password = document.getElementById('encrypted-password').value;
-            window.location.href = `${API_BASE}/api/export/advanced/encrypted?count=${count}&password=${password}`;
+            window.location.href = `${API_BASE}/api/export/advanced/encrypted?count=${count}`;
+        }
+
+        // Excel 加密导出 - AGILE 高级加密（使用 ExcelEncryptionUtil）
+        function exportEncryptedAdvanced() {
+            const count = document.getElementById('encrypted-count').value;
+            window.location.href = `${API_BASE}/api/export/advanced/encrypted-advanced?count=${count}&password=password123`;
         }
 
         // 图片导出

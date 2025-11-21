@@ -317,11 +317,28 @@ public class AdvancedExportController {
 
     /**
      * 15. 加密导出
+     * 使用注解方式，通过 @ExportExcel 的 password 属性配置密码
+     * 注意：此方法使用 EasyExcel 原生加密，与 ExcelEncryptionUtil 的高级加密不同
      */
     @GetMapping("/encrypted")
-    public void encryptedExport(@RequestParam(defaultValue = "20") int count,
-                                 @RequestParam(defaultValue = "password123") String password,
-                                 HttpServletResponse response) throws IOException {
+    @ExportExcel(
+        name = "加密文件-密码password123",
+        sheets = @Sheet(sheetName = "敏感数据"),
+        password = "password123"  // ✨ 使用注解方式设置密码
+    )
+    public List<SensitiveUserDTO> encryptedExport(@RequestParam(defaultValue = "20") int count) {
+        return testDataService.generateSensitiveUsers(count);
+    }
+
+    /**
+     * 15-2. 高级加密导出（使用 AGILE 算法）
+     * 使用 ExcelEncryptionUtil 提供的高级加密功能
+     * 支持自定义加密算法
+     */
+    @GetMapping("/encrypted-advanced")
+    public void encryptedAdvancedExport(@RequestParam(defaultValue = "20") int count,
+                                        @RequestParam(defaultValue = "password123") String password,
+                                        HttpServletResponse response) throws IOException {
         List<SensitiveUserDTO> data = testDataService.generateSensitiveUsers(count);
 
         // 先导出到临时文件
@@ -332,7 +349,7 @@ public class AdvancedExportController {
             .sheet("敏感数据")
             .doWrite(data);
 
-        // 加密文件
+        // 使用 AGILE 算法加密文件
         File encryptedFile = File.createTempFile("encrypted_", ".xlsx");
         encryptedFile.deleteOnExit();
 
@@ -346,7 +363,7 @@ public class AdvancedExportController {
         // 设置响应头
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         response.setCharacterEncoding("utf-8");
-        String fileName = URLEncoder.encode("加密文件-密码" + password, "UTF-8").replaceAll("\\+", "%20");
+        String fileName = URLEncoder.encode("加密文件-AGILE-密码" + password, "UTF-8").replaceAll("\\+", "%20");
         response.setHeader("Content-disposition", "attachment;filename*=utf-8''" + fileName + ".xlsx");
 
         // 输出加密文件
