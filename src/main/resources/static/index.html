@@ -676,6 +676,71 @@
                 </div>
             </div>
 
+            <!-- 图片导入导出功能 -->
+            <div class="section">
+                <h2 class="section-title">🖼️ 图片导入导出 <span class="badge badge-new">NEW</span></h2>
+                <div class="card-grid">
+                    <div class="card">
+                        <h3>1. 导出带图片的Excel <span class="badge badge-hot">推荐</span></h3>
+                        <p>支持在Excel中嵌入图片，自动调整尺寸，防止压缩变形</p>
+                        <div class="card-controls">
+                            <button onclick="exportProductImages()">导出商品图片</button>
+                        </div>
+                        <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
+                            💡 支持：主图(120x120)、缩略图(80x80)、图集(100x100)
+                        </p>
+                    </div>
+
+                    <div class="card">
+                        <h3>2. 下载图片导入模板</h3>
+                        <p>下载包含示例图片的Excel模板，用于测试导入功能</p>
+                        <div class="card-controls">
+                            <button onclick="downloadImageTemplate()">下载模板</button>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3>3. 导入带图片的Excel</h3>
+                        <p>上传Excel文件，自动解析图片数据（支持Base64、字节数组）</p>
+                        <div class="card-controls">
+                            <input type="file" id="image-import-file" class="file-input" accept=".xlsx,.xls">
+                            <label for="image-import-file" class="file-label">选择文件</label>
+                            <button class="upload-btn" onclick="importProductImages()">上传导入</button>
+                        </div>
+                        <div id="image-import-result"></div>
+                    </div>
+
+                    <div class="card">
+                        <h3>4. 图片尺寸控制说明</h3>
+                        <p>通过 @ExcelImage 注解精确控制图片在Excel中的显示尺寸</p>
+                        <div class="card-controls">
+                            <button onclick="showImageSizeGuide()">查看说明</button>
+                        </div>
+                        <div id="image-size-guide" style="display:none; margin-top:15px; padding:15px; background:#f0f0f0; border-radius:5px; font-size:0.9em;">
+                            <h4 style="margin-bottom:10px;">📐 图片尺寸配置示例：</h4>
+                            <pre style="background:white; padding:10px; border-radius:5px; overflow-x:auto;">
+@ExcelProperty("商品主图")
+@ExcelImage(width = 120, height = 120)
+private String mainImage;
+
+@ExcelProperty("缩略图")
+@ExcelImage(width = 80, height = 80)
+private byte[] thumbnail;
+
+@ExcelProperty("图集")
+@ExcelImage(width = 100, height = 100)
+private List&lt;String&gt; imageList;</pre>
+                            <p style="margin-top:10px; color:#666;">
+                                ✅ 支持自定义宽高（像素）<br>
+                                ✅ 自动调整行高和列宽<br>
+                                ✅ 防止图片被压缩变形<br>
+                                ✅ 支持单张或多张图片
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- 嵌套对象导出功能 -->
             <div class="section">
                 <h2 class="section-title">🆕 嵌套对象导出功能 <span class="badge badge-new">NEW</span></h2>
@@ -1318,6 +1383,69 @@
             const department = document.getElementById('dept-name').value;
             const count = document.getElementById('dept-count').value;
             window.location.href = `${API_BASE}/api/export/advanced/dynamic-filename-param?department=${encodeURIComponent(department)}&count=${count}`;
+        }
+
+        // ========== 图片导入导出功能 ==========
+
+        // 导出带图片的商品Excel
+        function exportProductImages() {
+            window.location.href = `${API_BASE}/api/image/export`;
+        }
+
+        // 下载图片导入模板
+        function downloadImageTemplate() {
+            window.location.href = `${API_BASE}/api/image/template`;
+        }
+
+        // 导入带图片的Excel
+        function importProductImages() {
+            const fileInput = document.getElementById('image-import-file');
+            const resultDiv = document.getElementById('image-import-result');
+
+            if (!fileInput.files.length) {
+                resultDiv.innerHTML = '<p style="color: orange;">⚠ 请先选择文件</p>';
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+
+            resultDiv.innerHTML = '<p style="color: blue;">⏳ 正在导入...</p>';
+
+            fetch(`${API_BASE}/api/image/import`, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    resultDiv.innerHTML = `
+                        <p style="color: green;">✓ ${data.message}</p>
+                        <p style="font-size: 0.9em; margin-top: 5px;">
+                            成功导入 ${data.count} 条记录
+                        </p>
+                        <details style="margin-top: 10px;">
+                            <summary style="cursor: pointer; color: #667eea;">查看导入详情</summary>
+                            <pre style="max-height: 300px; overflow: auto; font-size: 0.85em; background: #f8f9fa; padding: 10px; border-radius: 5px; margin-top: 10px;">${JSON.stringify(data.products, null, 2)}</pre>
+                        </details>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `<p style="color: red;">✗ 导入失败：${data.message}</p>`;
+                }
+            })
+            .catch(error => {
+                resultDiv.innerHTML = `<p style="color: red;">✗ 导入失败：${error.message}</p>`;
+            });
+        }
+
+        // 显示/隐藏图片尺寸说明
+        function showImageSizeGuide() {
+            const guideDiv = document.getElementById('image-size-guide');
+            if (guideDiv.style.display === 'none') {
+                guideDiv.style.display = 'block';
+            } else {
+                guideDiv.style.display = 'none';
+            }
         }
 
         // 日志管理函数
