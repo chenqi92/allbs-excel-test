@@ -131,22 +131,16 @@ public class AdvancedExportController {
 
     /**
      * 6. 数据验证导出
+     * 使用注解方式,通过 writeHandler 属性指定 ExcelValidationWriteHandler
      */
     @GetMapping("/validation")
-    public void validationExport(@RequestParam(defaultValue = "10") int count, HttpServletResponse response) throws IOException {
-        List<DataValidationDTO> data = testDataService.generateDataValidationData(count);
-
-        // 设置响应头
-        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-        response.setCharacterEncoding("utf-8");
-        String fileName = URLEncoder.encode("员工信息-数据验证", "UTF-8").replaceAll("\\+", "%20");
-        response.setHeader("Content-disposition", "attachment;filename*=utf-8''" + fileName + ".xlsx");
-
-        // 使用 EasyExcel 导出，并添加数据验证处理器
-        EasyExcel.write(response.getOutputStream(), DataValidationDTO.class)
-            .sheet("员工信息")
-            .registerWriteHandler(new ExcelValidationWriteHandler(DataValidationDTO.class))
-            .doWrite(data);
+    @ExportExcel(
+        name = "员工信息-数据验证",
+        sheets = @Sheet(sheetName = "员工信息"),
+        writeHandler = {ExcelValidationWriteHandler.class}
+    )
+    public List<DataValidationDTO> validationExport(@RequestParam(defaultValue = "10") int count) {
+        return testDataService.generateDataValidationData(count);
     }
 
     /**
@@ -195,83 +189,58 @@ public class AdvancedExportController {
 
     /**
      * 9. Excel 公式导出
+     * 使用注解方式,通过 writeHandler 属性指定处理器
      */
     @GetMapping("/formula")
-    public void formulaExport(@RequestParam(defaultValue = "10") int count, HttpServletResponse response) throws IOException {
-        List<FormulaDataDTO> data = testDataService.generateFormulaData(count);
-
-        // 设置响应头
-        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-        response.setCharacterEncoding("utf-8");
-        String fileName = URLEncoder.encode("销售统计-公式计算", "UTF-8").replaceAll("\\+", "%20");
-        response.setHeader("Content-disposition", "attachment;filename*=utf-8''" + fileName + ".xlsx");
-
-        // 使用 EasyExcel 导出，并添加公式处理器和样式处理器
-        EasyExcel.write(response.getOutputStream(), FormulaDataDTO.class)
-            .sheet("销售统计")
-            .registerWriteHandler(new ExcelFormulaWriteHandler(FormulaDataDTO.class))
-            .registerWriteHandler(new ExcelSheetStyleWriteHandler(FormulaDataDTO.class))
-            .doWrite(data);
+    @ExportExcel(
+        name = "销售统计-公式计算",
+        sheets = @Sheet(sheetName = "销售统计"),
+        writeHandler = {ExcelFormulaWriteHandler.class, ExcelSheetStyleWriteHandler.class}
+    )
+    public List<FormulaDataDTO> formulaExport(@RequestParam(defaultValue = "10") int count) {
+        return testDataService.generateFormulaData(count);
     }
 
     /**
      * 10. Sheet 样式设置（冻结窗格、自动筛选）
+     * 使用注解方式,通过 writeHandler 属性指定处理器
      */
     @GetMapping("/sheet-style")
-    public void sheetStyleExport(@RequestParam(defaultValue = "20") int count, HttpServletResponse response) throws IOException {
-        List<FormulaDataDTO> data = testDataService.generateFormulaData(count);
-
-        // 设置响应头
-        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-        response.setCharacterEncoding("utf-8");
-        String fileName = URLEncoder.encode("数据列表-冻结筛选", "UTF-8").replaceAll("\\+", "%20");
-        response.setHeader("Content-disposition", "attachment;filename*=utf-8''" + fileName + ".xlsx");
-
-        // 使用 EasyExcel 导出，并添加样式处理器
-        EasyExcel.write(response.getOutputStream(), FormulaDataDTO.class)
-            .sheet("数据列表")
-            .registerWriteHandler(new ExcelSheetStyleWriteHandler(FormulaDataDTO.class))
-            .doWrite(data);
+    @ExportExcel(
+        name = "数据列表-冻结筛选",
+        sheets = @Sheet(sheetName = "数据列表"),
+        writeHandler = {ExcelSheetStyleWriteHandler.class}
+    )
+    public List<FormulaDataDTO> sheetStyleExport(@RequestParam(defaultValue = "20") int count) {
+        return testDataService.generateFormulaData(count);
     }
 
     /**
      * 11. 条件格式导出（图标集）
+     * 使用注解方式,通过 writeHandler 属性指定处理器
      */
     @GetMapping("/conditional-format")
-    public void conditionalFormatExport(@RequestParam(defaultValue = "15") int count, HttpServletResponse response) throws IOException {
-        List<PerformanceDataDTO> data = testDataService.generatePerformanceData(count);
-
-        // 设置响应头
-        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-        response.setCharacterEncoding("utf-8");
-        String fileName = URLEncoder.encode("员工绩效-条件格式", "UTF-8").replaceAll("\\+", "%20");
-        response.setHeader("Content-disposition", "attachment;filename*=utf-8''" + fileName + ".xlsx");
-
-        // 使用 EasyExcel 导出，并添加条件格式处理器
-        EasyExcel.write(response.getOutputStream(), PerformanceDataDTO.class)
-            .sheet("员工绩效")
-            .registerWriteHandler(new ConditionalFormatWriteHandler(PerformanceDataDTO.class))
-            .doWrite(data);
+    @ExportExcel(
+        name = "员工绩效-条件格式",
+        sheets = @Sheet(sheetName = "员工绩效"),
+        writeHandler = {ConditionalFormatWriteHandler.class}
+    )
+    public List<PerformanceDataDTO> conditionalFormatExport(@RequestParam(defaultValue = "15") int count) {
+        return testDataService.generatePerformanceData(count);
     }
 
     /**
      * 12. 单元格批注导出
+     * 使用注解方式,通过 writeHandler 属性指定处理器
      */
     @GetMapping("/comment")
-    public void commentExport(@RequestParam(defaultValue = "10") int count, HttpServletResponse response) throws IOException {
-        List<CommentDataDTO> data = testDataService.generateCommentData(count);
-
-        // 设置响应头
-        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-        response.setCharacterEncoding("utf-8");
-        String fileName = URLEncoder.encode("产品列表-批注说明", "UTF-8").replaceAll("\\+", "%20");
-        response.setHeader("Content-disposition", "attachment;filename*=utf-8''" + fileName + ".xlsx");
-
-        // 使用 EasyExcel 导出，并添加批注处理器
-        EasyExcel.write(response.getOutputStream(), CommentDataDTO.class)
-            .sheet("产品列表")
-            .registerWriteHandler(new ExcelCommentWriteHandler(CommentDataDTO.class))
-            .doWrite(data);
+    @ExportExcel(
+        name = "产品列表-批注说明",
+        sheets = @Sheet(sheetName = "产品列表"),
+        writeHandler = {ExcelCommentWriteHandler.class}
+    )
+    public List<CommentDataDTO> commentExport(@RequestParam(defaultValue = "10") int count) {
+        return testDataService.generateCommentData(count);
     }
 
     /**
@@ -354,22 +323,16 @@ public class AdvancedExportController {
 
     /**
      * 14. 图片导出
+     * 使用注解方式,通过 writeHandler 属性指定处理器
      */
     @GetMapping("/image")
-    public void imageExport(@RequestParam(defaultValue = "10") int count, HttpServletResponse response) throws IOException {
-        List<cn.allbs.excel.test.entity.ProductWithImageDTO> data = testDataService.generateProductWithImageData(count);
-
-        // 设置响应头
-        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-        response.setCharacterEncoding("utf-8");
-        String fileName = URLEncoder.encode("商品列表-图片导出", "UTF-8").replaceAll("\\+", "%20");
-        response.setHeader("Content-disposition", "attachment;filename*=utf-8''" + fileName + ".xlsx");
-
-        // 使用 EasyExcel 导出，并添加图片处理器
-        EasyExcel.write(response.getOutputStream(), cn.allbs.excel.test.entity.ProductWithImageDTO.class)
-            .sheet("商品列表")
-            .registerWriteHandler(new cn.allbs.excel.handle.ImageWriteHandler(cn.allbs.excel.test.entity.ProductWithImageDTO.class))
-            .doWrite(data);
+    @ExportExcel(
+        name = "商品列表-图片导出",
+        sheets = @Sheet(sheetName = "商品列表"),
+        writeHandler = {cn.allbs.excel.handle.ImageWriteHandler.class}
+    )
+    public List<cn.allbs.excel.test.entity.ProductWithImageDTO> imageExport(@RequestParam(defaultValue = "10") int count) {
+        return testDataService.generateProductWithImageData(count);
     }
 
     /**

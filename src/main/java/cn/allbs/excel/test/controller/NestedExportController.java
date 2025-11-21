@@ -19,10 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -191,26 +188,18 @@ public class NestedExportController {
     /**
      * 5. @ConditionalStyle 示例 - 条件样式
      * 演示根据单元格值自动应用不同样式
+     * 注意：使用注解方式,需要通过 writeHandler 属性指定 ConditionalStyleWriteHandler
      */
     @GetMapping("/conditional-style")
-    public void conditionalStyleExport(
-        @RequestParam(defaultValue = "20") int count,
-        HttpServletResponse response
-    ) throws IOException {
-        // 1. 获取测试数据
-        List<ConditionalStyleDTO> data = testDataService.generateConditionalStyleData(count);
-
-        // 2. 设置响应
-        response.setContentType("application/vnd.ms-excel");
-        response.setCharacterEncoding("utf-8");
-        String fileName = URLEncoder.encode("条件样式示例", "UTF-8");
-        response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xlsx");
-
-        // 3. 导出（需要手动注册 ConditionalStyleWriteHandler）
-        EasyExcel.write(response.getOutputStream(), ConditionalStyleDTO.class)
-            .registerWriteHandler(new ConditionalStyleWriteHandler(ConditionalStyleDTO.class))
-            .sheet("条件样式示例")
-            .doWrite(data);
+    @ExportExcel(
+        name = "条件样式示例",
+        sheets = @Sheet(sheetName = "条件样式示例"),
+        writeHandler = {ConditionalStyleWriteHandler.class}
+    )
+    public List<ConditionalStyleDTO> conditionalStyleExport(
+        @RequestParam(defaultValue = "20") int count
+    ) {
+        return testDataService.generateConditionalStyleData(count);
     }
 
     /**
