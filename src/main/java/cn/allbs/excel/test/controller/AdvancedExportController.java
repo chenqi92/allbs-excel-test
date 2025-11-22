@@ -206,21 +206,7 @@ public class AdvancedExportController {
     }
 
     /**
-     * 12. 单元格批注导出
-     * 使用注解方式,通过 writeHandler 属性指定处理器
-     */
-    @GetMapping("/comment")
-    @ExportExcel(
-        name = "产品列表-批注说明",
-        sheets = @Sheet(sheetName = "产品列表"),
-        writeHandler = {ExcelCommentWriteHandler.class}
-    )
-    public List<CommentDataDTO> commentExport(@RequestParam(defaultValue = "10") int count) {
-        return testDataService.generateCommentData(count);
-    }
-
-    /**
-     * 13. 模板下载（空模板）
+     * 12. 模板下载（空模板）
      */
     @GetMapping("/template")
     public void downloadTemplate(@RequestParam(defaultValue = "0") int sampleRows, HttpServletResponse response) throws IOException {
@@ -240,31 +226,7 @@ public class AdvancedExportController {
     }
 
     /**
-     * 14. 水印导出
-     * 使用注解方式，通过 @ExportExcel 的 watermark 属性配置水印
-     */
-    @GetMapping("/watermark")
-    @ExportExcel(
-        name = "机密文档-水印",
-        sheets = @Sheet(sheetName = "机密文档"),
-        watermark = @ExcelWatermark(
-            text = "CONFIDENTIAL",
-            enabled = true,
-            fontName = "Arial",
-            fontSize = 48,
-            color = "#D3D3D3",
-            rotation = -45,
-            opacity = 0.3,
-            horizontalSpacing = 200,
-            verticalSpacing = 150
-        )
-    )
-    public List<WatermarkDataDTO> watermarkExport(@RequestParam(defaultValue = "30") int count) {
-        return testDataService.generateWatermarkData(count);
-    }
-
-    /**
-     * 15. 图表导出
+     * 13. 图表导出（旧接口，推荐使用 ChartExportController）
      * 使用注解方式，通过 @ExportExcel 的 chart 属性配置图表
      */
     @GetMapping("/chart")
@@ -292,21 +254,7 @@ public class AdvancedExportController {
     }
 
     /**
-     * 14. 图片导出
-     * 使用注解方式,通过 writeHandler 属性指定处理器
-     */
-    @GetMapping("/image")
-    @ExportExcel(
-        name = "商品列表-图片导出",
-        sheets = @Sheet(sheetName = "商品列表"),
-        writeHandler = {cn.allbs.excel.handle.ImageWriteHandler.class}
-    )
-    public List<cn.allbs.excel.test.entity.ProductWithImageDTO> imageExport(@RequestParam(defaultValue = "10") int count) {
-        return testDataService.generateProductWithImageData(count);
-    }
-
-    /**
-     * 15. 加密导出
+     * 14. 加密导出
      * 使用注解方式，通过 @ExportExcel 的 password 属性配置密码
      * 注意：此方法使用 EasyExcel 原生加密，与 ExcelEncryptionUtil 的高级加密不同
      */
@@ -321,7 +269,7 @@ public class AdvancedExportController {
     }
 
     /**
-     * 15-2. 高级加密导出（使用 AGILE 算法）
+     * 14-2. 高级加密导出（使用 AGILE 算法）
      * 使用 ExcelEncryptionUtil 提供的高级加密功能
      * 支持自定义加密算法
      */

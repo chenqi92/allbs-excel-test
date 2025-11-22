@@ -496,19 +496,7 @@
                     </div>
 
                     <div class="card">
-                        <h3>9. 单元格批注 <span class="badge badge-new">NEW</span></h3>
-                        <p>为表头和数据单元格添加批注说明</p>
-                        <div class="card-controls">
-                            <div class="input-group">
-                                <label>数据量:</label>
-                                <input type="number" id="comment-count" value="10" min="1" max="1000">
-                            </div>
-                            <button onclick="exportComment()">导出</button>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <h3>10. 导入模板生成 <span class="badge badge-new">NEW</span></h3>
+                        <h3>9. 导入模板生成 <span class="badge badge-new">NEW</span></h3>
                         <p>生成包含示例数据的导入模板</p>
                         <div class="card-controls">
                             <div class="input-group">
@@ -520,19 +508,7 @@
                     </div>
 
                     <div class="card">
-                        <h3>11. Excel 水印 <span class="badge badge-new">NEW</span></h3>
-                        <p>为 Excel 添加水印保护（支持自定义文本、颜色、透明度）</p>
-                        <div class="card-controls">
-                            <div class="input-group">
-                                <label>数据量:</label>
-                                <input type="number" id="watermark-count" value="30" min="1" max="1000">
-                            </div>
-                            <button onclick="exportWatermark()">导出</button>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <h3>12. Excel 图表 <span class="badge badge-new">NEW</span></h3>
+                        <h3>10. Excel 图表（旧版） <span class="badge badge-deprecated">已废弃</span></h3>
                         <p>在 Excel 中自动生成图表（折线图、柱状图等）</p>
                         <div class="card-controls">
                             <div class="input-group">
@@ -544,7 +520,7 @@
                     </div>
 
                     <div class="card">
-                        <h3>13. Excel 加密 <span class="badge badge-new">NEW</span></h3>
+                        <h3>11. Excel 加密 <span class="badge badge-new">NEW</span></h3>
                         <p>两种加密方式：简单密码保护 & AGILE高级加密</p>
                         <div class="card-controls">
                             <div class="input-group">
@@ -566,20 +542,6 @@
                         </p>
                     </div>
 
-                    <div class="card">
-                        <h3>14. 图片导出 <span class="badge badge-new">NEW</span></h3>
-                        <p>支持将图片（URL、本地路径、字节数组）嵌入到 Excel 单元格中</p>
-                        <div class="card-controls">
-                            <div class="input-group">
-                                <label>数据量:</label>
-                                <input type="number" id="image-count" value="10" min="1" max="100">
-                            </div>
-                            <button onclick="exportImage()">导出</button>
-                        </div>
-                        <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
-                            💡 演示：主图、缩略图列表、二维码（字节数组）
-                        </p>
-                    </div>
                 </div>
             </div>
 
@@ -1493,25 +1455,13 @@ private List&lt;String&gt; imageList;</pre>
             window.location.href = `${API_BASE}/api/export/advanced/conditional-format?count=${count}`;
         }
 
-        // 单元格批注导出
-        function exportComment() {
-            const count = document.getElementById('comment-count').value;
-            window.location.href = `${API_BASE}/api/export/advanced/comment?count=${count}`;
-        }
-
         // 导入模板生成
         function exportTemplate() {
             const sampleRows = document.getElementById('template-samples').value;
             window.location.href = `${API_BASE}/api/export/advanced/template?sampleRows=${sampleRows}`;
         }
 
-        // Excel 水印导出
-        function exportWatermark() {
-            const count = document.getElementById('watermark-count').value;
-            window.location.href = `${API_BASE}/api/export/advanced/watermark?count=${count}`;
-        }
-
-        // Excel 图表导出
+        // Excel 图表导出（旧版）
         function exportChart() {
             const count = document.getElementById('chart-count').value;
             window.location.href = `${API_BASE}/api/export/advanced/chart?count=${count}`;
@@ -1527,12 +1477,6 @@ private List&lt;String&gt; imageList;</pre>
         function exportEncryptedAdvanced() {
             const count = document.getElementById('encrypted-count').value;
             window.location.href = `${API_BASE}/api/export/advanced/encrypted-advanced?count=${count}&password=password123`;
-        }
-
-        // 图片导出
-        function exportImage() {
-            const count = document.getElementById('image-count').value;
-            window.location.href = `${API_BASE}/api/export/advanced/image?count=${count}`;
         }
 
         // ========== 行号和动态文件名功能 ==========
