@@ -280,4 +280,129 @@ public class ChartExportController {
 		log.info("Exporting custom position chart with {} months of data", months);
 		return testDataService.generateChartData(Math.min(months, 12));
 	}
+
+	/**
+	 * 9. 多图表组合 - 综合分析
+	 * <p>
+	 * 在一个 Sheet 中同时展示多种类型的图表
+	 * 适合：综合数据仪表板、多维度分析报告
+	 * </p>
+	 */
+	@GetMapping("/multiple-charts")
+	@ExportExcel(
+		name = "多图表组合-综合分析",
+		sheets = @Sheet(sheetName = "Comprehensive Analysis"),
+		charts = {
+			@ExcelChart(
+				title = "Sales Trend (Line)",
+				enabled = true,
+				type = ExcelChart.ChartType.LINE,
+				xAxisField = "Month",
+				yAxisFields = {"Sales", "Cost", "Profit"},
+				startRow = 0,
+				startColumn = 8,
+				endRow = 15,
+				endColumn = 17,
+				xAxisTitle = "Month",
+				yAxisTitle = "Amount (USD)",
+				showLegend = true,
+				legendPosition = ExcelChart.LegendPosition.BOTTOM
+			),
+			@ExcelChart(
+				title = "Sales vs Cost (Column)",
+				enabled = true,
+				type = ExcelChart.ChartType.COLUMN,
+				xAxisField = "Month",
+				yAxisFields = {"Sales", "Cost"},
+				startRow = 17,
+				startColumn = 8,
+				endRow = 32,
+				endColumn = 17,
+				xAxisTitle = "Month",
+				yAxisTitle = "Amount (USD)",
+				showLegend = true,
+				legendPosition = ExcelChart.LegendPosition.TOP
+			),
+			@ExcelChart(
+				title = "Sales Distribution (Pie)",
+				enabled = true,
+				type = ExcelChart.ChartType.PIE,
+				xAxisField = "Month",
+				yAxisFields = {"Sales"},
+				startRow = 0,
+				startColumn = 19,
+				endRow = 15,
+				endColumn = 27,
+				showLegend = true,
+				legendPosition = ExcelChart.LegendPosition.RIGHT
+			)
+		}
+	)
+	public List<ChartDataDTO> exportMultipleCharts(@RequestParam(defaultValue = "12") int months) {
+		log.info("Exporting multiple charts with {} months of data", months);
+		return testDataService.generateChartData(Math.min(months, 12));
+	}
+
+	/**
+	 * 10. 多图表 - 分层数据分析
+	 * <p>
+	 * 使用不同的数据系列创建多个独立的图表
+	 * </p>
+	 */
+	@GetMapping("/layered-analysis")
+	@ExportExcel(
+		name = "分层分析-多图表",
+		sheets = @Sheet(sheetName = "Layered Analysis"),
+		charts = {
+			@ExcelChart(
+				title = "Revenue Analysis",
+				enabled = true,
+				type = ExcelChart.ChartType.LINE,
+				xAxisField = "Month",
+				yAxisFields = {"Sales"},
+				startRow = 0,
+				startColumn = 8,
+				endRow = 15,
+				endColumn = 17,
+				xAxisTitle = "Month",
+				yAxisTitle = "Sales (USD)",
+				showLegend = true,
+				legendPosition = ExcelChart.LegendPosition.BOTTOM
+			),
+			@ExcelChart(
+				title = "Cost Analysis",
+				enabled = true,
+				type = ExcelChart.ChartType.AREA,
+				xAxisField = "Month",
+				yAxisFields = {"Cost"},
+				startRow = 17,
+				startColumn = 8,
+				endRow = 32,
+				endColumn = 17,
+				xAxisTitle = "Month",
+				yAxisTitle = "Cost (USD)",
+				showLegend = true,
+				legendPosition = ExcelChart.LegendPosition.TOP
+			),
+			@ExcelChart(
+				title = "Profit Analysis",
+				enabled = true,
+				type = ExcelChart.ChartType.COLUMN,
+				xAxisField = "Month",
+				yAxisFields = {"Profit"},
+				startRow = 0,
+				startColumn = 19,
+				endRow = 15,
+				endColumn = 27,
+				xAxisTitle = "Month",
+				yAxisTitle = "Profit (USD)",
+				showLegend = true,
+				legendPosition = ExcelChart.LegendPosition.RIGHT
+			)
+		}
+	)
+	public List<ChartDataDTO> exportLayeredAnalysis(@RequestParam(defaultValue = "12") int months) {
+		log.info("Exporting layered analysis with {} months of data", months);
+		return testDataService.generateChartData(Math.min(months, 12));
+	}
 }
