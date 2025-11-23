@@ -1162,6 +1162,10 @@ private List&lt;String&gt; imageList;</pre>
             progressStatus.className = 'progress-status';
             progressDetail.textContent = '0/0';
 
+            // 标记是否已完成（用于区分正常关闭和错误）
+            let isCompleted = false;
+            let isError = false;
+
             // 关闭之前的连接（如果存在）
             if (activeEventSources[sessionId]) {
                 activeEventSources[sessionId].close();
@@ -1191,11 +1195,18 @@ private List&lt;String&gt; imageList;</pre>
                         break;
 
                     case 'complete':
+                        isCompleted = true;
                         progressBar.style.width = '100%';
                         progressBar.textContent = '100%';
                         progressStatus.textContent = '✓ 导出完成';
                         progressStatus.className = 'progress-status success';
                         progressDetail.textContent = `${data.totalRows}/${data.totalRows}`;
+
+                        // 主动关闭连接，避免后端关闭时触发 onerror
+                        setTimeout(() => {
+                            eventSource.close();
+                            delete activeEventSources[sessionId];
+                        }, 2000);
 
                         // 3秒后隐藏进度条
                         setTimeout(() => {
@@ -1204,8 +1215,13 @@ private List&lt;String&gt; imageList;</pre>
                         break;
 
                     case 'error':
+                        isError = true;
                         progressStatus.textContent = '✗ 导出失败: ' + data.message;
                         progressStatus.className = 'progress-status error';
+
+                        // 关闭连接
+                        eventSource.close();
+                        delete activeEventSources[sessionId];
 
                         // 5秒后隐藏进度条
                         setTimeout(() => {
@@ -1216,6 +1232,15 @@ private List&lt;String&gt; imageList;</pre>
             });
 
             eventSource.onerror = function(error) {
+                // 如果已经完成或已经处理了错误，不再显示错误提示
+                if (isCompleted || isError) {
+                    console.log('SSE 连接正常关闭');
+                    eventSource.close();
+                    delete activeEventSources[sessionId];
+                    return;
+                }
+
+                // 真正的连接错误
                 console.error('SSE 连接错误:', error);
                 progressStatus.textContent = '✗ 连接失败';
                 progressStatus.className = 'progress-status error';

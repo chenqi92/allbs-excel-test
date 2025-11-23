@@ -55,10 +55,10 @@ public class SseProgressListener implements ExportProgressListener {
         if (sessionId != null) {
             progressService.sendProgress(sessionId,
                 ProgressService.ProgressMessage.complete(totalRows, sheetName));
-            // 延迟关闭连接，确保前端收到完成消息
+            // 延迟关闭连接，给前端足够时间主动关闭（避免触发前端 onerror）
             new Thread(() -> {
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(5000);  // 延长到 5 秒，让前端有足够时间主动关闭
                     progressService.closeEmitter(sessionId);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
