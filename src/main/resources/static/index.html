@@ -200,100 +200,57 @@
             background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
         }
 
-        /* 日志查看区域样式 */
-        .log-container {
-            background: #f8f9fa;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        /* 进度条样式 */
+        .progress-container {
+            margin-top: 15px;
+            display: none;
         }
 
-        .log-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        .progress-container.active {
+            display: block;
+        }
+
+        .progress-bar-wrapper {
+            background: #e0e0e0;
+            border-radius: 10px;
+            height: 24px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             color: white;
-            padding: 15px 20px;
+            font-weight: bold;
+            font-size: 0.85em;
+            min-width: 30px;
+        }
+
+        .progress-info {
+            margin-top: 8px;
+            font-size: 0.9em;
+            color: #666;
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            font-weight: bold;
         }
 
-        .clear-log-btn {
-            background: rgba(255, 255, 255, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            color: white;
-            padding: 5px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 0.9em;
-            transition: all 0.3s ease;
+        .progress-status {
+            font-weight: 500;
         }
 
-        .clear-log-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
+        .progress-status.success {
+            color: #28a745;
         }
 
-        .log-content {
-            background: #1e1e1e;
-            color: #d4d4d4;
-            padding: 20px;
-            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
-            font-size: 0.9em;
-            line-height: 1.6;
-            max-height: 400px;
-            overflow-y: auto;
-            min-height: 200px;
-        }
-
-        /* 自定义滚动条样式 */
-        .log-content::-webkit-scrollbar {
-            width: 12px;
-        }
-
-        .log-content::-webkit-scrollbar-track {
-            background: #2d2d2d;
-            border-radius: 6px;
-        }
-
-        .log-content::-webkit-scrollbar-thumb {
-            background: #667eea;
-            border-radius: 6px;
-        }
-
-        .log-content::-webkit-scrollbar-thumb:hover {
-            background: #764ba2;
-        }
-
-        .log-hint {
-            color: #888;
-            font-style: italic;
-        }
-
-        .log-entry {
-            margin: 5px 0;
-            padding: 5px;
-            border-left: 3px solid #667eea;
-            padding-left: 10px;
-        }
-
-        .log-entry.success {
-            border-left-color: #28a745;
-            color: #4dff4d;
-        }
-
-        .log-entry.info {
-            border-left-color: #17a2b8;
-            color: #4dd0e1;
-        }
-
-        .log-entry.warning {
-            border-left-color: #ffc107;
-            color: #ffd54f;
-        }
-
-        .log-entry.error {
-            border-left-color: #dc3545;
-            color: #ff6b6b;
+        .progress-status.error {
+            color: #dc3545;
         }
     </style>
 </head>
@@ -425,7 +382,7 @@
 
                     <div class="card">
                         <h3>3. 导出进度回调 <span class="badge badge-advanced">高级</span></h3>
-                        <p>实时监听导出进度，适用于大数据量导出（查看控制台日志）</p>
+                        <p>实时监听导出进度，适用于大数据量导出</p>
                         <div class="card-controls">
                             <div class="input-group">
                                 <label>数据量:</label>
@@ -433,17 +390,37 @@
                             </div>
                             <button onclick="exportWithProgress()">导出</button>
                         </div>
+                        <!-- 实时进度展示 -->
+                        <div id="progress-with-progress" class="progress-container">
+                            <div class="progress-bar-wrapper">
+                                <div class="progress-bar" style="width: 0%">0%</div>
+                            </div>
+                            <div class="progress-info">
+                                <span class="progress-status">准备中...</span>
+                                <span class="progress-detail">0/0</span>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="card">
                         <h3>4. 大数据量导出 <span class="badge badge-advanced">高级</span></h3>
-                        <p>测试大数据量导出性能（查看控制台日志）</p>
+                        <p>测试大数据量导出性能，实时显示进度</p>
                         <div class="card-controls">
                             <div class="input-group">
                                 <label>数据量:</label>
                                 <input type="number" id="large-count" value="20000" min="1000" max="100000" step="1000">
                             </div>
                             <button onclick="exportLargeData()">导出</button>
+                        </div>
+                        <!-- 实时进度展示 -->
+                        <div id="progress-large-data" class="progress-container">
+                            <div class="progress-bar-wrapper">
+                                <div class="progress-bar" style="width: 0%">0%</div>
+                            </div>
+                            <div class="progress-info">
+                                <span class="progress-status">准备中...</span>
+                                <span class="progress-detail">0/0</span>
+                            </div>
                         </div>
                     </div>
 
@@ -456,6 +433,16 @@
                                 <input type="number" id="merge-progress-count" value="3000" min="100" max="30000" step="100">
                             </div>
                             <button onclick="exportMergeWithProgress()">导出</button>
+                        </div>
+                        <!-- 实时进度展示 -->
+                        <div id="progress-merge-progress" class="progress-container">
+                            <div class="progress-bar-wrapper">
+                                <div class="progress-bar" style="width: 0%">0%</div>
+                            </div>
+                            <div class="progress-info">
+                                <span class="progress-status">准备中...</span>
+                                <span class="progress-detail">0/0</span>
+                            </div>
                         </div>
                     </div>
 
@@ -1142,20 +1129,6 @@ private List&lt;String&gt; imageList;</pre>
                 </div>
             </div>
         </div>
-
-            <!-- 导出进度日志查看区域 -->
-            <div class="section" style="margin-top: 40px;">
-                <h2 class="section-title">📊 导出进度日志 <span class="badge badge-info">实时</span></h2>
-                <div class="log-container" id="export-log-container">
-                    <div class="log-header">
-                        <span>后端导出进度日志 (自动刷新)</span>
-                        <button onclick="clearLog()" class="clear-log-btn">清空日志</button>
-                    </div>
-                    <div class="log-content" id="export-log">
-                        <div class="log-hint">💡 提示: 点击上方 "导出进度回调"、"大数据量导出" 或 "合并 + 进度" 按钮后，此处将显示后端导出进度日志</div>
-                    </div>
-                </div>
-            </div>
     </div>
 
     <script>
@@ -1163,6 +1136,105 @@ private List&lt;String&gt; imageList;</pre>
         document.getElementById('dynamic-date').valueAsDate = new Date();
 
         const API_BASE = 'http://localhost:8080';
+
+        // ==================== SSE 进度管理 ====================
+
+        let activeEventSources = {}; // 存储活跃的 SSE 连接
+
+        /**
+         * 创建 SSE 连接监听进度
+         * @param {string} progressId - 进度容器的 ID
+         * @param {string} sessionId - 会话 ID
+         */
+        function connectProgress(progressId, sessionId) {
+            const progressContainer = document.getElementById(progressId);
+            const progressBar = progressContainer.querySelector('.progress-bar');
+            const progressStatus = progressContainer.querySelector('.progress-status');
+            const progressDetail = progressContainer.querySelector('.progress-detail');
+
+            // 显示进度容器
+            progressContainer.classList.add('active');
+
+            // 重置进度
+            progressBar.style.width = '0%';
+            progressBar.textContent = '0%';
+            progressStatus.textContent = '连接中...';
+            progressStatus.className = 'progress-status';
+            progressDetail.textContent = '0/0';
+
+            // 关闭之前的连接（如果存在）
+            if (activeEventSources[sessionId]) {
+                activeEventSources[sessionId].close();
+            }
+
+            // 创建新的 SSE 连接
+            const eventSource = new EventSource(`${API_BASE}/api/progress/subscribe/${sessionId}`);
+            activeEventSources[sessionId] = eventSource;
+
+            eventSource.addEventListener('progress', function(event) {
+                const data = JSON.parse(event.data);
+
+                switch(data.type) {
+                    case 'start':
+                        progressStatus.textContent = '开始导出...';
+                        progressStatus.className = 'progress-status';
+                        progressDetail.textContent = `0/${data.totalRows}`;
+                        break;
+
+                    case 'progress':
+                        const percentage = Math.round(data.percentage);
+                        progressBar.style.width = percentage + '%';
+                        progressBar.textContent = percentage + '%';
+                        progressStatus.textContent = '导出中...';
+                        progressStatus.className = 'progress-status';
+                        progressDetail.textContent = `${data.currentRow}/${data.totalRows}`;
+                        break;
+
+                    case 'complete':
+                        progressBar.style.width = '100%';
+                        progressBar.textContent = '100%';
+                        progressStatus.textContent = '✓ 导出完成';
+                        progressStatus.className = 'progress-status success';
+                        progressDetail.textContent = `${data.totalRows}/${data.totalRows}`;
+
+                        // 3秒后隐藏进度条
+                        setTimeout(() => {
+                            progressContainer.classList.remove('active');
+                        }, 3000);
+                        break;
+
+                    case 'error':
+                        progressStatus.textContent = '✗ 导出失败: ' + data.message;
+                        progressStatus.className = 'progress-status error';
+
+                        // 5秒后隐藏进度条
+                        setTimeout(() => {
+                            progressContainer.classList.remove('active');
+                        }, 5000);
+                        break;
+                }
+            });
+
+            eventSource.onerror = function(error) {
+                console.error('SSE 连接错误:', error);
+                progressStatus.textContent = '✗ 连接失败';
+                progressStatus.className = 'progress-status error';
+                eventSource.close();
+                delete activeEventSources[sessionId];
+
+                // 5秒后隐藏进度条
+                setTimeout(() => {
+                    progressContainer.classList.remove('active');
+                }, 5000);
+            };
+        }
+
+        /**
+         * 生成唯一的会话 ID
+         */
+        function generateSessionId() {
+            return 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        }
 
         // 导出函数
         function exportSimple() {
@@ -1217,20 +1289,35 @@ private List&lt;String&gt; imageList;</pre>
 
         function exportWithProgress() {
             const count = document.getElementById('progress-count').value;
-            addLog('开始导出 ' + count + ' 条数据，请查看后端控制台获取详细进度...', 'info');
-            window.open(`${API_BASE}/api/export/advanced/with-progress?count=${count}`);
+            const sessionId = generateSessionId();
+
+            // 建立 SSE 连接监听进度
+            connectProgress('progress-with-progress', sessionId);
+
+            // 打开导出链接（带上 sessionId）
+            window.open(`${API_BASE}/api/export/advanced/with-progress?count=${count}&sessionId=${sessionId}`);
         }
 
         function exportLargeData() {
             const count = document.getElementById('large-count').value;
-            console.log('开始大数据量导出，请查看后端控制台日志...');
-            window.open(`${API_BASE}/api/export/advanced/large-data?count=${count}`);
+            const sessionId = generateSessionId();
+
+            // 建立 SSE 连接监听进度
+            connectProgress('progress-large-data', sessionId);
+
+            // 打开导出链接（带上 sessionId）
+            window.open(`${API_BASE}/api/export/advanced/large-data?count=${count}&sessionId=${sessionId}`);
         }
 
         function exportMergeWithProgress() {
             const count = document.getElementById('merge-progress-count').value;
-            addLog('开始导出 ' + count + ' 条数据，请查看后端控制台获取详细进度...', 'info');
-            window.open(`${API_BASE}/api/export/advanced/merge-with-progress?count=${count}`);
+            const sessionId = generateSessionId();
+
+            // 建立 SSE 连接监听进度
+            connectProgress('progress-merge-progress', sessionId);
+
+            // 打开导出链接（带上 sessionId）
+            window.open(`${API_BASE}/api/export/advanced/merge-with-progress?count=${count}&sessionId=${sessionId}`);
         }
 
         // 导入函数
@@ -1628,32 +1715,6 @@ private List&lt;String&gt; imageList;</pre>
             } else {
                 guideDiv.style.display = 'none';
             }
-        }
-
-        // 日志管理函数
-        function clearLog() {
-            const logDiv = document.getElementById('export-log');
-            logDiv.innerHTML = '<div class="log-hint">💡 提示: 点击上方 "导出进度回调"、"大数据量导出" 或 "合并 + 进度" 按钮后，此处将显示后端导出进度日志</div>';
-        }
-
-        function addLog(message, type = 'info') {
-            const logDiv = document.getElementById('export-log');
-
-            // 移除提示信息
-            const hint = logDiv.querySelector('.log-hint');
-            if (hint) {
-                hint.remove();
-            }
-
-            const timestamp = new Date().toLocaleTimeString();
-            const logEntry = document.createElement('div');
-            logEntry.className = `log-entry ${type}`;
-            logEntry.textContent = `[${timestamp}] ${message}`;
-
-            logDiv.appendChild(logEntry);
-
-            // 自动滚动到底部
-            logDiv.scrollTop = logDiv.scrollHeight;
         }
     </script>
 </body>

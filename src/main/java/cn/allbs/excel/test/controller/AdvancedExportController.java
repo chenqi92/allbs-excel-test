@@ -14,6 +14,7 @@ import cn.allbs.excel.test.entity.RowNumberDTO;
 import cn.allbs.excel.test.entity.SensitiveUserDTO;
 import cn.allbs.excel.test.entity.WatermarkDataDTO;
 import cn.allbs.excel.test.listener.ConsoleProgressListener;
+import cn.allbs.excel.test.listener.SseProgressListener;
 import cn.allbs.excel.test.service.TestDataService;
 import cn.allbs.excel.util.ExcelEncryptionUtil;
 import cn.allbs.excel.util.MultiSheetRelationProcessor;
@@ -76,10 +77,11 @@ public class AdvancedExportController {
         sheets = @Sheet(sheetName = "用户信息")
     )
     @ExportProgress(
-        listener = ConsoleProgressListener.class,
+        listener = SseProgressListener.class,
         interval = 100  // 每 100 行触发一次进度回调
     )
-    public List<SensitiveUserDTO> exportWithProgress(@RequestParam(defaultValue = "5000") int count) {
+    public List<SensitiveUserDTO> exportWithProgress(@RequestParam(defaultValue = "5000") int count,
+                                                      @RequestParam(required = false) String sessionId) {
         return testDataService.generateSensitiveUsers(count);
     }
 
@@ -92,10 +94,11 @@ public class AdvancedExportController {
         sheets = @Sheet(sheetName = "数据")
     )
     @ExportProgress(
-        listener = ConsoleProgressListener.class,
+        listener = SseProgressListener.class,
         interval = 500  // 每 500 行触发一次进度回调
     )
-    public List<SensitiveUserDTO> largeDataExport(@RequestParam(defaultValue = "20000") int count) {
+    public List<SensitiveUserDTO> largeDataExport(@RequestParam(defaultValue = "20000") int count,
+                                                   @RequestParam(required = false) String sessionId) {
         return testDataService.generateSensitiveUsers(count);
     }
 
@@ -111,10 +114,11 @@ public class AdvancedExportController {
         )
     )
     @ExportProgress(
-        listener = ConsoleProgressListener.class,
+        listener = SseProgressListener.class,
         interval = 100  // 每 100 行触发一次进度回调
     )
-    public List<EmployeeDTO> mergeWithProgressExport(@RequestParam(defaultValue = "3000") int count) {
+    public List<EmployeeDTO> mergeWithProgressExport(@RequestParam(defaultValue = "3000") int count,
+                                                      @RequestParam(required = false) String sessionId) {
         return testDataService.generateEmployees(count);
     }
 
