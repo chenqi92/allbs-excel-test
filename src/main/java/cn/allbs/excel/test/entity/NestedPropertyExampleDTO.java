@@ -54,11 +54,11 @@ public class NestedPropertyExampleDTO {
     private List<String> skills;
 
     @ExcelProperty(value = "主要技能", converter = NestedObjectConverter.class)
-    @NestedProperty(value = "skills[0]", nullValue = "无")
+    @NestedProperty(value = "[0]", nullValue = "无")
     private List<String> mainSkill;
 
     @ExcelProperty(value = "所有技能", converter = NestedObjectConverter.class)
-    @NestedProperty(value = "skills[*]", separator = ",", maxJoinSize = 5)
+    @NestedProperty(value = "[*]", separator = ",", maxJoinSize = 5)
     private List<String> allSkills;
 
     // ==================== Map 类型 ====================
@@ -68,10 +68,10 @@ public class NestedPropertyExampleDTO {
     private Map<String, Object> properties;
 
     @ExcelProperty(value = "工作城市", converter = NestedObjectConverter.class)
-    @NestedProperty(value = "properties[city]", nullValue = "-")
+    @NestedProperty(value = "[city]", nullValue = "-")
     private Map<String, Object> city;
 
     @ExcelProperty(value = "入职年份", converter = NestedObjectConverter.class)
-    @NestedProperty(value = "properties[joinYear]", nullValue = "-")
+    @NestedProperty(value = "[joinYear]", nullValue = "-")
     private Map<String, Object> joinYear;
 }
