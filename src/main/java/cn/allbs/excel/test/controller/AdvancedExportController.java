@@ -168,14 +168,14 @@ public class AdvancedExportController {
     }
 
     /**
-     * 9. Excel 公式导出
-     * 使用注解方式,通过 writeHandler 属性指定处理器
+     * 9. Sheet 样式导出（冻结窗格、自动筛选）
+     * 自动检测 @ExcelSheetStyle 注解
+     * 注意：公式功能已移除，数据将作为计算值导出
      */
     @GetMapping("/formula")
     @ExportExcel(
-        name = "销售统计-公式计算",
-        sheets = @Sheet(sheetName = "销售统计"),
-        writeHandler = {ExcelFormulaWriteHandler.class, ExcelSheetStyleWriteHandler.class}
+        name = "销售统计数据",
+        sheets = @Sheet(sheetName = "销售统计")
     )
     public List<FormulaDataDTO> formulaExport(@RequestParam(defaultValue = "10") int count) {
         return testDataService.generateFormulaData(count);
@@ -183,13 +183,12 @@ public class AdvancedExportController {
 
     /**
      * 10. Sheet 样式设置（冻结窗格、自动筛选）
-     * 使用注解方式,通过 writeHandler 属性指定处理器
+     * 自动检测 @ExcelSheetStyle 注解
      */
     @GetMapping("/sheet-style")
     @ExportExcel(
         name = "数据列表-冻结筛选",
-        sheets = @Sheet(sheetName = "数据列表"),
-        writeHandler = {ExcelSheetStyleWriteHandler.class}
+        sheets = @Sheet(sheetName = "数据列表")
     )
     public List<FormulaDataDTO> sheetStyleExport(@RequestParam(defaultValue = "20") int count) {
         return testDataService.generateFormulaData(count);
