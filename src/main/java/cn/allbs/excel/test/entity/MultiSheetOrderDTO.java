@@ -62,6 +62,7 @@ public class MultiSheetOrderDTO {
 	/**
 	 * 订单明细（导出到关联 Sheet）
 	 */
+	@ExcelProperty(value = "操作", index = 6)
 	@RelatedSheet(sheetName = "订单明细", relationKey = "orderNo", dataType = MultiSheetOrderItemDTO.class, createHyperlink = true, hyperlinkText = "查看明细")
 	private List<MultiSheetOrderItemDTO> items;
 
