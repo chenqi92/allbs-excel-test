@@ -255,392 +255,380 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>🚀 allbs-excel 测试平台</h1>
-            <p>基于 EasyExcel 的 Spring Boot Excel 导入导出增强工具 v3.0.0</p>
+<div class="container">
+    <div class="header">
+        <h1>🚀 allbs-excel 测试平台</h1>
+        <p>基于 EasyExcel 的 Spring Boot Excel 导入导出增强工具 v3.0.0</p>
+    </div>
+
+    <div class="content">
+        <!-- 基本导出功能 -->
+        <div class="section">
+            <h2 class="section-title">📤 基本导出功能</h2>
+            <div class="card-grid">
+                <div class="card">
+                    <h3>1. 基本导出</h3>
+                    <p>最简单的导出方式，返回 List 即可自动导出 Excel</p>
+                    <div class="card-controls">
+                        <div class="input-group">
+                            <label>数据量:</label>
+                            <input type="number" id="simple-count" value="10" min="1" max="1000">
+                        </div>
+                        <button onclick="exportSimple()">导出</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>2. 空数据导出 <span class="badge badge-new">NEW</span></h3>
+                    <p>导出只有表头的空 Excel，用于模板下载</p>
+                    <div class="card-controls">
+                        <button onclick="exportEmpty()">导出空表格</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>3. 只导出注解字段 <span class="badge badge-new">NEW</span></h3>
+                    <p>只导出标注了 @ExcelProperty 的字段</p>
+                    <div class="card-controls">
+                        <div class="input-group">
+                            <label>数据量:</label>
+                            <input type="number" id="annotated-count" value="10" min="1" max="1000">
+                        </div>
+                        <button onclick="exportOnlyAnnotated()">导出</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>4. 多 Sheet 导出</h3>
+                    <p>在一个 Excel 文件中导出多个 Sheet</p>
+                    <div class="card-controls">
+                        <div class="input-group">
+                            <label>用户:</label>
+                            <input type="number" id="multi-user" value="10" min="1" max="500">
+                        </div>
+                        <div class="input-group">
+                            <label>订单:</label>
+                            <input type="number" id="multi-order" value="20" min="1" max="500">
+                        </div>
+                        <button onclick="exportMultiSheet()">导出</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>5. 多 Sheet 空数据 <span class="badge badge-new">NEW</span></h3>
+                    <p>导出多个 Sheet，每个 Sheet 都只有表头</p>
+                    <div class="card-controls">
+                        <button onclick="exportMultiSheetEmpty()">导出</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>6. 列宽和行高设置</h3>
+                    <p>自定义列宽和行高，优化显示效果</p>
+                    <div class="card-controls">
+                        <div class="input-group">
+                            <label>数据量:</label>
+                            <input type="number" id="styled-count" value="15" min="1" max="1000">
+                        </div>
+                        <button onclick="exportStyled()">导出</button>
+                    </div>
+                </div>
+
+            </div>
         </div>
 
-        <div class="content">
-            <!-- 基本导出功能 -->
-            <div class="section">
-                <h2 class="section-title">📤 基本导出功能</h2>
-                <div class="card-grid">
-                    <div class="card">
-                        <h3>1. 基本导出</h3>
-                        <p>最简单的导出方式，返回 List 即可自动导出 Excel</p>
-                        <div class="card-controls">
-                            <div class="input-group">
-                                <label>数据量:</label>
-                                <input type="number" id="simple-count" value="10" min="1" max="1000">
-                            </div>
-                            <button onclick="exportSimple()">导出</button>
+        <!-- 高级导出功能 -->
+        <div class="section">
+            <h2 class="section-title">🔥 高级导出功能</h2>
+            <div class="card-grid">
+                <div class="card">
+                    <h3>1. 合并单元格 <span class="badge badge-new">NEW</span></h3>
+                    <p>自动合并相同值的单元格，支持依赖关系合并</p>
+                    <div class="card-controls">
+                        <div class="input-group">
+                            <label>数据量:</label>
+                            <input type="number" id="merge-count" value="20" min="1" max="1000">
                         </div>
-                    </div>
-
-                    <div class="card">
-                        <h3>2. 空数据导出 <span class="badge badge-new">NEW</span></h3>
-                        <p>导出只有表头的空 Excel，用于模板下载</p>
-                        <div class="card-controls">
-                            <button onclick="exportEmpty()">导出空表格</button>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <h3>3. 只导出注解字段 <span class="badge badge-new">NEW</span></h3>
-                        <p>只导出标注了 @ExcelProperty 的字段</p>
-                        <div class="card-controls">
-                            <div class="input-group">
-                                <label>数据量:</label>
-                                <input type="number" id="annotated-count" value="10" min="1" max="1000">
-                            </div>
-                            <button onclick="exportOnlyAnnotated()">导出</button>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <h3>4. 多 Sheet 导出</h3>
-                        <p>在一个 Excel 文件中导出多个 Sheet</p>
-                        <div class="card-controls">
-                            <div class="input-group">
-                                <label>用户:</label>
-                                <input type="number" id="multi-user" value="10" min="1" max="500">
-                            </div>
-                            <div class="input-group">
-                                <label>订单:</label>
-                                <input type="number" id="multi-order" value="20" min="1" max="500">
-                            </div>
-                            <button onclick="exportMultiSheet()">导出</button>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <h3>5. 多 Sheet 空数据 <span class="badge badge-new">NEW</span></h3>
-                        <p>导出多个 Sheet，每个 Sheet 都只有表头</p>
-                        <div class="card-controls">
-                            <button onclick="exportMultiSheetEmpty()">导出</button>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <h3>6. 列宽和行高设置</h3>
-                        <p>自定义列宽和行高，优化显示效果</p>
-                        <div class="card-controls">
-                            <div class="input-group">
-                                <label>数据量:</label>
-                                <input type="number" id="styled-count" value="15" min="1" max="1000">
-                            </div>
-                            <button onclick="exportStyled()">导出</button>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-            <!-- 高级导出功能 -->
-            <div class="section">
-                <h2 class="section-title">🔥 高级导出功能</h2>
-                <div class="card-grid">
-                    <div class="card">
-                        <h3>1. 合并单元格 <span class="badge badge-new">NEW</span></h3>
-                        <p>自动合并相同值的单元格，支持依赖关系合并</p>
-                        <div class="card-controls">
-                            <div class="input-group">
-                                <label>数据量:</label>
-                                <input type="number" id="merge-count" value="20" min="1" max="1000">
-                            </div>
-                            <button onclick="exportMerge()">导出</button>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <h3>2. 数据脱敏 + 字典转换 <span class="badge badge-new">NEW</span></h3>
-                        <p>支持手机号、身份证等敏感数据脱敏，字典值自动转换</p>
-                        <div class="card-controls">
-                            <div class="input-group">
-                                <label>数据量:</label>
-                                <input type="number" id="desensitize-count" value="10" min="1" max="1000">
-                            </div>
-                            <button onclick="exportDesensitize()">导出</button>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <h3>3. 导出进度回调 <span class="badge badge-advanced">高级</span></h3>
-                        <p>实时监听导出进度，适用于大数据量导出</p>
-                        <div class="card-controls">
-                            <div class="input-group">
-                                <label>数据量:</label>
-                                <input type="number" id="progress-count" value="5000" min="100" max="50000" step="100">
-                            </div>
-                            <button onclick="exportWithProgress()">导出</button>
-                        </div>
-                        <!-- 实时进度展示 -->
-                        <div id="progress-with-progress" class="progress-container">
-                            <div class="progress-bar-wrapper">
-                                <div class="progress-bar" style="width: 0%">0%</div>
-                            </div>
-                            <div class="progress-info">
-                                <span class="progress-status">准备中...</span>
-                                <span class="progress-detail">0/0</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <h3>4. 大数据量导出 <span class="badge badge-advanced">高级</span></h3>
-                        <p>测试大数据量导出性能，实时显示进度</p>
-                        <div class="card-controls">
-                            <div class="input-group">
-                                <label>数据量:</label>
-                                <input type="number" id="large-count" value="20000" min="1000" max="100000" step="1000">
-                            </div>
-                            <button onclick="exportLargeData()">导出</button>
-                        </div>
-                        <!-- 实时进度展示 -->
-                        <div id="progress-large-data" class="progress-container">
-                            <div class="progress-bar-wrapper">
-                                <div class="progress-bar" style="width: 0%">0%</div>
-                            </div>
-                            <div class="progress-info">
-                                <span class="progress-status">准备中...</span>
-                                <span class="progress-detail">0/0</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <h3>5. 合并 + 进度 <span class="badge badge-advanced">高级</span></h3>
-                        <p>合并单元格功能结合进度回调</p>
-                        <div class="card-controls">
-                            <div class="input-group">
-                                <label>数据量:</label>
-                                <input type="number" id="merge-progress-count" value="3000" min="100" max="30000" step="100">
-                            </div>
-                            <button onclick="exportMergeWithProgress()">导出</button>
-                        </div>
-                        <!-- 实时进度展示 -->
-                        <div id="progress-merge-progress" class="progress-container">
-                            <div class="progress-bar-wrapper">
-                                <div class="progress-bar" style="width: 0%">0%</div>
-                            </div>
-                            <div class="progress-info">
-                                <span class="progress-status">准备中...</span>
-                                <span class="progress-detail">0/0</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <h3>6. Excel 公式 <span class="badge badge-new">NEW</span></h3>
-                        <p>支持单元格公式自动计算（=B*C）</p>
-                        <div class="card-controls">
-                            <div class="input-group">
-                                <label>数据量:</label>
-                                <input type="number" id="formula-count" value="10" min="1" max="1000">
-                            </div>
-                            <button onclick="exportFormula()">导出</button>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <h3>7. 冻结窗格 + 筛选 <span class="badge badge-new">NEW</span></h3>
-                        <p>冻结首行、自动筛选、列宽设置</p>
-                        <div class="card-controls">
-                            <div class="input-group">
-                                <label>数据量:</label>
-                                <input type="number" id="sheet-style-count" value="20" min="1" max="1000">
-                            </div>
-                            <button onclick="exportSheetStyle()">导出</button>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <h3>8. 条件格式（图标集） <span class="badge badge-new">NEW</span></h3>
-                        <p>根据数值自动显示图标（红绿灯、箭头、旗帜）</p>
-                        <div class="card-controls">
-                            <div class="input-group">
-                                <label>数据量:</label>
-                                <input type="number" id="conditional-format-count" value="15" min="1" max="1000">
-                            </div>
-                            <button onclick="exportConditionalFormat()">导出</button>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <h3>9. 导入模板生成 <span class="badge badge-new">NEW</span></h3>
-                        <p>生成包含示例数据的导入模板</p>
-                        <div class="card-controls">
-                            <div class="input-group">
-                                <label>示例行数:</label>
-                                <input type="number" id="template-samples" value="3" min="0" max="10">
-                            </div>
-                            <button onclick="exportTemplate()">下载模板</button>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <h3>10. Excel 加密 <span class="badge badge-new">NEW</span></h3>
-                        <p>两种加密方式：简单密码保护 & AGILE高级加密</p>
-                        <div class="card-controls">
-                            <div class="input-group">
-                                <label>数据量:</label>
-                                <input type="number" id="encrypted-count" value="20" min="1" max="1000">
-                            </div>
-                        </div>
-                        <div class="card-controls" style="margin-top: 10px;">
-                            <button onclick="exportEncrypted()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-                                🔒 简单加密 (password123)
-                            </button>
-                            <button onclick="exportEncryptedAdvanced()" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
-                                🔐 AGILE 高级加密
-                            </button>
-                        </div>
-                        <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
-                            💡 <strong>简单加密</strong>: 使用 @ExportExcel password 属性，密码固定为 password123<br>
-                            💡 <strong>AGILE加密</strong>: 使用 ExcelEncryptionUtil，密码为 password123，更安全
-                        </p>
-                    </div>
-
-                </div>
-            </div>
-
-            <!-- 字典转换示例 -->
-            <div class="section">
-                <h2 class="section-title">📖 字典转换示例</h2>
-                <div class="card-grid">
-                    <div class="card">
-                        <h3>1. 导出字典转换 <span class="badge badge-new">NEW</span></h3>
-                        <p>数据库值(0/1/2) → Excel标签(女/男/未知)</p>
-                        <div class="card-controls">
-                            <div class="input-group">
-                                <label>数据量:</label>
-                                <input type="number" id="dict-export-count" value="10" min="1" max="100">
-                            </div>
-                            <button onclick="exportDictExample()">导出示例</button>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <h3>2. 下载字典模板 <span class="badge badge-new">NEW</span></h3>
-                        <p>下载包含字典转换示例的模板文件</p>
-                        <div class="card-controls">
-                            <button onclick="downloadDictTemplate()">下载模板</button>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <h3>3. 导入字典转换 <span class="badge badge-new">NEW</span></h3>
-                        <p>Excel标签(女/男/未知) → 数据库值(0/1/2)</p>
-                        <div class="card-controls">
-                            <input type="file" id="dict-import-file" class="file-input" accept=".xlsx,.xls">
-                            <label for="dict-import-file" class="file-label">选择文件</label>
-                            <button class="upload-btn" onclick="importDictExample()">上传导入</button>
-                        </div>
-                        <div id="dict-import-result"></div>
-                    </div>
-
-                    <div class="card">
-                        <h3>4. 查看字典配置 <span class="badge badge-new">NEW</span></h3>
-                        <p>查看系统中配置的所有字典</p>
-                        <div class="card-controls">
-                            <button onclick="viewDictConfig()">查看配置</button>
-                        </div>
-                        <div id="dict-config-result"></div>
+                        <button onclick="exportMerge()">导出</button>
                     </div>
                 </div>
-            </div>
 
-            <!-- 导入功能 -->
-            <div class="section import-section">
-                <h2 class="section-title">📥 导入功能测试</h2>
-                <div class="card-grid">
-                    <div class="card">
-                        <h3>0. 下载导入模板 <span class="badge badge-new">NEW</span></h3>
-                        <p>下载标准格式的导入模板（包含示例数据）</p>
-                        <div class="card-controls">
-                            <button onclick="downloadTemplate()">下载模板</button>
+                <div class="card">
+                    <h3>2. 数据脱敏 + 字典转换 <span class="badge badge-new">NEW</span></h3>
+                    <p>支持手机号、身份证等敏感数据脱敏，字典值自动转换</p>
+                    <div class="card-controls">
+                        <div class="input-group">
+                            <label>数据量:</label>
+                            <input type="number" id="desensitize-count" value="10" min="1" max="1000">
                         </div>
-                    </div>
-
-                    <div class="card">
-                        <h3>1. 基本导入</h3>
-                        <p>上传 Excel 文件，自动解析为 Java 对象</p>
-                        <div class="card-controls">
-                            <input type="file" id="simple-import-file" class="file-input" accept=".xlsx,.xls">
-                            <label for="simple-import-file" class="file-label">选择文件</label>
-                            <button class="upload-btn" onclick="importSimple()">上传导入</button>
-                        </div>
-                        <div id="simple-import-result"></div>
-                    </div>
-
-                    <div class="card">
-                        <h3>2. 带验证的导入</h3>
-                        <p>导入时自动进行数据校验（JSR-303）</p>
-                        <div class="card-controls">
-                            <input type="file" id="validate-import-file" class="file-input" accept=".xlsx,.xls">
-                            <label for="validate-import-file" class="file-label">选择文件</label>
-                            <button class="upload-btn" onclick="importValidate()">上传导入</button>
-                        </div>
-                        <div id="validate-import-result"></div>
-                    </div>
-
-                    <div class="card">
-                        <h3>3. 跳过空行导入</h3>
-                        <p>导入时自动跳过空行</p>
-                        <div class="card-controls">
-                            <input type="file" id="skip-import-file" class="file-input" accept=".xlsx,.xls">
-                            <label for="skip-import-file" class="file-label">选择文件</label>
-                            <button class="upload-btn" onclick="importSkipEmpty()">上传导入</button>
-                        </div>
-                        <div id="skip-import-result"></div>
+                        <button onclick="exportDesensitize()">导出</button>
                     </div>
                 </div>
+
+                <div class="card">
+                    <h3>3. 导出进度回调 <span class="badge badge-advanced">高级</span></h3>
+                    <p>实时监听导出进度，适用于大数据量导出</p>
+                    <div class="card-controls">
+                        <div class="input-group">
+                            <label>数据量:</label>
+                            <input type="number" id="progress-count" value="5000" min="100" max="50000" step="100">
+                        </div>
+                        <button onclick="exportWithProgress()">导出</button>
+                    </div>
+                    <!-- 实时进度展示 -->
+                    <div id="progress-with-progress" class="progress-container">
+                        <div class="progress-bar-wrapper">
+                            <div class="progress-bar" style="width: 0%">0%</div>
+                        </div>
+                        <div class="progress-info">
+                            <span class="progress-status">准备中...</span>
+                            <span class="progress-detail">0/0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>4. 大数据量导出 <span class="badge badge-advanced">高级</span></h3>
+                    <p>测试大数据量导出性能，实时显示进度</p>
+                    <div class="card-controls">
+                        <div class="input-group">
+                            <label>数据量:</label>
+                            <input type="number" id="large-count" value="20000" min="1000" max="100000" step="1000">
+                        </div>
+                        <button onclick="exportLargeData()">导出</button>
+                    </div>
+                    <!-- 实时进度展示 -->
+                    <div id="progress-large-data" class="progress-container">
+                        <div class="progress-bar-wrapper">
+                            <div class="progress-bar" style="width: 0%">0%</div>
+                        </div>
+                        <div class="progress-info">
+                            <span class="progress-status">准备中...</span>
+                            <span class="progress-detail">0/0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>5. 合并 + 进度 <span class="badge badge-advanced">高级</span></h3>
+                    <p>合并单元格功能结合进度回调</p>
+                    <div class="card-controls">
+                        <div class="input-group">
+                            <label>数据量:</label>
+                            <input type="number" id="merge-progress-count" value="3000" min="100" max="30000" step="100">
+                        </div>
+                        <button onclick="exportMergeWithProgress()">导出</button>
+                    </div>
+                    <!-- 实时进度展示 -->
+                    <div id="progress-merge-progress" class="progress-container">
+                        <div class="progress-bar-wrapper">
+                            <div class="progress-bar" style="width: 0%">0%</div>
+                        </div>
+                        <div class="progress-info">
+                            <span class="progress-status">准备中...</span>
+                            <span class="progress-detail">0/0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>6. 冻结窗格 + 筛选 <span class="badge badge-new">NEW</span></h3>
+                    <p>冻结首行、自动筛选、列宽设置</p>
+                    <div class="card-controls">
+                        <div class="input-group">
+                            <label>数据量:</label>
+                            <input type="number" id="sheet-style-count" value="20" min="1" max="1000">
+                        </div>
+                        <button onclick="exportSheetStyle()">导出</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>7. 条件格式（图标集） <span class="badge badge-new">NEW</span></h3>
+                    <p>根据数值自动显示图标（红绿灯、箭头、旗帜）</p>
+                    <div class="card-controls">
+                        <div class="input-group">
+                            <label>数据量:</label>
+                            <input type="number" id="conditional-format-count" value="15" min="1" max="1000">
+                        </div>
+                        <button onclick="exportConditionalFormat()">导出</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>8. 导入模板生成 <span class="badge badge-new">NEW</span></h3>
+                    <p>生成包含示例数据的导入模板</p>
+                    <div class="card-controls">
+                        <div class="input-group">
+                            <label>示例行数:</label>
+                            <input type="number" id="template-samples" value="3" min="0" max="10">
+                        </div>
+                        <button onclick="exportTemplate()">下载模板</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>9. Excel 加密 <span class="badge badge-new">NEW</span></h3>
+                    <p>两种加密方式：简单密码保护 & AGILE高级加密</p>
+                    <div class="card-controls">
+                        <div class="input-group">
+                            <label>数据量:</label>
+                            <input type="number" id="encrypted-count" value="20" min="1" max="1000">
+                        </div>
+                    </div>
+                    <div class="card-controls" style="margin-top: 10px;">
+                        <button onclick="exportEncrypted()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                            🔒 简单加密 (password123)
+                        </button>
+                        <button onclick="exportEncryptedAdvanced()" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                            🔐 AGILE 高级加密
+                        </button>
+                    </div>
+                    <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
+                        💡 <strong>简单加密</strong>: 使用 @ExportExcel password 属性，密码固定为 password123<br>
+                        💡 <strong>AGILE加密</strong>: 使用 ExcelEncryptionUtil，密码为 password123，更安全
+                    </p>
+                </div>
+
             </div>
+        </div>
 
-            <!-- 图片导入导出功能 -->
-            <div class="section">
-                <h2 class="section-title">🖼️ 图片导入导出 <span class="badge badge-new">NEW</span></h2>
-                <div class="card-grid">
-                    <div class="card">
-                        <h3>1. 导出带图片的Excel <span class="badge badge-hot">推荐</span></h3>
-                        <p>支持在Excel中嵌入图片，自动调整尺寸，防止压缩变形</p>
-                        <div class="card-controls">
-                            <button onclick="exportProductImages()">导出商品图片</button>
+        <!-- 字典转换示例 -->
+        <div class="section">
+            <h2 class="section-title">📖 字典转换示例</h2>
+            <div class="card-grid">
+                <div class="card">
+                    <h3>1. 导出字典转换 <span class="badge badge-new">NEW</span></h3>
+                    <p>数据库值(0/1/2) → Excel标签(女/男/未知)</p>
+                    <div class="card-controls">
+                        <div class="input-group">
+                            <label>数据量:</label>
+                            <input type="number" id="dict-export-count" value="10" min="1" max="100">
                         </div>
-                        <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
-                            💡 支持：主图(120x120)、缩略图(80x80)、图集(100x100)
-                        </p>
+                        <button onclick="exportDictExample()">导出示例</button>
                     </div>
+                </div>
 
-                    <div class="card">
-                        <h3>2. 下载图片导入模板</h3>
-                        <p>下载包含示例图片的Excel模板，用于测试导入功能</p>
-                        <div class="card-controls">
-                            <button onclick="downloadImageTemplate()">下载模板</button>
-                        </div>
+                <div class="card">
+                    <h3>2. 下载字典模板 <span class="badge badge-new">NEW</span></h3>
+                    <p>下载包含字典转换示例的模板文件</p>
+                    <div class="card-controls">
+                        <button onclick="downloadDictTemplate()">下载模板</button>
                     </div>
+                </div>
 
-                    <div class="card">
-                        <h3>3. 导入带图片的Excel</h3>
-                        <p>上传Excel文件，自动解析图片数据（支持Base64、字节数组）</p>
-                        <div class="card-controls">
-                            <input type="file" id="image-import-file" class="file-input" accept=".xlsx,.xls">
-                            <label for="image-import-file" class="file-label">选择文件</label>
-                            <button class="upload-btn" onclick="importProductImages()">上传导入</button>
-                        </div>
-                        <div id="image-import-result"></div>
+                <div class="card">
+                    <h3>3. 导入字典转换 <span class="badge badge-new">NEW</span></h3>
+                    <p>Excel标签(女/男/未知) → 数据库值(0/1/2)</p>
+                    <div class="card-controls">
+                        <input type="file" id="dict-import-file" class="file-input" accept=".xlsx,.xls">
+                        <label for="dict-import-file" class="file-label">选择文件</label>
+                        <button class="upload-btn" onclick="importDictExample()">上传导入</button>
                     </div>
+                    <div id="dict-import-result"></div>
+                </div>
 
-                    <div class="card">
-                        <h3>4. 图片尺寸控制说明</h3>
-                        <p>通过 @ExcelImage 注解精确控制图片在Excel中的显示尺寸</p>
-                        <div class="card-controls">
-                            <button onclick="showImageSizeGuide()">查看说明</button>
-                        </div>
-                        <div id="image-size-guide" style="display:none; margin-top:15px; padding:15px; background:#f0f0f0; border-radius:5px; font-size:0.9em;">
-                            <h4 style="margin-bottom:10px;">📐 图片尺寸配置示例：</h4>
-                            <pre style="background:white; padding:10px; border-radius:5px; overflow-x:auto;">
+                <div class="card">
+                    <h3>4. 查看字典配置 <span class="badge badge-new">NEW</span></h3>
+                    <p>查看系统中配置的所有字典</p>
+                    <div class="card-controls">
+                        <button onclick="viewDictConfig()">查看配置</button>
+                    </div>
+                    <div id="dict-config-result"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 导入功能 -->
+        <div class="section import-section">
+            <h2 class="section-title">📥 导入功能测试</h2>
+            <div class="card-grid">
+                <div class="card">
+                    <h3>0. 下载导入模板 <span class="badge badge-new">NEW</span></h3>
+                    <p>下载标准格式的导入模板（包含示例数据）</p>
+                    <div class="card-controls">
+                        <button onclick="downloadTemplate()">下载模板</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>1. 基本导入</h3>
+                    <p>上传 Excel 文件，自动解析为 Java 对象</p>
+                    <div class="card-controls">
+                        <input type="file" id="simple-import-file" class="file-input" accept=".xlsx,.xls">
+                        <label for="simple-import-file" class="file-label">选择文件</label>
+                        <button class="upload-btn" onclick="importSimple()">上传导入</button>
+                    </div>
+                    <div id="simple-import-result"></div>
+                </div>
+
+                <div class="card">
+                    <h3>2. 带验证的导入</h3>
+                    <p>导入时自动进行数据校验（JSR-303）</p>
+                    <div class="card-controls">
+                        <input type="file" id="validate-import-file" class="file-input" accept=".xlsx,.xls">
+                        <label for="validate-import-file" class="file-label">选择文件</label>
+                        <button class="upload-btn" onclick="importValidate()">上传导入</button>
+                    </div>
+                    <div id="validate-import-result"></div>
+                </div>
+
+                <div class="card">
+                    <h3>3. 跳过空行导入</h3>
+                    <p>导入时自动跳过空行</p>
+                    <div class="card-controls">
+                        <input type="file" id="skip-import-file" class="file-input" accept=".xlsx,.xls">
+                        <label for="skip-import-file" class="file-label">选择文件</label>
+                        <button class="upload-btn" onclick="importSkipEmpty()">上传导入</button>
+                    </div>
+                    <div id="skip-import-result"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 图片导入导出功能 -->
+        <div class="section">
+            <h2 class="section-title">🖼️ 图片导入导出 <span class="badge badge-new">NEW</span></h2>
+            <div class="card-grid">
+                <div class="card">
+                    <h3>1. 导出带图片的Excel <span class="badge badge-hot">推荐</span></h3>
+                    <p>支持在Excel中嵌入图片，自动调整尺寸，防止压缩变形</p>
+                    <div class="card-controls">
+                        <button onclick="exportProductImages()">导出商品图片</button>
+                    </div>
+                    <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
+                        💡 支持：主图(120x120)、缩略图(80x80)、图集(100x100)
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>2. 下载图片导入模板</h3>
+                    <p>下载包含示例图片的Excel模板，用于测试导入功能</p>
+                    <div class="card-controls">
+                        <button onclick="downloadImageTemplate()">下载模板</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>3. 导入带图片的Excel</h3>
+                    <p>上传Excel文件，自动解析图片数据（支持Base64、字节数组）</p>
+                    <div class="card-controls">
+                        <input type="file" id="image-import-file" class="file-input" accept=".xlsx,.xls">
+                        <label for="image-import-file" class="file-label">选择文件</label>
+                        <button class="upload-btn" onclick="importProductImages()">上传导入</button>
+                    </div>
+                    <div id="image-import-result"></div>
+                </div>
+
+                <div class="card">
+                    <h3>4. 图片尺寸控制说明</h3>
+                    <p>通过 @ExcelImage 注解精确控制图片在Excel中的显示尺寸</p>
+                    <div class="card-controls">
+                        <button onclick="showImageSizeGuide()">查看说明</button>
+                    </div>
+                    <div id="image-size-guide" style="display:none; margin-top:15px; padding:15px; background:#f0f0f0; border-radius:5px; font-size:0.9em;">
+                        <h4 style="margin-bottom:10px;">📐 图片尺寸配置示例：</h4>
+                        <pre style="background:white; padding:10px; border-radius:5px; overflow-x:auto;">
 @ExcelProperty("商品主图")
 @ExcelImage(width = 120, height = 120)
 private String mainImage;
@@ -652,151 +640,151 @@ private byte[] thumbnail;
 @ExcelProperty("图集")
 @ExcelImage(width = 100, height = 100)
 private List&lt;String&gt; imageList;</pre>
-                            <p style="margin-top:10px; color:#666;">
-                                ✅ 支持自定义宽高（像素）<br>
-                                ✅ 自动调整行高和列宽<br>
-                                ✅ 防止图片被压缩变形<br>
-                                ✅ 支持单张或多张图片
-                            </p>
-                        </div>
+                        <p style="margin-top:10px; color:#666;">
+                            ✅ 支持自定义宽高（像素）<br>
+                            ✅ 自动调整行高和列宽<br>
+                            ✅ 防止图片被压缩变形<br>
+                            ✅ 支持单张或多张图片
+                        </p>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <!-- 图表导出功能 -->
-            <div class="section">
-                <h2 class="section-title">📊 Excel 图表导出 <span class="badge badge-new">NEW</span></h2>
-                <p class="section-description">支持 6 种图表类型，通过注解配置 X/Y 轴、标题、图例等所有绘制因素</p>
-                <div class="card-grid">
-                    <div class="card">
-                        <h3>1. 折线图 <span class="badge badge-hot">推荐</span></h3>
-                        <p>展示数据随时间的变化趋势，适合销售趋势、温度变化等</p>
-                        <div class="card-controls">
-                            <div class="input-group">
-                                <label>月份数:</label>
-                                <input type="number" id="line-chart-months" value="12" min="3" max="12">
-                            </div>
-                            <button onclick="exportLineChart()">导出折线图</button>
+        <!-- 图表导出功能 -->
+        <div class="section">
+            <h2 class="section-title">📊 Excel 图表导出 <span class="badge badge-new">NEW</span></h2>
+            <p class="section-description">支持 6 种图表类型，通过注解配置 X/Y 轴、标题、图例等所有绘制因素</p>
+            <div class="card-grid">
+                <div class="card">
+                    <h3>1. 折线图 <span class="badge badge-hot">推荐</span></h3>
+                    <p>展示数据随时间的变化趋势，适合销售趋势、温度变化等</p>
+                    <div class="card-controls">
+                        <div class="input-group">
+                            <label>月份数:</label>
+                            <input type="number" id="line-chart-months" value="12" min="3" max="12">
                         </div>
-                        <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
-                            📈 包含 3 条线：Sales、Cost、Profit
-                        </p>
+                        <button onclick="exportLineChart()">导出折线图</button>
                     </div>
-
-                    <div class="card">
-                        <h3>2. 柱状图（纵向）</h3>
-                        <p>比较不同类别的数据，适合销售对比、成本分析等</p>
-                        <div class="card-controls">
-                            <div class="input-group">
-                                <label>月份数:</label>
-                                <input type="number" id="column-chart-months" value="12" min="3" max="12">
-                            </div>
-                            <button onclick="exportColumnChart()">导出柱状图</button>
-                        </div>
-                        <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
-                            📊 对比：Sales vs Cost
-                        </p>
-                    </div>
-
-                    <div class="card">
-                        <h3>3. 条形图（横向）</h3>
-                        <p>横向展示，适合部门对比、产品销量排行等</p>
-                        <div class="card-controls">
-                            <div class="input-group">
-                                <label>月份数:</label>
-                                <input type="number" id="bar-chart-months" value="12" min="3" max="12">
-                            </div>
-                            <button onclick="exportBarChart()">导出条形图</button>
-                        </div>
-                        <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
-                            📉 分析：Monthly Profit
-                        </p>
-                    </div>
-
-                    <div class="card">
-                        <h3>4. 饼图</h3>
-                        <p>展示各部分占总体的比例，适合市场份额、销售占比等</p>
-                        <div class="card-controls">
-                            <div class="input-group">
-                                <label>月份数:</label>
-                                <input type="number" id="pie-chart-months" value="12" min="3" max="12">
-                            </div>
-                            <button onclick="exportPieChart()">导出饼图</button>
-                        </div>
-                        <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
-                            🥧 显示：Sales Distribution
-                        </p>
-                    </div>
-
-                    <div class="card">
-                        <h3>5. 面积图</h3>
-                        <p>展示数量随时间的累积变化，适合累计销售额、用户增长等</p>
-                        <div class="card-controls">
-                            <div class="input-group">
-                                <label>月份数:</label>
-                                <input type="number" id="area-chart-months" value="12" min="3" max="12">
-                            </div>
-                            <button onclick="exportAreaChart()">导出面积图</button>
-                        </div>
-                        <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
-                            📐 累计：Sales & Cost
-                        </p>
-                    </div>
-
-                    <div class="card">
-                        <h3>6. 散点图</h3>
-                        <p>展示两个变量的相关性，适合数据分布、相关性分析等</p>
-                        <div class="card-controls">
-                            <div class="input-group">
-                                <label>月份数:</label>
-                                <input type="number" id="scatter-chart-months" value="12" min="3" max="12">
-                            </div>
-                            <button onclick="exportScatterChart()">导出散点图</button>
-                        </div>
-                        <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
-                            ⚫ 相关性：Sales vs Cost
-                        </p>
-                    </div>
-
-                    <div class="card">
-                        <h3>7. 多系列图表</h3>
-                        <p>一个图表显示多个数据系列，完整展示财务数据</p>
-                        <div class="card-controls">
-                            <div class="input-group">
-                                <label>月份数:</label>
-                                <input type="number" id="multi-chart-months" value="12" min="3" max="12">
-                            </div>
-                            <button onclick="exportMultiSeriesChart()">导出多系列</button>
-                        </div>
-                        <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
-                            📊 包含：Sales、Cost、Profit
-                        </p>
-                    </div>
-
-                    <div class="card">
-                        <h3>8. 自定义尺寸图表</h3>
-                        <p>自定义图表位置和大小，演示大尺寸图表效果</p>
-                        <div class="card-controls">
-                            <div class="input-group">
-                                <label>月份数:</label>
-                                <input type="number" id="custom-chart-months" value="12" min="3" max="12">
-                            </div>
-                            <button onclick="exportCustomPositionChart()">导出大图表</button>
-                        </div>
-                        <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
-                            🖼️ 大尺寸显示
-                        </p>
-                    </div>
+                    <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
+                        📈 包含 3 条线：Sales、Cost、Profit
+                    </p>
                 </div>
 
-                <!-- 图表配置说明 -->
-                <div class="card" style="margin-top: 20px;">
-                    <h3>📋 图表配置说明</h3>
-                    <button onclick="toggleChartGuide()" style="margin-bottom: 15px;">查看配置示例</button>
-                    <div id="chart-guide" style="display:none;">
-                        <div style="background:#f8f9fa; padding:20px; border-radius:8px; margin-top:15px;">
-                            <h4 style="color:#2196F3; margin-bottom:15px;">✨ 通过注解完整控制图表</h4>
-                            <pre style="background:white; padding:15px; border-radius:5px; overflow-x:auto; font-size:0.9em;">@ExportExcel(
+                <div class="card">
+                    <h3>2. 柱状图（纵向）</h3>
+                    <p>比较不同类别的数据，适合销售对比、成本分析等</p>
+                    <div class="card-controls">
+                        <div class="input-group">
+                            <label>月份数:</label>
+                            <input type="number" id="column-chart-months" value="12" min="3" max="12">
+                        </div>
+                        <button onclick="exportColumnChart()">导出柱状图</button>
+                    </div>
+                    <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
+                        📊 对比：Sales vs Cost
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>3. 条形图（横向）</h3>
+                    <p>横向展示，适合部门对比、产品销量排行等</p>
+                    <div class="card-controls">
+                        <div class="input-group">
+                            <label>月份数:</label>
+                            <input type="number" id="bar-chart-months" value="12" min="3" max="12">
+                        </div>
+                        <button onclick="exportBarChart()">导出条形图</button>
+                    </div>
+                    <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
+                        📉 分析：Monthly Profit
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>4. 饼图</h3>
+                    <p>展示各部分占总体的比例，适合市场份额、销售占比等</p>
+                    <div class="card-controls">
+                        <div class="input-group">
+                            <label>月份数:</label>
+                            <input type="number" id="pie-chart-months" value="12" min="3" max="12">
+                        </div>
+                        <button onclick="exportPieChart()">导出饼图</button>
+                    </div>
+                    <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
+                        🥧 显示：Sales Distribution
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>5. 面积图</h3>
+                    <p>展示数量随时间的累积变化，适合累计销售额、用户增长等</p>
+                    <div class="card-controls">
+                        <div class="input-group">
+                            <label>月份数:</label>
+                            <input type="number" id="area-chart-months" value="12" min="3" max="12">
+                        </div>
+                        <button onclick="exportAreaChart()">导出面积图</button>
+                    </div>
+                    <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
+                        📐 累计：Sales & Cost
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>6. 散点图</h3>
+                    <p>展示两个变量的相关性，适合数据分布、相关性分析等</p>
+                    <div class="card-controls">
+                        <div class="input-group">
+                            <label>月份数:</label>
+                            <input type="number" id="scatter-chart-months" value="12" min="3" max="12">
+                        </div>
+                        <button onclick="exportScatterChart()">导出散点图</button>
+                    </div>
+                    <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
+                        ⚫ 相关性：Sales vs Cost
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>7. 多系列图表</h3>
+                    <p>一个图表显示多个数据系列，完整展示财务数据</p>
+                    <div class="card-controls">
+                        <div class="input-group">
+                            <label>月份数:</label>
+                            <input type="number" id="multi-chart-months" value="12" min="3" max="12">
+                        </div>
+                        <button onclick="exportMultiSeriesChart()">导出多系列</button>
+                    </div>
+                    <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
+                        📊 包含：Sales、Cost、Profit
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>8. 自定义尺寸图表</h3>
+                    <p>自定义图表位置和大小，演示大尺寸图表效果</p>
+                    <div class="card-controls">
+                        <div class="input-group">
+                            <label>月份数:</label>
+                            <input type="number" id="custom-chart-months" value="12" min="3" max="12">
+                        </div>
+                        <button onclick="exportCustomPositionChart()">导出大图表</button>
+                    </div>
+                    <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
+                        🖼️ 大尺寸显示
+                    </p>
+                </div>
+            </div>
+
+            <!-- 图表配置说明 -->
+            <div class="card" style="margin-top: 20px;">
+                <h3>📋 图表配置说明</h3>
+                <button onclick="toggleChartGuide()" style="margin-bottom: 15px;">查看配置示例</button>
+                <div id="chart-guide" style="display:none;">
+                    <div style="background:#f8f9fa; padding:20px; border-radius:8px; margin-top:15px;">
+                        <h4 style="color:#2196F3; margin-bottom:15px;">✨ 通过注解完整控制图表</h4>
+                        <pre style="background:white; padding:15px; border-radius:5px; overflow-x:auto; font-size:0.9em;">@ExportExcel(
     name = "销售趋势图表",
     chart = @ExcelChart(
         <span style="color:#e91e63">title</span> = "Monthly Sales Trend",      // 图表标题
@@ -812,570 +800,567 @@ private List&lt;String&gt; imageList;</pre>
         <span style="color:#e91e63">legendPosition</span> = LegendPosition.BOTTOM  // 图例位置 ✅
     )
 )</pre>
-                            <div style="margin-top:20px; display:grid; grid-template-columns: repeat(2, 1fr); gap:15px;">
-                                <div>
-                                    <h5 style="color:#4CAF50; margin-bottom:8px;">📊 支持的图表类型</h5>
-                                    <ul style="font-size:0.9em; line-height:1.8;">
-                                        <li>✅ LINE - 折线图</li>
-                                        <li>✅ COLUMN - 柱状图（纵向）</li>
-                                        <li>✅ BAR - 条形图（横向）</li>
-                                        <li>✅ PIE - 饼图</li>
-                                        <li>✅ AREA - 面积图</li>
-                                        <li>✅ SCATTER - 散点图</li>
-                                    </ul>
-                                </div>
-                                <div>
-                                    <h5 style="color:#4CAF50; margin-bottom:8px;">🎯 配置要点</h5>
-                                    <ul style="font-size:0.9em; line-height:1.8;">
-                                        <li>✅ xAxisField 对应表头列名</li>
-                                        <li>✅ yAxisFields 支持多个系列</li>
-                                        <li>✅ 字段名支持忽略大小写</li>
-                                        <li>✅ 图例位置：TOP/BOTTOM/LEFT/RIGHT</li>
-                                        <li>✅ 图表位置和尺寸可自定义</li>
-                                        <li>✅ 支持中英文标题和字段名</li>
-                                    </ul>
-                                </div>
+                        <div style="margin-top:20px; display:grid; grid-template-columns: repeat(2, 1fr); gap:15px;">
+                            <div>
+                                <h5 style="color:#4CAF50; margin-bottom:8px;">📊 支持的图表类型</h5>
+                                <ul style="font-size:0.9em; line-height:1.8;">
+                                    <li>✅ LINE - 折线图</li>
+                                    <li>✅ COLUMN - 柱状图（纵向）</li>
+                                    <li>✅ BAR - 条形图（横向）</li>
+                                    <li>✅ PIE - 饼图</li>
+                                    <li>✅ AREA - 面积图</li>
+                                    <li>✅ SCATTER - 散点图</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h5 style="color:#4CAF50; margin-bottom:8px;">🎯 配置要点</h5>
+                                <ul style="font-size:0.9em; line-height:1.8;">
+                                    <li>✅ xAxisField 对应表头列名</li>
+                                    <li>✅ yAxisFields 支持多个系列</li>
+                                    <li>✅ 字段名支持忽略大小写</li>
+                                    <li>✅ 图例位置：TOP/BOTTOM/LEFT/RIGHT</li>
+                                    <li>✅ 图表位置和尺寸可自定义</li>
+                                    <li>✅ 支持中英文标题和字段名</li>
+                                </ul>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 嵌套对象导出功能 -->
-            <div class="section">
-                <h2 class="section-title">🆕 嵌套对象导出功能 <span class="badge badge-new">NEW</span></h2>
-                <div class="card-grid">
-                    <div class="card">
-                        <h3>1. @NestedProperty - 嵌套对象字段提取</h3>
-                        <p>从嵌套对象、集合、Map 中提取指定字段值导出</p>
-                        <div class="card-controls">
-                            <div class="input-group">
-                                <label>数据量:</label>
-                                <input type="number" id="nested-property-count" value="10" min="1" max="100">
-                            </div>
-                            <button onclick="exportNestedProperty()">导出</button>
-                        </div>
-                        <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
-                            💡 演示：提取部门名称、领导电话、技能列表、Map中的城市等
-                        </p>
-                    </div>
-
-                    <div class="card">
-                        <h3>2. @FlattenProperty - 嵌套对象自动展开</h3>
-                        <p>自动展开嵌套对象的所有 @ExcelProperty 字段</p>
-                        <div class="card-controls">
-                            <div class="input-group">
-                                <label>数据量:</label>
-                                <input type="number" id="flatten-property-count" value="10" min="1" max="100">
-                            </div>
-                            <button onclick="exportFlattenProperty()">导出</button>
-                        </div>
-                        <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
-                            💡 演示：自动展开部门对象的所有字段，支持前缀和递归展开
-                        </p>
-                    </div>
-
-                    <div class="card">
-                        <h3>3. @FlattenList - 订单明细展开</h3>
-                        <p>将订单的 List&lt;OrderItem&gt; 展开为多行，自动合并单元格</p>
-                        <div class="card-controls">
-                            <div class="input-group">
-                                <label>订单数:</label>
-                                <input type="number" id="flatten-list-order-count" value="5" min="1" max="20">
-                            </div>
-                            <button onclick="exportFlattenListOrder()">导出</button>
-                        </div>
-                        <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
-                            💡 演示：一个订单有多个商品明细，展开为多行并自动合并
-                        </p>
-                    </div>
-
-                    <div class="card">
-                        <h3>4. @FlattenList - 学生多 List 展开</h3>
-                        <p>学生有多个课程和多个奖项，展开为多行（取最长策略）</p>
-                        <div class="card-controls">
-                            <div class="input-group">
-                                <label>学生数:</label>
-                                <input type="number" id="flatten-list-student-count" value="5" min="1" max="20">
-                            </div>
-                            <button onclick="exportFlattenListStudent()">导出</button>
-                        </div>
-                        <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
-                            💡 演示：多个 List 字段同时展开，按最长 List 的长度展开
-                        </p>
-                    </div>
-
-                    <div class="card">
-                        <h3>5. @ConditionalStyle - 条件样式</h3>
-                        <p>根据单元格值自动应用不同样式（颜色、字体等）</p>
-                        <div class="card-controls">
-                            <div class="input-group">
-                                <label>数据量:</label>
-                                <input type="number" id="conditional-style-count" value="20" min="1" max="100">
-                            </div>
-                            <button onclick="exportConditionalStyle()">导出</button>
-                        </div>
-                        <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
-                            💡 演示：分数>=90绿色、>=60黄色、<60红色；状态不同颜色
-                        </p>
-                    </div>
-
-                    <div class="card">
-                        <h3>6. @DynamicHeaders - 动态表头</h3>
-                        <p>根据数据动态生成表头列（适用于属性不固定的场景）</p>
-                        <div class="card-controls">
-                            <div class="input-group">
-                                <label>数据量:</label>
-                                <input type="number" id="dynamic-header-count" value="15" min="1" max="100">
-                            </div>
-                            <button onclick="exportDynamicHeader()">导出</button>
-                        </div>
-                        <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
-                            💡 演示：不同产品类别有不同属性，表头自动生成
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 行号和动态文件名功能 -->
-            <div class="section">
-                <h2 class="section-title">🔢 行号与动态文件名 <span class="badge badge-new">NEW</span></h2>
-                <div class="card-grid">
-                    <div class="card">
-                        <h3>1. @ExcelLine - 自动行号</h3>
-                        <p>使用 @ExcelLine 注解为导出数据自动添加行号</p>
-                        <div class="card-controls">
-                            <label>数据条数:</label>
-                            <div class="input-group">
-                                <input type="number" id="row-number-count" value="50" min="10" max="500" step="10">
-                            </div>
-                            <button onclick="exportRowNumber()">导出带行号</button>
-                        </div>
-                        <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
-                            💡 演示：每行数据自动生成序号，无需手动赋值
-                        </p>
-                    </div>
-
-                    <div class="card">
-                        <h3>2. 动态文件名 - SpEL表达式</h3>
-                        <p>支持 #{#today}, #{#now}, #{#参数名} 等表达式</p>
-                        <div class="card-controls">
-                            <label>用户名:</label>
-                            <div class="input-group">
-                                <input type="text" id="dynamic-username" value="admin" placeholder="输入用户名">
-                            </div>
-                            <label>数据条数:</label>
-                            <div class="input-group">
-                                <input type="number" id="dynamic-count" value="20" min="5" max="100">
-                            </div>
-                            <button onclick="exportDynamicFilename()">导出(日期+用户名)</button>
-                        </div>
-                        <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
-                            💡 文件名格式: UserList-20251120-admin.xlsx
-                        </p>
-                    </div>
-
-                    <div class="card">
-                        <h3>3. 动态文件名 - 时间戳</h3>
-                        <p>使用时间戳作为文件名，确保唯一性</p>
-                        <div class="card-controls">
-                            <label>数据条数:</label>
-                            <div class="input-group">
-                                <input type="number" id="timestamp-count" value="30" min="5" max="100">
-                            </div>
-                            <button onclick="exportTimestampFilename()">导出(时间戳)</button>
-                        </div>
-                        <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
-                            💡 文件名格式: ExportData-1732067123456.xlsx
-                        </p>
-                    </div>
-
-                    <div class="card">
-                        <h3>4. 动态文件名 - 方法参数</h3>
-                        <p>使用方法参数值动态生成文件名</p>
-                        <div class="card-controls">
-                            <label>部门名称:</label>
-                            <div class="input-group">
-                                <input type="text" id="dept-name" value="Tech" placeholder="输入部门名称(英文)">
-                            </div>
-                            <label>数据条数:</label>
-                            <div class="input-group">
-                                <input type="number" id="dept-count" value="25" min="5" max="100">
-                            </div>
-                            <button onclick="exportParamFilename()">导出(部门+日期时间)</button>
-                        </div>
-                        <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
-                            💡 文件名格式: Tech-Employees-20251120-153045.xlsx
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 嵌套对象导入功能 -->
-            <div class="section">
-                <h2 class="section-title">📥 嵌套对象导入功能 <span class="badge badge-new">NEW</span></h2>
-                <div class="card-grid">
-                    <div class="card">
-                        <h3>1. @NestedProperty - 嵌套对象导入</h3>
-                        <p>导入Excel时自动填充嵌套对象字段</p>
-                        <div class="card-controls">
-                            <input type="file" id="nested-property-import-file" class="file-input" accept=".xlsx,.xls">
-                            <label for="nested-property-import-file" class="file-label">选择文件</label>
-                            <button class="upload-btn" onclick="importNestedProperty()">上传导入</button>
-                        </div>
-                        <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
-                            💡 先导出一个文件，然后可以尝试导入
-                        </p>
-                        <div id="nested-property-import-result" style="margin-top: 10px;"></div>
-                    </div>
-
-                    <div class="card">
-                        <h3>2. @FlattenList - 多行聚合导入</h3>
-                        <p>将多行明细数据聚合回List对象</p>
-                        <div class="card-controls">
-                            <input type="file" id="flatten-list-import-file" class="file-input" accept=".xlsx,.xls">
-                            <label for="flatten-list-import-file" class="file-label">选择文件</label>
-                            <button class="upload-btn" onclick="importFlattenListOrder()">上传导入</button>
-                        </div>
-                        <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
-                            💡 先导出订单明细，然后导入测试聚合功能
-                        </p>
-                        <div id="flatten-list-import-result" style="margin-top: 10px;"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 数据验证功能 -->
-            <div class="section">
-                <h2 class="section-title">✅ 数据验证功能 <span class="badge badge-new">NEW</span></h2>
-                <div class="card-grid">
-                    <div class="card">
-                        <h3>1. @ExcelValidation - 基础数据验证</h3>
-                        <p>为 Excel 列添加数据验证规则（下拉列表、数值范围、日期、文本长度等）</p>
-                        <div class="card-controls">
-                            <div class="input-group">
-                                <label>数据量:</label>
-                                <input type="number" id="validation-count" value="10" min="1" max="100">
-                            </div>
-                            <button onclick="exportValidation()">导出</button>
-                        </div>
-                        <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
-                            💡 演示：性别下拉、年龄范围18-65、工资范围、日期验证、文本长度等
-                        </p>
-                    </div>
-
-                    <div class="card">
-                        <h3>2. @ExcelValidation - 自定义验证范围</h3>
-                        <p>自定义数据验证的行范围（适用于不同业务场景）</p>
-                        <div class="card-controls">
-                            <div class="input-group">
-                                <label>数据量:</label>
-                                <input type="number" id="validation-custom-count" value="10" min="1" max="100">
-                            </div>
-                            <button onclick="exportValidationCustom()">导出</button>
-                        </div>
-                        <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
-                            💡 演示：验证范围从第2行到第1000行（支持大数据量）
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 多 Sheet 关联导出功能 -->
-            <div class="section">
-                <h2 class="section-title">🔗 多 Sheet 关联导出 <span class="badge badge-new">NEW</span></h2>
-                <div class="card-grid">
-                    <div class="card">
-                        <h3>1. @RelatedSheet - 关联 Sheet 导出</h3>
-                        <p>将主表和关联明细导出到不同 Sheet，自动建立关联关系</p>
-                        <div class="card-controls">
-                            <div class="input-group">
-                                <label>订单数:</label>
-                                <input type="number" id="multi-sheet-count" value="5" min="1" max="20">
-                            </div>
-                            <button onclick="exportMultiSheet()">导出</button>
-                        </div>
-                        <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
-                            💡 演示：订单主表和订单明细分别导出到不同 Sheet，并创建关联
-                        </p>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- 嵌套对象导出功能 -->
+        <div class="section">
+            <h2 class="section-title">🆕 嵌套对象导出功能 <span class="badge badge-new">NEW</span></h2>
+            <div class="card-grid">
+                <div class="card">
+                    <h3>1. @NestedProperty - 嵌套对象字段提取</h3>
+                    <p>从嵌套对象、集合、Map 中提取指定字段值导出</p>
+                    <div class="card-controls">
+                        <div class="input-group">
+                            <label>数据量:</label>
+                            <input type="number" id="nested-property-count" value="10" min="1" max="100">
+                        </div>
+                        <button onclick="exportNestedProperty()">导出</button>
+                    </div>
+                    <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
+                        💡 演示：提取部门名称、领导电话、技能列表、Map中的城市等
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>2. @FlattenProperty - 嵌套对象自动展开</h3>
+                    <p>自动展开嵌套对象的所有 @ExcelProperty 字段</p>
+                    <div class="card-controls">
+                        <div class="input-group">
+                            <label>数据量:</label>
+                            <input type="number" id="flatten-property-count" value="10" min="1" max="100">
+                        </div>
+                        <button onclick="exportFlattenProperty()">导出</button>
+                    </div>
+                    <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
+                        💡 演示：自动展开部门对象的所有字段，支持前缀和递归展开
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>3. @FlattenList - 订单明细展开</h3>
+                    <p>将订单的 List&lt;OrderItem&gt; 展开为多行，自动合并单元格</p>
+                    <div class="card-controls">
+                        <div class="input-group">
+                            <label>订单数:</label>
+                            <input type="number" id="flatten-list-order-count" value="5" min="1" max="20">
+                        </div>
+                        <button onclick="exportFlattenListOrder()">导出</button>
+                    </div>
+                    <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
+                        💡 演示：一个订单有多个商品明细，展开为多行并自动合并
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>4. @FlattenList - 学生多 List 展开</h3>
+                    <p>学生有多个课程和多个奖项，展开为多行（取最长策略）</p>
+                    <div class="card-controls">
+                        <div class="input-group">
+                            <label>学生数:</label>
+                            <input type="number" id="flatten-list-student-count" value="5" min="1" max="20">
+                        </div>
+                        <button onclick="exportFlattenListStudent()">导出</button>
+                    </div>
+                    <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
+                        💡 演示：多个 List 字段同时展开，按最长 List 的长度展开
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>5. @ConditionalStyle - 条件样式</h3>
+                    <p>根据单元格值自动应用不同样式（颜色、字体等）</p>
+                    <div class="card-controls">
+                        <div class="input-group">
+                            <label>数据量:</label>
+                            <input type="number" id="conditional-style-count" value="20" min="1" max="100">
+                        </div>
+                        <button onclick="exportConditionalStyle()">导出</button>
+                    </div>
+                    <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
+                        💡 演示：分数>=90绿色、>=60黄色、<60红色；状态不同颜色
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>6. @DynamicHeaders - 动态表头</h3>
+                    <p>根据数据动态生成表头列（适用于属性不固定的场景）</p>
+                    <div class="card-controls">
+                        <div class="input-group">
+                            <label>数据量:</label>
+                            <input type="number" id="dynamic-header-count" value="15" min="1" max="100">
+                        </div>
+                        <button onclick="exportDynamicHeader()">导出</button>
+                    </div>
+                    <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
+                        💡 演示：不同产品类别有不同属性，表头自动生成
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 行号和动态文件名功能 -->
+        <div class="section">
+            <h2 class="section-title">🔢 行号与动态文件名 <span class="badge badge-new">NEW</span></h2>
+            <div class="card-grid">
+                <div class="card">
+                    <h3>1. @ExcelLine - 自动行号</h3>
+                    <p>使用 @ExcelLine 注解为导出数据自动添加行号</p>
+                    <div class="card-controls">
+                        <label>数据条数:</label>
+                        <div class="input-group">
+                            <input type="number" id="row-number-count" value="50" min="10" max="500" step="10">
+                        </div>
+                        <button onclick="exportRowNumber()">导出带行号</button>
+                    </div>
+                    <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
+                        💡 演示：每行数据自动生成序号，无需手动赋值
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>2. 动态文件名 - SpEL表达式</h3>
+                    <p>支持 #{#today}, #{#now}, #{#参数名} 等表达式</p>
+                    <div class="card-controls">
+                        <label>用户名:</label>
+                        <div class="input-group">
+                            <input type="text" id="dynamic-username" value="admin" placeholder="输入用户名">
+                        </div>
+                        <label>数据条数:</label>
+                        <div class="input-group">
+                            <input type="number" id="dynamic-count" value="20" min="5" max="100">
+                        </div>
+                        <button onclick="exportDynamicFilename()">导出(日期+用户名)</button>
+                    </div>
+                    <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
+                        💡 文件名格式: UserList-20251120-admin.xlsx
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>3. 动态文件名 - 时间戳</h3>
+                    <p>使用时间戳作为文件名，确保唯一性</p>
+                    <div class="card-controls">
+                        <label>数据条数:</label>
+                        <div class="input-group">
+                            <input type="number" id="timestamp-count" value="30" min="5" max="100">
+                        </div>
+                        <button onclick="exportTimestampFilename()">导出(时间戳)</button>
+                    </div>
+                    <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
+                        💡 文件名格式: ExportData-1732067123456.xlsx
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>4. 动态文件名 - 方法参数</h3>
+                    <p>使用方法参数值动态生成文件名</p>
+                    <div class="card-controls">
+                        <label>部门名称:</label>
+                        <div class="input-group">
+                            <input type="text" id="dept-name" value="Tech" placeholder="输入部门名称(英文)">
+                        </div>
+                        <label>数据条数:</label>
+                        <div class="input-group">
+                            <input type="number" id="dept-count" value="25" min="5" max="100">
+                        </div>
+                        <button onclick="exportParamFilename()">导出(部门+日期时间)</button>
+                    </div>
+                    <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
+                        💡 文件名格式: Tech-Employees-20251120-153045.xlsx
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 嵌套对象导入功能 -->
+        <div class="section">
+            <h2 class="section-title">📥 嵌套对象导入功能 <span class="badge badge-new">NEW</span></h2>
+            <div class="card-grid">
+                <div class="card">
+                    <h3>1. @NestedProperty - 嵌套对象导入</h3>
+                    <p>导入Excel时自动填充嵌套对象字段</p>
+                    <div class="card-controls">
+                        <input type="file" id="nested-property-import-file" class="file-input" accept=".xlsx,.xls">
+                        <label for="nested-property-import-file" class="file-label">选择文件</label>
+                        <button class="upload-btn" onclick="importNestedProperty()">上传导入</button>
+                    </div>
+                    <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
+                        💡 先导出一个文件，然后可以尝试导入
+                    </p>
+                    <div id="nested-property-import-result" style="margin-top: 10px;"></div>
+                </div>
+
+                <div class="card">
+                    <h3>2. @FlattenList - 多行聚合导入</h3>
+                    <p>将多行明细数据聚合回List对象</p>
+                    <div class="card-controls">
+                        <input type="file" id="flatten-list-import-file" class="file-input" accept=".xlsx,.xls">
+                        <label for="flatten-list-import-file" class="file-label">选择文件</label>
+                        <button class="upload-btn" onclick="importFlattenListOrder()">上传导入</button>
+                    </div>
+                    <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
+                        💡 先导出订单明细，然后导入测试聚合功能
+                    </p>
+                    <div id="flatten-list-import-result" style="margin-top: 10px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 数据验证功能 -->
+        <div class="section">
+            <h2 class="section-title">✅ 数据验证功能 <span class="badge badge-new">NEW</span></h2>
+            <div class="card-grid">
+                <div class="card">
+                    <h3>1. @ExcelValidation - 基础数据验证</h3>
+                    <p>为 Excel 列添加数据验证规则（下拉列表、数值范围、日期、文本长度等）</p>
+                    <div class="card-controls">
+                        <div class="input-group">
+                            <label>数据量:</label>
+                            <input type="number" id="validation-count" value="10" min="1" max="100">
+                        </div>
+                        <button onclick="exportValidation()">导出</button>
+                    </div>
+                    <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
+                        💡 演示：性别下拉、年龄范围18-65、工资范围、日期验证、文本长度等
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>2. @ExcelValidation - 自定义验证范围</h3>
+                    <p>自定义数据验证的行范围（适用于不同业务场景）</p>
+                    <div class="card-controls">
+                        <div class="input-group">
+                            <label>数据量:</label>
+                            <input type="number" id="validation-custom-count" value="10" min="1" max="100">
+                        </div>
+                        <button onclick="exportValidationCustom()">导出</button>
+                    </div>
+                    <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
+                        💡 演示：验证范围从第2行到第1000行（支持大数据量）
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 多 Sheet 关联导出功能 -->
+        <div class="section">
+            <h2 class="section-title">🔗 多 Sheet 关联导出 <span class="badge badge-new">NEW</span></h2>
+            <div class="card-grid">
+                <div class="card">
+                    <h3>1. @RelatedSheet - 关联 Sheet 导出</h3>
+                    <p>将主表和关联明细导出到不同 Sheet，自动建立关联关系</p>
+                    <div class="card-controls">
+                        <div class="input-group">
+                            <label>订单数:</label>
+                            <input type="number" id="multi-sheet-count" value="5" min="1" max="20">
+                        </div>
+                        <button onclick="exportMultiSheet()">导出</button>
+                    </div>
+                    <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
+                        💡 演示：订单主表和订单明细分别导出到不同 Sheet，并创建关联
+                    </p>
+                </div>
+            </div>
+        </div>
     </div>
+</div>
 
-    <script>
-        // 设置默认日期
-        document.getElementById('dynamic-date').valueAsDate = new Date();
+<script>
 
-        const API_BASE = 'http://localhost:8080';
+    const API_BASE = 'http://localhost:8080';
 
-        // ==================== SSE 进度管理 ====================
+    // ==================== SSE 进度管理 ====================
 
-        let activeEventSources = {}; // 存储活跃的 SSE 连接
+    let activeEventSources = {}; // 存储活跃的 SSE 连接
 
-        /**
-         * 创建 SSE 连接监听进度
-         * @param {string} progressId - 进度容器的 ID
-         * @param {string} sessionId - 会话 ID
-         */
-        function connectProgress(progressId, sessionId) {
-            const progressContainer = document.getElementById(progressId);
-            const progressBar = progressContainer.querySelector('.progress-bar');
-            const progressStatus = progressContainer.querySelector('.progress-status');
-            const progressDetail = progressContainer.querySelector('.progress-detail');
+    /**
+     * 创建 SSE 连接监听进度
+     * @param {string} progressId - 进度容器的 ID
+     * @param {string} sessionId - 会话 ID
+     */
+    function connectProgress(progressId, sessionId) {
+        const progressContainer = document.getElementById(progressId);
+        const progressBar = progressContainer.querySelector('.progress-bar');
+        const progressStatus = progressContainer.querySelector('.progress-status');
+        const progressDetail = progressContainer.querySelector('.progress-detail');
 
-            // 显示进度容器
-            progressContainer.classList.add('active');
+        // 显示进度容器
+        progressContainer.classList.add('active');
 
-            // 重置进度
-            progressBar.style.width = '0%';
-            progressBar.textContent = '0%';
-            progressStatus.textContent = '连接中...';
-            progressStatus.className = 'progress-status';
-            progressDetail.textContent = '0/0';
+        // 重置进度
+        progressBar.style.width = '0%';
+        progressBar.textContent = '0%';
+        progressStatus.textContent = '连接中...';
+        progressStatus.className = 'progress-status';
+        progressDetail.textContent = '0/0';
 
-            // 标记是否已完成（用于区分正常关闭和错误）
-            let isCompleted = false;
-            let isError = false;
+        // 标记是否已完成（用于区分正常关闭和错误）
+        let isCompleted = false;
+        let isError = false;
 
-            // 关闭之前的连接（如果存在）
-            if (activeEventSources[sessionId]) {
-                activeEventSources[sessionId].close();
-            }
+        // 关闭之前的连接（如果存在）
+        if (activeEventSources[sessionId]) {
+            activeEventSources[sessionId].close();
+        }
 
-            // 创建新的 SSE 连接
-            const eventSource = new EventSource(`${API_BASE}/api/progress/subscribe/${sessionId}`);
-            activeEventSources[sessionId] = eventSource;
+        // 创建新的 SSE 连接
+        const eventSource = new EventSource(`${API_BASE}/api/progress/subscribe/${sessionId}`);
+        activeEventSources[sessionId] = eventSource;
 
-            eventSource.addEventListener('progress', function(event) {
-                const data = JSON.parse(event.data);
+        eventSource.addEventListener('progress', function(event) {
+            const data = JSON.parse(event.data);
 
-                switch(data.type) {
-                    case 'start':
-                        progressStatus.textContent = '开始导出...';
-                        progressStatus.className = 'progress-status';
-                        progressDetail.textContent = `0/${data.totalRows}`;
-                        break;
+            switch(data.type) {
+                case 'start':
+                    progressStatus.textContent = '开始导出...';
+                    progressStatus.className = 'progress-status';
+                    progressDetail.textContent = `0/${data.totalRows}`;
+                    break;
 
-                    case 'progress':
-                        const percentage = Math.round(data.percentage);
-                        progressBar.style.width = percentage + '%';
-                        progressBar.textContent = percentage + '%';
-                        progressStatus.textContent = '导出中...';
-                        progressStatus.className = 'progress-status';
-                        progressDetail.textContent = `${data.currentRow}/${data.totalRows}`;
-                        break;
+                case 'progress':
+                    const percentage = Math.round(data.percentage);
+                    progressBar.style.width = percentage + '%';
+                    progressBar.textContent = percentage + '%';
+                    progressStatus.textContent = '导出中...';
+                    progressStatus.className = 'progress-status';
+                    progressDetail.textContent = `${data.currentRow}/${data.totalRows}`;
+                    break;
 
-                    case 'complete':
-                        isCompleted = true;
-                        progressBar.style.width = '100%';
-                        progressBar.textContent = '100%';
-                        progressStatus.textContent = '✓ 导出完成';
-                        progressStatus.className = 'progress-status success';
-                        progressDetail.textContent = `${data.totalRows}/${data.totalRows}`;
+                case 'complete':
+                    isCompleted = true;
+                    progressBar.style.width = '100%';
+                    progressBar.textContent = '100%';
+                    progressStatus.textContent = '✓ 导出完成';
+                    progressStatus.className = 'progress-status success';
+                    progressDetail.textContent = `${data.totalRows}/${data.totalRows}`;
 
-                        // 主动关闭连接，避免后端关闭时触发 onerror
-                        setTimeout(() => {
-                            eventSource.close();
-                            delete activeEventSources[sessionId];
-                        }, 2000);
-
-                        // 3秒后隐藏进度条
-                        setTimeout(() => {
-                            progressContainer.classList.remove('active');
-                        }, 3000);
-                        break;
-
-                    case 'error':
-                        isError = true;
-                        progressStatus.textContent = '✗ 导出失败: ' + data.message;
-                        progressStatus.className = 'progress-status error';
-
-                        // 关闭连接
+                    // 主动关闭连接，避免后端关闭时触发 onerror
+                    setTimeout(() => {
                         eventSource.close();
                         delete activeEventSources[sessionId];
+                    }, 2000);
 
-                        // 5秒后隐藏进度条
-                        setTimeout(() => {
-                            progressContainer.classList.remove('active');
-                        }, 5000);
-                        break;
-                }
-            });
+                    // 3秒后隐藏进度条
+                    setTimeout(() => {
+                        progressContainer.classList.remove('active');
+                    }, 3000);
+                    break;
 
-            eventSource.onerror = function(error) {
-                // 如果已经完成或已经处理了错误，不再显示错误提示
-                if (isCompleted || isError) {
-                    console.log('SSE 连接正常关闭');
+                case 'error':
+                    isError = true;
+                    progressStatus.textContent = '✗ 导出失败: ' + data.message;
+                    progressStatus.className = 'progress-status error';
+
+                    // 关闭连接
                     eventSource.close();
                     delete activeEventSources[sessionId];
-                    return;
-                }
 
-                // 真正的连接错误
-                console.error('SSE 连接错误:', error);
-                progressStatus.textContent = '✗ 连接失败';
-                progressStatus.className = 'progress-status error';
+                    // 5秒后隐藏进度条
+                    setTimeout(() => {
+                        progressContainer.classList.remove('active');
+                    }, 5000);
+                    break;
+            }
+        });
+
+        eventSource.onerror = function(error) {
+            // 如果已经完成或已经处理了错误，不再显示错误提示
+            if (isCompleted || isError) {
+                console.log('SSE 连接正常关闭');
                 eventSource.close();
                 delete activeEventSources[sessionId];
-
-                // 5秒后隐藏进度条
-                setTimeout(() => {
-                    progressContainer.classList.remove('active');
-                }, 5000);
-            };
-        }
-
-        /**
-         * 生成唯一的会话 ID
-         */
-        function generateSessionId() {
-            return 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-        }
-
-        // 导出函数
-        function exportSimple() {
-            const count = document.getElementById('simple-count').value;
-            window.open(`${API_BASE}/api/export/basic/simple?count=${count}`);
-        }
-
-        function exportEmpty() {
-            window.open(`${API_BASE}/api/export/basic/empty`);
-        }
-
-        function exportOnlyAnnotated() {
-            const count = document.getElementById('annotated-count').value;
-            window.open(`${API_BASE}/api/export/basic/only-annotated?count=${count}`);
-        }
-
-        function exportMultiSheet() {
-            const userCount = document.getElementById('multi-user').value;
-            const orderCount = document.getElementById('multi-order').value;
-            window.open(`${API_BASE}/api/export/basic/multi-sheet?userCount=${userCount}&orderCount=${orderCount}`);
-        }
-
-        function exportMultiSheetEmpty() {
-            window.open(`${API_BASE}/api/export/basic/multi-sheet-empty`);
-        }
-
-        function exportStyled() {
-            const count = document.getElementById('styled-count').value;
-            window.open(`${API_BASE}/api/export/basic/styled?count=${count}`);
-        }
-
-        function exportDynamic() {
-            const date = document.getElementById('dynamic-date').value;
-            const count = document.getElementById('dynamic-count').value;
-            window.open(`${API_BASE}/api/export/basic/dynamic-name?date=${date}&count=${count}`);
-        }
-
-        // 下载导入模板
-        function downloadTemplate() {
-            window.open(`${API_BASE}/api/import/template`);
-        }
-
-        function exportMerge() {
-            const count = document.getElementById('merge-count').value;
-            window.open(`${API_BASE}/api/export/advanced/merge?count=${count}`);
-        }
-
-        function exportDesensitize() {
-            const count = document.getElementById('desensitize-count').value;
-            window.open(`${API_BASE}/api/export/advanced/desensitize?count=${count}`);
-        }
-
-        function exportWithProgress() {
-            const count = document.getElementById('progress-count').value;
-            const sessionId = generateSessionId();
-
-            // 建立 SSE 连接监听进度
-            connectProgress('progress-with-progress', sessionId);
-
-            // 打开导出链接（带上 sessionId）
-            window.open(`${API_BASE}/api/export/advanced/with-progress?count=${count}&sessionId=${sessionId}`);
-        }
-
-        function exportLargeData() {
-            const count = document.getElementById('large-count').value;
-            const sessionId = generateSessionId();
-
-            // 建立 SSE 连接监听进度
-            connectProgress('progress-large-data', sessionId);
-
-            // 打开导出链接（带上 sessionId）
-            window.open(`${API_BASE}/api/export/advanced/large-data?count=${count}&sessionId=${sessionId}`);
-        }
-
-        function exportMergeWithProgress() {
-            const count = document.getElementById('merge-progress-count').value;
-            const sessionId = generateSessionId();
-
-            // 建立 SSE 连接监听进度
-            connectProgress('progress-merge-progress', sessionId);
-
-            // 打开导出链接（带上 sessionId）
-            window.open(`${API_BASE}/api/export/advanced/merge-with-progress?count=${count}&sessionId=${sessionId}`);
-        }
-
-        // 导入函数
-        function importSimple() {
-            uploadFile('simple-import-file', '/api/import/simple', 'simple-import-result');
-        }
-
-        function importValidate() {
-            uploadFile('validate-import-file', '/api/import/validate', 'validate-import-result');
-        }
-
-        function importSkipEmpty() {
-            uploadFile('skip-import-file', '/api/import/skip-empty', 'skip-import-result');
-        }
-
-        // 字典转换示例函数
-        function exportDictExample() {
-            const count = document.getElementById('dict-export-count').value;
-            window.open(`${API_BASE}/api/dict/export?count=${count}`);
-        }
-
-        function downloadDictTemplate() {
-            window.open(`${API_BASE}/api/dict/template`);
-        }
-
-        function importDictExample() {
-            uploadFile('dict-import-file', '/api/dict/import', 'dict-import-result');
-        }
-
-        function viewDictConfig() {
-            fetch(`${API_BASE}/api/dict/config`)
-                .then(response => response.json())
-                .then(data => {
-                    let html = '<div class="result-content">';
-                    html += '<h4>字典配置信息：</h4>';
-                    html += '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
-                    html += '</div>';
-                    document.getElementById('dict-config-result').innerHTML = html;
-                })
-                .catch(error => {
-                    showResult('dict-config-result', '获取字典配置失败: ' + error.message, 'error');
-                });
-        }
-
-        function uploadFile(fileInputId, apiUrl, resultId) {
-            const fileInput = document.getElementById(fileInputId);
-            const file = fileInput.files[0];
-
-            if (!file) {
-                showResult(resultId, '请先选择文件', 'error');
                 return;
             }
 
-            const formData = new FormData();
-            formData.append('file', file);
+            // 真正的连接错误
+            console.error('SSE 连接错误:', error);
+            progressStatus.textContent = '✗ 连接失败';
+            progressStatus.className = 'progress-status error';
+            eventSource.close();
+            delete activeEventSources[sessionId];
 
-            fetch(API_BASE + apiUrl, {
-                method: 'POST',
-                body: formData
+            // 5秒后隐藏进度条
+            setTimeout(() => {
+                progressContainer.classList.remove('active');
+            }, 5000);
+        };
+    }
+
+    /**
+     * 生成唯一的会话 ID
+     */
+    function generateSessionId() {
+        return 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    }
+
+    // 导出函数
+    function exportSimple() {
+        const count = document.getElementById('simple-count').value;
+        window.open(`${API_BASE}/api/export/basic/simple?count=${count}`);
+    }
+
+    function exportEmpty() {
+        window.open(`${API_BASE}/api/export/basic/empty`);
+    }
+
+    function exportOnlyAnnotated() {
+        const count = document.getElementById('annotated-count').value;
+        window.open(`${API_BASE}/api/export/basic/only-annotated?count=${count}`);
+    }
+
+    function exportMultiSheet() {
+        const userCount = document.getElementById('multi-user').value;
+        const orderCount = document.getElementById('multi-order').value;
+        window.open(`${API_BASE}/api/export/basic/multi-sheet?userCount=${userCount}&orderCount=${orderCount}`);
+    }
+
+    function exportMultiSheetEmpty() {
+        window.open(`${API_BASE}/api/export/basic/multi-sheet-empty`);
+    }
+
+    function exportStyled() {
+        const count = document.getElementById('styled-count').value;
+        window.open(`${API_BASE}/api/export/basic/styled?count=${count}`);
+    }
+
+    function exportDynamic() {
+        const count = document.getElementById('dynamic-count').value;
+        window.open(`${API_BASE}/api/export/basic/dynamic-name?date=${date}&count=${count}`);
+    }
+
+    // 下载导入模板
+    function downloadTemplate() {
+        window.open(`${API_BASE}/api/import/template`);
+    }
+
+    function exportMerge() {
+        const count = document.getElementById('merge-count').value;
+        window.open(`${API_BASE}/api/export/advanced/merge?count=${count}`);
+    }
+
+    function exportDesensitize() {
+        const count = document.getElementById('desensitize-count').value;
+        window.open(`${API_BASE}/api/export/advanced/desensitize?count=${count}`);
+    }
+
+    function exportWithProgress() {
+        const count = document.getElementById('progress-count').value;
+        const sessionId = generateSessionId();
+
+        // 建立 SSE 连接监听进度
+        connectProgress('progress-with-progress', sessionId);
+
+        // 打开导出链接（带上 sessionId）
+        window.open(`${API_BASE}/api/export/advanced/with-progress?count=${count}&sessionId=${sessionId}`);
+    }
+
+    function exportLargeData() {
+        const count = document.getElementById('large-count').value;
+        const sessionId = generateSessionId();
+
+        // 建立 SSE 连接监听进度
+        connectProgress('progress-large-data', sessionId);
+
+        // 打开导出链接（带上 sessionId）
+        window.open(`${API_BASE}/api/export/advanced/large-data?count=${count}&sessionId=${sessionId}`);
+    }
+
+    function exportMergeWithProgress() {
+        const count = document.getElementById('merge-progress-count').value;
+        const sessionId = generateSessionId();
+
+        // 建立 SSE 连接监听进度
+        connectProgress('progress-merge-progress', sessionId);
+
+        // 打开导出链接（带上 sessionId）
+        window.open(`${API_BASE}/api/export/advanced/merge-with-progress?count=${count}&sessionId=${sessionId}`);
+    }
+
+    // 导入函数
+    function importSimple() {
+        uploadFile('simple-import-file', '/api/import/simple', 'simple-import-result');
+    }
+
+    function importValidate() {
+        uploadFile('validate-import-file', '/api/import/validate', 'validate-import-result');
+    }
+
+    function importSkipEmpty() {
+        uploadFile('skip-import-file', '/api/import/skip-empty', 'skip-import-result');
+    }
+
+    // 字典转换示例函数
+    function exportDictExample() {
+        const count = document.getElementById('dict-export-count').value;
+        window.open(`${API_BASE}/api/dict/export?count=${count}`);
+    }
+
+    function downloadDictTemplate() {
+        window.open(`${API_BASE}/api/dict/template`);
+    }
+
+    function importDictExample() {
+        uploadFile('dict-import-file', '/api/dict/import', 'dict-import-result');
+    }
+
+    function viewDictConfig() {
+        fetch(`${API_BASE}/api/dict/config`)
+            .then(response => response.json())
+            .then(data => {
+                let html = '<div class="result-content">';
+                html += '<h4>字典配置信息：</h4>';
+                html += '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                html += '</div>';
+                document.getElementById('dict-config-result').innerHTML = html;
             })
+            .catch(error => {
+                showResult('dict-config-result', '获取字典配置失败: ' + error.message, 'error');
+            });
+    }
+
+    function uploadFile(fileInputId, apiUrl, resultId) {
+        const fileInput = document.getElementById(fileInputId);
+        const file = fileInput.files[0];
+
+        if (!file) {
+            showResult(resultId, '请先选择文件', 'error');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        fetch(API_BASE + apiUrl, {
+            method: 'POST',
+            body: formData
+        })
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
@@ -1394,65 +1379,65 @@ private List&lt;String&gt; imageList;</pre>
             .catch(error => {
                 showResult(resultId, `❌ 上传失败: ${error.message}`, 'error');
             });
+    }
+
+    function showResult(elementId, message, type) {
+        const resultDiv = document.getElementById(elementId);
+        resultDiv.className = `result ${type}`;
+        resultDiv.innerHTML = message;
+    }
+
+    // ==================== 嵌套对象导出函数 ====================
+
+    function exportNestedProperty() {
+        const count = document.getElementById('nested-property-count').value;
+        window.open(`${API_BASE}/api/export/nested/nested-property?count=${count}`);
+    }
+
+    function exportFlattenProperty() {
+        const count = document.getElementById('flatten-property-count').value;
+        window.open(`${API_BASE}/api/export/nested/flatten-property?count=${count}`);
+    }
+
+    function exportFlattenListOrder() {
+        const count = document.getElementById('flatten-list-order-count').value;
+        window.open(`${API_BASE}/api/export/nested/flatten-list-order?count=${count}`);
+    }
+
+    function exportFlattenListStudent() {
+        const count = document.getElementById('flatten-list-student-count').value;
+        window.open(`${API_BASE}/api/export/nested/flatten-list-student?count=${count}`);
+    }
+
+    function exportConditionalStyle() {
+        const count = document.getElementById('conditional-style-count').value;
+        window.open(`${API_BASE}/api/export/nested/conditional-style?count=${count}`);
+    }
+
+    function exportDynamicHeader() {
+        const count = document.getElementById('dynamic-header-count').value;
+        window.open(`${API_BASE}/api/export/nested/dynamic-header?count=${count}`);
+    }
+
+    // 导入函数
+    function importNestedProperty() {
+        const fileInput = document.getElementById('nested-property-import-file');
+        const resultDiv = document.getElementById('nested-property-import-result');
+
+        if (!fileInput.files || fileInput.files.length === 0) {
+            resultDiv.innerHTML = '<p style="color: red;">请先选择文件</p>';
+            return;
         }
 
-        function showResult(elementId, message, type) {
-            const resultDiv = document.getElementById(elementId);
-            resultDiv.className = `result ${type}`;
-            resultDiv.innerHTML = message;
-        }
+        const formData = new FormData();
+        formData.append('file', fileInput.files[0]);
 
-        // ==================== 嵌套对象导出函数 ====================
+        resultDiv.innerHTML = '<p style="color: blue;">导入中...</p>';
 
-        function exportNestedProperty() {
-            const count = document.getElementById('nested-property-count').value;
-            window.open(`${API_BASE}/api/export/nested/nested-property?count=${count}`);
-        }
-
-        function exportFlattenProperty() {
-            const count = document.getElementById('flatten-property-count').value;
-            window.open(`${API_BASE}/api/export/nested/flatten-property?count=${count}`);
-        }
-
-        function exportFlattenListOrder() {
-            const count = document.getElementById('flatten-list-order-count').value;
-            window.open(`${API_BASE}/api/export/nested/flatten-list-order?count=${count}`);
-        }
-
-        function exportFlattenListStudent() {
-            const count = document.getElementById('flatten-list-student-count').value;
-            window.open(`${API_BASE}/api/export/nested/flatten-list-student?count=${count}`);
-        }
-
-        function exportConditionalStyle() {
-            const count = document.getElementById('conditional-style-count').value;
-            window.open(`${API_BASE}/api/export/nested/conditional-style?count=${count}`);
-        }
-
-        function exportDynamicHeader() {
-            const count = document.getElementById('dynamic-header-count').value;
-            window.open(`${API_BASE}/api/export/nested/dynamic-header?count=${count}`);
-        }
-
-        // 导入函数
-        function importNestedProperty() {
-            const fileInput = document.getElementById('nested-property-import-file');
-            const resultDiv = document.getElementById('nested-property-import-result');
-
-            if (!fileInput.files || fileInput.files.length === 0) {
-                resultDiv.innerHTML = '<p style="color: red;">请先选择文件</p>';
-                return;
-            }
-
-            const formData = new FormData();
-            formData.append('file', fileInput.files[0]);
-
-            resultDiv.innerHTML = '<p style="color: blue;">导入中...</p>';
-
-            fetch(`${API_BASE}/api/import/nested/nested-property`, {
-                method: 'POST',
-                body: formData
-            })
+        fetch(`${API_BASE}/api/import/nested/nested-property`, {
+            method: 'POST',
+            body: formData
+        })
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
@@ -1467,26 +1452,26 @@ private List&lt;String&gt; imageList;</pre>
             .catch(error => {
                 resultDiv.innerHTML = `<p style="color: red;">✗ 导入失败：${error.message}</p>`;
             });
+    }
+
+    function importFlattenListOrder() {
+        const fileInput = document.getElementById('flatten-list-import-file');
+        const resultDiv = document.getElementById('flatten-list-import-result');
+
+        if (!fileInput.files || fileInput.files.length === 0) {
+            resultDiv.innerHTML = '<p style="color: red;">请先选择文件</p>';
+            return;
         }
 
-        function importFlattenListOrder() {
-            const fileInput = document.getElementById('flatten-list-import-file');
-            const resultDiv = document.getElementById('flatten-list-import-result');
+        const formData = new FormData();
+        formData.append('file', fileInput.files[0]);
 
-            if (!fileInput.files || fileInput.files.length === 0) {
-                resultDiv.innerHTML = '<p style="color: red;">请先选择文件</p>';
-                return;
-            }
+        resultDiv.innerHTML = '<p style="color: blue;">导入中...</p>';
 
-            const formData = new FormData();
-            formData.append('file', fileInput.files[0]);
-
-            resultDiv.innerHTML = '<p style="color: blue;">导入中...</p>';
-
-            fetch(`${API_BASE}/api/import/nested/flatten-list-order`, {
-                method: 'POST',
-                body: formData
-            })
+        fetch(`${API_BASE}/api/import/nested/flatten-list-order`, {
+            method: 'POST',
+            body: formData
+        })
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
@@ -1501,128 +1486,122 @@ private List&lt;String&gt; imageList;</pre>
             .catch(error => {
                 resultDiv.innerHTML = `<p style="color: red;">✗ 导入失败：${error.message}</p>`;
             });
+    }
+
+    // 数据验证导出函数
+    function exportValidation() {
+        const count = document.getElementById('validation-count').value;
+        window.location.href = `${API_BASE}/api/export/advanced/validation?count=${count}`;
+    }
+
+    function exportValidationCustom() {
+        const count = document.getElementById('validation-custom-count').value;
+        window.location.href = `${API_BASE}/api/export/advanced/validation-custom?count=${count}`;
+    }
+
+    // 多 Sheet 关联导出函数
+    function exportMultiSheet() {
+        const count = document.getElementById('multi-sheet-count').value;
+        window.location.href = `${API_BASE}/api/export/advanced/multi-sheet?count=${count}`;
+    }
+
+    // ==================== 新功能导出函数 ====================
+
+    // 冻结窗格和筛选导出
+    function exportSheetStyle() {
+        const count = document.getElementById('sheet-style-count').value;
+        window.location.href = `${API_BASE}/api/export/advanced/sheet-style?count=${count}`;
+    }
+
+    // 条件格式导出
+    function exportConditionalFormat() {
+        const count = document.getElementById('conditional-format-count').value;
+        window.location.href = `${API_BASE}/api/export/advanced/conditional-format?count=${count}`;
+    }
+
+    // 导入模板生成
+    function exportTemplate() {
+        const sampleRows = document.getElementById('template-samples').value;
+        window.location.href = `${API_BASE}/api/export/advanced/template?sampleRows=${sampleRows}`;
+    }
+
+    // Excel 图表导出（旧版）
+    function exportChart() {
+        const count = document.getElementById('chart-count').value;
+        window.location.href = `${API_BASE}/api/export/advanced/chart?count=${count}`;
+    }
+
+    // Excel 加密导出 - 简单加密（使用 @ExportExcel password 属性）
+    function exportEncrypted() {
+        const count = document.getElementById('encrypted-count').value;
+        window.location.href = `${API_BASE}/api/export/advanced/encrypted?count=${count}`;
+    }
+
+    // Excel 加密导出 - AGILE 高级加密（使用 ExcelEncryptionUtil）
+    function exportEncryptedAdvanced() {
+        const count = document.getElementById('encrypted-count').value;
+        window.location.href = `${API_BASE}/api/export/advanced/encrypted-advanced?count=${count}&password=password123`;
+    }
+
+    // ========== 行号和动态文件名功能 ==========
+
+    // @ExcelLine - 自动行号导出
+    function exportRowNumber() {
+        const count = document.getElementById('row-number-count').value;
+        window.location.href = `${API_BASE}/api/export/advanced/row-number?count=${count}`;
+    }
+
+    // 动态文件名 - SpEL表达式
+    function exportDynamicFilename() {
+        const username = document.getElementById('dynamic-username').value;
+        const count = document.getElementById('dynamic-count').value;
+        window.location.href = `${API_BASE}/api/export/advanced/dynamic-filename?username=${encodeURIComponent(username)}&count=${count}`;
+    }
+
+    // 动态文件名 - 时间戳
+    function exportTimestampFilename() {
+        const count = document.getElementById('timestamp-count').value;
+        window.location.href = `${API_BASE}/api/export/advanced/dynamic-filename-timestamp?count=${count}`;
+    }
+
+    // 动态文件名 - 方法参数
+    function exportParamFilename() {
+        const department = document.getElementById('dept-name').value;
+        const count = document.getElementById('dept-count').value;
+        window.location.href = `${API_BASE}/api/export/advanced/dynamic-filename-param?department=${encodeURIComponent(department)}&count=${count}`;
+    }
+
+    // ========== 图片导入导出功能 ==========
+
+    // 导出带图片的商品Excel
+    function exportProductImages() {
+        window.location.href = `${API_BASE}/api/image/export`;
+    }
+
+    // 下载图片导入模板
+    function downloadImageTemplate() {
+        window.location.href = `${API_BASE}/api/image/template`;
+    }
+
+    // 导入带图片的Excel
+    function importProductImages() {
+        const fileInput = document.getElementById('image-import-file');
+        const resultDiv = document.getElementById('image-import-result');
+
+        if (!fileInput.files.length) {
+            resultDiv.innerHTML = '<p style="color: orange;">⚠ 请先选择文件</p>';
+            return;
         }
 
-        // 数据验证导出函数
-        function exportValidation() {
-            const count = document.getElementById('validation-count').value;
-            window.location.href = `${API_BASE}/api/export/advanced/validation?count=${count}`;
-        }
+        const formData = new FormData();
+        formData.append('file', fileInput.files[0]);
 
-        function exportValidationCustom() {
-            const count = document.getElementById('validation-custom-count').value;
-            window.location.href = `${API_BASE}/api/export/advanced/validation-custom?count=${count}`;
-        }
+        resultDiv.innerHTML = '<p style="color: blue;">⏳ 正在导入...</p>';
 
-        // 多 Sheet 关联导出函数
-        function exportMultiSheet() {
-            const count = document.getElementById('multi-sheet-count').value;
-            window.location.href = `${API_BASE}/api/export/advanced/multi-sheet?count=${count}`;
-        }
-
-        // ==================== 新功能导出函数 ====================
-
-        // Excel 公式导出
-        function exportFormula() {
-            const count = document.getElementById('formula-count').value;
-            window.location.href = `${API_BASE}/api/export/advanced/formula?count=${count}`;
-        }
-
-        // 冻结窗格和筛选导出
-        function exportSheetStyle() {
-            const count = document.getElementById('sheet-style-count').value;
-            window.location.href = `${API_BASE}/api/export/advanced/sheet-style?count=${count}`;
-        }
-
-        // 条件格式导出
-        function exportConditionalFormat() {
-            const count = document.getElementById('conditional-format-count').value;
-            window.location.href = `${API_BASE}/api/export/advanced/conditional-format?count=${count}`;
-        }
-
-        // 导入模板生成
-        function exportTemplate() {
-            const sampleRows = document.getElementById('template-samples').value;
-            window.location.href = `${API_BASE}/api/export/advanced/template?sampleRows=${sampleRows}`;
-        }
-
-        // Excel 图表导出（旧版）
-        function exportChart() {
-            const count = document.getElementById('chart-count').value;
-            window.location.href = `${API_BASE}/api/export/advanced/chart?count=${count}`;
-        }
-
-        // Excel 加密导出 - 简单加密（使用 @ExportExcel password 属性）
-        function exportEncrypted() {
-            const count = document.getElementById('encrypted-count').value;
-            window.location.href = `${API_BASE}/api/export/advanced/encrypted?count=${count}`;
-        }
-
-        // Excel 加密导出 - AGILE 高级加密（使用 ExcelEncryptionUtil）
-        function exportEncryptedAdvanced() {
-            const count = document.getElementById('encrypted-count').value;
-            window.location.href = `${API_BASE}/api/export/advanced/encrypted-advanced?count=${count}&password=password123`;
-        }
-
-        // ========== 行号和动态文件名功能 ==========
-
-        // @ExcelLine - 自动行号导出
-        function exportRowNumber() {
-            const count = document.getElementById('row-number-count').value;
-            window.location.href = `${API_BASE}/api/export/advanced/row-number?count=${count}`;
-        }
-
-        // 动态文件名 - SpEL表达式
-        function exportDynamicFilename() {
-            const username = document.getElementById('dynamic-username').value;
-            const count = document.getElementById('dynamic-count').value;
-            window.location.href = `${API_BASE}/api/export/advanced/dynamic-filename?username=${encodeURIComponent(username)}&count=${count}`;
-        }
-
-        // 动态文件名 - 时间戳
-        function exportTimestampFilename() {
-            const count = document.getElementById('timestamp-count').value;
-            window.location.href = `${API_BASE}/api/export/advanced/dynamic-filename-timestamp?count=${count}`;
-        }
-
-        // 动态文件名 - 方法参数
-        function exportParamFilename() {
-            const department = document.getElementById('dept-name').value;
-            const count = document.getElementById('dept-count').value;
-            window.location.href = `${API_BASE}/api/export/advanced/dynamic-filename-param?department=${encodeURIComponent(department)}&count=${count}`;
-        }
-
-        // ========== 图片导入导出功能 ==========
-
-        // 导出带图片的商品Excel
-        function exportProductImages() {
-            window.location.href = `${API_BASE}/api/image/export`;
-        }
-
-        // 下载图片导入模板
-        function downloadImageTemplate() {
-            window.location.href = `${API_BASE}/api/image/template`;
-        }
-
-        // 导入带图片的Excel
-        function importProductImages() {
-            const fileInput = document.getElementById('image-import-file');
-            const resultDiv = document.getElementById('image-import-result');
-
-            if (!fileInput.files.length) {
-                resultDiv.innerHTML = '<p style="color: orange;">⚠ 请先选择文件</p>';
-                return;
-            }
-
-            const formData = new FormData();
-            formData.append('file', fileInput.files[0]);
-
-            resultDiv.innerHTML = '<p style="color: blue;">⏳ 正在导入...</p>';
-
-            fetch(`${API_BASE}/api/image/import`, {
-                method: 'POST',
-                body: formData
-            })
+        fetch(`${API_BASE}/api/image/import`, {
+            method: 'POST',
+            body: formData
+        })
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
@@ -1643,77 +1622,77 @@ private List&lt;String&gt; imageList;</pre>
             .catch(error => {
                 resultDiv.innerHTML = `<p style="color: red;">✗ 导入失败：${error.message}</p>`;
             });
-        }
+    }
 
-        // 显示/隐藏图片尺寸说明
-        function showImageSizeGuide() {
-            const guideDiv = document.getElementById('image-size-guide');
-            if (guideDiv.style.display === 'none') {
-                guideDiv.style.display = 'block';
-            } else {
-                guideDiv.style.display = 'none';
-            }
+    // 显示/隐藏图片尺寸说明
+    function showImageSizeGuide() {
+        const guideDiv = document.getElementById('image-size-guide');
+        if (guideDiv.style.display === 'none') {
+            guideDiv.style.display = 'block';
+        } else {
+            guideDiv.style.display = 'none';
         }
+    }
 
-        // ========== 图表导出功能 ==========
+    // ========== 图表导出功能 ==========
 
-        // 1. 导出折线图
-        function exportLineChart() {
-            const months = document.getElementById('line-chart-months').value;
-            window.location.href = `${API_BASE}/api/chart/line?months=${months}`;
+    // 1. 导出折线图
+    function exportLineChart() {
+        const months = document.getElementById('line-chart-months').value;
+        window.location.href = `${API_BASE}/api/chart/line?months=${months}`;
+    }
+
+    // 2. 导出柱状图
+    function exportColumnChart() {
+        const months = document.getElementById('column-chart-months').value;
+        window.location.href = `${API_BASE}/api/chart/column?months=${months}`;
+    }
+
+    // 3. 导出条形图
+    function exportBarChart() {
+        const months = document.getElementById('bar-chart-months').value;
+        window.location.href = `${API_BASE}/api/chart/bar?months=${months}`;
+    }
+
+    // 4. 导出饼图
+    function exportPieChart() {
+        const months = document.getElementById('pie-chart-months').value;
+        window.location.href = `${API_BASE}/api/chart/pie?months=${months}`;
+    }
+
+    // 5. 导出面积图
+    function exportAreaChart() {
+        const months = document.getElementById('area-chart-months').value;
+        window.location.href = `${API_BASE}/api/chart/area?months=${months}`;
+    }
+
+    // 6. 导出散点图
+    function exportScatterChart() {
+        const months = document.getElementById('scatter-chart-months').value;
+        window.location.href = `${API_BASE}/api/chart/scatter?months=${months}`;
+    }
+
+    // 7. 导出多系列图表
+    function exportMultiSeriesChart() {
+        const months = document.getElementById('multi-chart-months').value;
+        window.location.href = `${API_BASE}/api/chart/multi-series?months=${months}`;
+    }
+
+    // 8. 导出自定义位置图表
+    function exportCustomPositionChart() {
+        const months = document.getElementById('custom-chart-months').value;
+        window.location.href = `${API_BASE}/api/chart/custom-position?months=${months}`;
+    }
+
+    // 切换图表配置说明
+    function toggleChartGuide() {
+        const guideDiv = document.getElementById('chart-guide');
+        if (guideDiv.style.display === 'none') {
+            guideDiv.style.display = 'block';
+        } else {
+            guideDiv.style.display = 'none';
         }
-
-        // 2. 导出柱状图
-        function exportColumnChart() {
-            const months = document.getElementById('column-chart-months').value;
-            window.location.href = `${API_BASE}/api/chart/column?months=${months}`;
-        }
-
-        // 3. 导出条形图
-        function exportBarChart() {
-            const months = document.getElementById('bar-chart-months').value;
-            window.location.href = `${API_BASE}/api/chart/bar?months=${months}`;
-        }
-
-        // 4. 导出饼图
-        function exportPieChart() {
-            const months = document.getElementById('pie-chart-months').value;
-            window.location.href = `${API_BASE}/api/chart/pie?months=${months}`;
-        }
-
-        // 5. 导出面积图
-        function exportAreaChart() {
-            const months = document.getElementById('area-chart-months').value;
-            window.location.href = `${API_BASE}/api/chart/area?months=${months}`;
-        }
-
-        // 6. 导出散点图
-        function exportScatterChart() {
-            const months = document.getElementById('scatter-chart-months').value;
-            window.location.href = `${API_BASE}/api/chart/scatter?months=${months}`;
-        }
-
-        // 7. 导出多系列图表
-        function exportMultiSeriesChart() {
-            const months = document.getElementById('multi-chart-months').value;
-            window.location.href = `${API_BASE}/api/chart/multi-series?months=${months}`;
-        }
-
-        // 8. 导出自定义位置图表
-        function exportCustomPositionChart() {
-            const months = document.getElementById('custom-chart-months').value;
-            window.location.href = `${API_BASE}/api/chart/custom-position?months=${months}`;
-        }
-
-        // 切换图表配置说明
-        function toggleChartGuide() {
-            const guideDiv = document.getElementById('chart-guide');
-            if (guideDiv.style.display === 'none') {
-                guideDiv.style.display = 'block';
-            } else {
-                guideDiv.style.display = 'none';
-            }
-        }
-    </script>
+    }
+</script>
 </body>
 </html>
