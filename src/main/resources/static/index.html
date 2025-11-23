@@ -1675,7 +1675,7 @@ private List&lt;String&gt; imageList;</pre>
     // 7. 导出多系列图表
     function exportMultiSeriesChart() {
         const months = document.getElementById('multi-chart-months').value;
-        window.location.href = `${API_BASE}/api/chart/multi-series?months=${months}`;
+        window.location.href = `${API_BASE}/api/chart/layered-analysis?months=${months}`;
     }
 
     // 8. 导出自定义位置图表
