@@ -4,11 +4,14 @@ import cn.allbs.excel.annotation.ExportExcel;
 import cn.allbs.excel.annotation.ImportExcel;
 import cn.allbs.excel.annotation.Sheet;
 import cn.allbs.excel.test.entity.UserDTO;
+import cn.allbs.excel.vo.ErrorMessage;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.CollectionUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,8 +30,8 @@ public class ImportController {
      */
     @GetMapping("/template")
     @ExportExcel(
-        name = "导入模板",
-        sheets = @Sheet(sheetName = "用户信息", clazz = UserDTO.class)
+            name = "导入模板",
+            sheets = @Sheet(sheetName = "用户信息", clazz = UserDTO.class)
     )
     public List<UserDTO> downloadTemplate() {
         // 返回一个示例数据，方便用户了解格式
@@ -60,16 +63,16 @@ public class ImportController {
      */
     @PostMapping("/validate")
     public ResponseEntity<?> importWithValidation(
-        @ImportExcel List<UserDTO> users,
-        BindingResult bindingResult
+            @ImportExcel List<UserDTO> users,
+            @RequestAttribute(name = "excelErrors", required = false) List<ErrorMessage> excelErrors
     ) {
         Map<String, Object> result = new HashMap<>();
 
-        if (bindingResult.hasErrors()) {
-            List<String> errors = bindingResult.getAllErrors()
-                .stream()
-                .map(ObjectError::getDefaultMessage)
-                .collect(Collectors.toList());
+        if (!CollectionUtils.isEmpty(excelErrors)) {
+            List<String> errors = Collections.singletonList(excelErrors.stream()
+                    .map(err -> "行号 " + err.getLineNum() + "：" +
+                            String.join("，", err.getErrors()))
+                    .collect(Collectors.joining("\n")));
 
             result.put("success", false);
             result.put("message", "数据验证失败");
@@ -89,7 +92,7 @@ public class ImportController {
      */
     @PostMapping("/skip-empty")
     public ResponseEntity<?> importSkipEmpty(
-        @ImportExcel(ignoreEmptyRow = true) List<UserDTO> users
+            @ImportExcel(ignoreEmptyRow = true) List<UserDTO> users
     ) {
         Map<String, Object> result = new HashMap<>();
         result.put("success", true);
@@ -104,7 +107,7 @@ public class ImportController {
      */
     @PostMapping("/custom-field")
     public ResponseEntity<?> importCustomField(
-        @ImportExcel(fileName = "excelFile") List<UserDTO> users
+            @ImportExcel(fileName = "excelFile") List<UserDTO> users
     ) {
         Map<String, Object> result = new HashMap<>();
         result.put("success", true);

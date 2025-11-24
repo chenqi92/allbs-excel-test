@@ -1,6 +1,7 @@
 package cn.allbs.excel.test.entity;
 
 import cn.allbs.excel.annotation.ExcelImage;
+import cn.allbs.excel.convert.ImageListConverter;
 import com.alibaba.excel.annotation.ExcelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -61,7 +62,7 @@ public class ProductImageDTO {
 	 * 导入时：读取为 Base64 字符串列表
 	 * </p>
 	 */
-	@ExcelProperty(value = "商品图集", converter = cn.allbs.excel.convert.ImageListConverter.class)
+	@ExcelProperty(value = "商品图集", converter = ImageListConverter.class)
 	@ExcelImage(width = 100, height = 100)
 	private List<String> imageList;
 
