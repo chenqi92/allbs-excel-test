@@ -87,7 +87,7 @@ public class ImageImportExportController {
 	}
 
 	/**
-	 * 2. 导入带图片的 Excel
+	 * 2. 导入带图片的 Excel（自动模式 - 默认读取Drawing对象）
 	 */
 	@PostMapping("/import")
 	public ResponseEntity<?> importWithImages(@ImportExcel List<ProductImageDTO> products) {
@@ -127,7 +127,91 @@ public class ImageImportExportController {
 	}
 
 	/**
-	 * 3. 下载导入模板
+	 * 3. 导入带图片的 Excel（Drawing模式 - 读取真实图片）
+	 */
+	@PostMapping("/import/drawing")
+	public ResponseEntity<?> importWithDrawingImages(
+			@ImportExcel(imageReadMode = ImportExcel.ImageReadMode.DRAWING) List<ProductImageDTO> products) {
+
+		Map<String, Object> result = new HashMap<>();
+		result.put("success", true);
+		result.put("message", "导入成功（Drawing模式）");
+		result.put("mode", "DRAWING");
+		result.put("count", products.size());
+
+		// 处理导入的数据
+		List<Map<String, Object>> productInfos = new ArrayList<>();
+		for (ProductImageDTO product : products) {
+			Map<String, Object> info = new HashMap<>();
+			info.put("id", product.getId());
+			info.put("name", product.getName());
+			info.put("price", product.getPrice());
+			info.put("stock", product.getStock());
+			info.put("description", product.getDescription());
+
+			// 图片信息
+			info.put("hasMainImage", product.getMainImage() != null && !product.getMainImage().isEmpty());
+			info.put("hasThumbnail", product.getThumbnail() != null && product.getThumbnail().length > 0);
+			info.put("imageListCount",
+					product.getImageList() != null ? product.getImageList().size() : 0);
+
+			// 如果有图片，显示前20个字符
+			if (product.getMainImage() != null && product.getMainImage().length() > 20) {
+				info.put("mainImagePreview", product.getMainImage().substring(0, 20) + "...");
+			}
+
+			productInfos.add(info);
+		}
+
+		result.put("products", productInfos);
+		log.info("Imported {} products with drawing images", products.size());
+		return ResponseEntity.ok(result);
+	}
+
+	/**
+	 * 4. 导入带图片的 Excel（Base64模式 - 读取Base64文本）
+	 */
+	@PostMapping("/import/base64")
+	public ResponseEntity<?> importWithBase64Images(
+			@ImportExcel(imageReadMode = ImportExcel.ImageReadMode.BASE64) List<ProductImageDTO> products) {
+
+		Map<String, Object> result = new HashMap<>();
+		result.put("success", true);
+		result.put("message", "导入成功（Base64模式）");
+		result.put("mode", "BASE64");
+		result.put("count", products.size());
+
+		// 处理导入的数据
+		List<Map<String, Object>> productInfos = new ArrayList<>();
+		for (ProductImageDTO product : products) {
+			Map<String, Object> info = new HashMap<>();
+			info.put("id", product.getId());
+			info.put("name", product.getName());
+			info.put("price", product.getPrice());
+			info.put("stock", product.getStock());
+			info.put("description", product.getDescription());
+
+			// 图片信息
+			info.put("hasMainImage", product.getMainImage() != null && !product.getMainImage().isEmpty());
+			info.put("hasThumbnail", product.getThumbnail() != null && product.getThumbnail().length > 0);
+			info.put("imageListCount",
+					product.getImageList() != null ? product.getImageList().size() : 0);
+
+			// 如果有图片，显示前20个字符
+			if (product.getMainImage() != null && product.getMainImage().length() > 20) {
+				info.put("mainImagePreview", product.getMainImage().substring(0, 20) + "...");
+			}
+
+			productInfos.add(info);
+		}
+
+		result.put("products", productInfos);
+		log.info("Imported {} products with base64 images", products.size());
+		return ResponseEntity.ok(result);
+	}
+
+	/**
+	 * 5. 下载导入模板
 	 */
 	@GetMapping("/template")
 	@ExportExcel(name = "商品图片导入模板", sheets = @Sheet(sheetName = "商品信息", clazz = ProductImageDTO.class))

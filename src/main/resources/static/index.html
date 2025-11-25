@@ -610,18 +610,60 @@
                 </div>
 
                 <div class="card">
-                    <h3>3. 导入带图片的Excel</h3>
-                    <p>上传Excel文件，自动解析图片数据（支持Base64、字节数组）</p>
+                    <h3>3. 导入带图片的Excel <span class="badge badge-hot">增强</span></h3>
+                    <p>支持两种图片读取模式：Drawing（真实图片）和 Base64（文本）</p>
                     <div class="card-controls">
                         <input type="file" id="image-import-file" class="file-input" accept=".xlsx,.xls">
                         <label for="image-import-file" class="file-label">选择文件</label>
+                    </div>
+                    <div class="card-controls" style="margin-top: 10px;">
+                        <select id="image-import-mode" style="padding: 8px; border-radius: 5px; border: 1px solid #ddd;">
+                            <option value="auto">自动模式（推荐）</option>
+                            <option value="drawing">Drawing模式（真实图片）</option>
+                            <option value="base64">Base64模式（文本图片）</option>
+                        </select>
                         <button class="upload-btn" onclick="importProductImages()">上传导入</button>
                     </div>
+                    <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
+                        💡 Drawing模式：读取Excel中插入的真实图片<br>
+                        💡 Base64模式：读取单元格中的Base64文本
+                    </p>
                     <div id="image-import-result"></div>
                 </div>
 
                 <div class="card">
-                    <h3>4. 图片尺寸控制说明</h3>
+                    <h3>4. 图片导入模式说明 <span class="badge badge-new">NEW</span></h3>
+                    <p>了解两种图片导入模式的区别和使用场景</p>
+                    <div class="card-controls">
+                        <button onclick="showImageModeGuide()">查看说明</button>
+                    </div>
+                    <div id="image-mode-guide" style="display:none; margin-top:15px; padding:15px; background:#f0f0f0; border-radius:5px; font-size:0.9em;">
+                        <h4 style="margin-bottom:10px;">📖 图片导入模式详解：</h4>
+                        <div style="margin-bottom:10px;">
+                            <strong>🎯 Drawing模式（推荐）</strong><br>
+                            • 读取Excel中插入的真实图片（Drawing对象）<br>
+                            • 适用于通过Excel"插入图片"功能添加的图片<br>
+                            • 支持.xlsx和.xls格式<br>
+                            • 性能更好，适合生产环境
+                        </div>
+                        <div style="margin-bottom:10px;">
+                            <strong>📝 Base64模式</strong><br>
+                            • 读取单元格中的Base64文本字符串<br>
+                            • 格式：data:image/png;base64,iVBORw0KGgo...<br>
+                            • 适用于特殊场景或测试<br>
+                            • Excel文件可能较大
+                        </div>
+                        <div>
+                            <strong>🔄 自动模式</strong><br>
+                            • 系统自动选择最佳模式<br>
+                            • 优先使用Drawing模式<br>
+                            • 推荐大多数场景使用
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>5. 图片尺寸控制说明</h3>
                     <p>通过 @ExcelImage 注解精确控制图片在Excel中的显示尺寸</p>
                     <div class="card-controls">
                         <button onclick="showImageSizeGuide()">查看说明</button>
@@ -1583,9 +1625,10 @@ private List&lt;String&gt; imageList;</pre>
         window.location.href = `${API_BASE}/api/image/template`;
     }
 
-    // 导入带图片的Excel
+    // 导入带图片的Excel（支持多种模式）
     function importProductImages() {
         const fileInput = document.getElementById('image-import-file');
+        const modeSelect = document.getElementById('image-import-mode');
         const resultDiv = document.getElementById('image-import-result');
 
         if (!fileInput.files.length) {
@@ -1593,20 +1636,41 @@ private List&lt;String&gt; imageList;</pre>
             return;
         }
 
+        const mode = modeSelect.value;
+        let apiUrl = `${API_BASE}/api/image/import`; // 默认自动模式
+
+        // 根据选择的模式调用不同的API
+        switch(mode) {
+            case 'drawing':
+                apiUrl = `${API_BASE}/api/image/import/drawing`;
+                break;
+            case 'base64':
+                apiUrl = `${API_BASE}/api/image/import/base64`;
+                break;
+            case 'auto':
+            default:
+                apiUrl = `${API_BASE}/api/image/import`;
+                break;
+        }
+
         const formData = new FormData();
         formData.append('file', fileInput.files[0]);
 
-        resultDiv.innerHTML = '<p style="color: blue;">⏳ 正在导入...</p>';
+        const modeName = modeSelect.options[modeSelect.selectedIndex].text;
+        resultDiv.innerHTML = `<p style="color: blue;">⏳ 正在导入（${modeName}）...</p>`;
 
-        fetch(`${API_BASE}/api/image/import`, {
+        fetch(apiUrl, {
             method: 'POST',
             body: formData
         })
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
+                    // 显示模式信息
+                    const modeInfo = data.mode ? `<span style="background: #667eea; color: white; padding: 2px 8px; border-radius: 3px; font-size: 0.85em;">${data.mode}</span>` : '';
+
                     resultDiv.innerHTML = `
-                        <p style="color: green;">✓ ${data.message}</p>
+                        <p style="color: green;">✓ ${data.message} ${modeInfo}</p>
                         <p style="font-size: 0.9em; margin-top: 5px;">
                             成功导入 ${data.count} 条记录
                         </p>
@@ -1616,12 +1680,22 @@ private List&lt;String&gt; imageList;</pre>
                         </details>
                     `;
                 } else {
-                    resultDiv.innerHTML = `<p style="color: red;">✗ 导入失败：${data.message}</p>`;
+                    resultDiv.innerHTML = `<p style="color: red;">✗ 导入失败：${data.message || data.error || '未知错误'}</p>`;
                 }
             })
             .catch(error => {
                 resultDiv.innerHTML = `<p style="color: red;">✗ 导入失败：${error.message}</p>`;
             });
+    }
+
+    // 显示/隐藏图片导入模式说明
+    function showImageModeGuide() {
+        const guideDiv = document.getElementById('image-mode-guide');
+        if (guideDiv.style.display === 'none') {
+            guideDiv.style.display = 'block';
+        } else {
+            guideDiv.style.display = 'none';
+        }
     }
 
     // 显示/隐藏图片尺寸说明
