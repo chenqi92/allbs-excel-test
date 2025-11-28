@@ -1187,6 +1187,131 @@ private List&lt;String&gt; imageList;</pre>
                 </div>
             </div>
         </div>
+
+        <!-- 数据预览和确认导入 -->
+        <div class="section">
+            <h2 class="section-title">👁️ 数据预览和确认导入 <span class="badge badge-new">NEW</span></h2>
+            <div class="card-grid">
+                <div class="card" style="grid-column: span 2;">
+                    <h3>1. 上传Excel预览（带分页、校验错误展示）</h3>
+                    <p>上传Excel后先预览数据，查看校验错误，确认无误后再导入</p>
+                    <div class="card-controls">
+                        <input type="file" id="preview-file" class="file-input" accept=".xlsx,.xls">
+                        <label for="preview-file" class="file-label">选择文件</label>
+                        <div class="input-group">
+                            <label>每页:</label>
+                            <input type="number" id="preview-page-size" value="10" min="5" max="50">
+                        </div>
+                        <button class="upload-btn" onclick="uploadForPreview()">上传预览</button>
+                    </div>
+
+                    <!-- 预览区域 -->
+                    <div id="preview-container" style="display:none; margin-top:20px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                            <div>
+                                <span id="preview-stats" style="font-weight:bold;"></span>
+                                <span id="preview-error-badge" class="badge" style="display:none; background:#dc3545; color:white; margin-left:10px;"></span>
+                            </div>
+                            <div>
+                                <button onclick="showAllErrors()" id="show-errors-btn" style="display:none; background:#dc3545;">查看所有错误</button>
+                                <button onclick="confirmImport(false)" style="background:#28a745;">确认导入</button>
+                                <button onclick="confirmImport(true)" style="background:#ffc107; color:#333;">跳过错误导入</button>
+                                <button onclick="cancelPreview()" style="background:#6c757d;">取消</button>
+                            </div>
+                        </div>
+
+                        <!-- 数据表格 -->
+                        <div style="overflow-x:auto; max-height:400px; border:1px solid #ddd; border-radius:5px;">
+                            <table id="preview-table" style="width:100%; border-collapse:collapse; font-size:0.9em;">
+                                <thead id="preview-thead" style="background:#f8f9fa; position:sticky; top:0;"></thead>
+                                <tbody id="preview-tbody"></tbody>
+                            </table>
+                        </div>
+
+                        <!-- 分页控件 -->
+                        <div id="preview-pagination" style="display:flex; justify-content:center; align-items:center; gap:10px; margin-top:15px;">
+                            <button onclick="previewPage('prev')" id="prev-page-btn">上一页</button>
+                            <span id="page-info"></span>
+                            <button onclick="previewPage('next')" id="next-page-btn">下一页</button>
+                            <span style="margin-left:20px;">
+                                跳转到 <input type="number" id="goto-page" min="1" style="width:60px;"> 页
+                                <button onclick="gotoPage()">Go</button>
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- 错误详情弹窗 -->
+                    <div id="error-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000;">
+                        <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); background:white; padding:30px; border-radius:10px; max-width:800px; max-height:80vh; overflow:auto;">
+                            <h3 style="margin-bottom:15px;">校验错误详情</h3>
+                            <div id="error-list" style="max-height:400px; overflow-y:auto;"></div>
+                            <div id="error-pagination" style="margin-top:15px; text-align:center;"></div>
+                            <button onclick="closeErrorModal()" style="margin-top:15px;">关闭</button>
+                        </div>
+                    </div>
+
+                    <div id="preview-result" style="margin-top: 15px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 异步导入功能 -->
+        <div class="section">
+            <h2 class="section-title">⚡ 异步导入功能 <span class="badge badge-new">NEW</span></h2>
+            <div class="card-grid">
+                <div class="card">
+                    <h3>1. 提交异步导入任务</h3>
+                    <p>上传大文件后在后台异步处理，支持进度查询</p>
+                    <div class="card-controls">
+                        <input type="file" id="async-import-file" class="file-input" accept=".xlsx,.xls">
+                        <label for="async-import-file" class="file-label">选择文件</label>
+                        <label style="margin-left:10px;">
+                            <input type="checkbox" id="async-skip-errors"> 跳过错误
+                        </label>
+                        <button class="upload-btn" onclick="submitAsyncImport()">提交任务</button>
+                    </div>
+                    <div id="async-submit-result" style="margin-top:10px;"></div>
+                </div>
+
+                <div class="card">
+                    <h3>2. 任务列表</h3>
+                    <p>查看所有导入任务状态和进度</p>
+                    <div class="card-controls">
+                        <button onclick="refreshTaskList()">刷新列表</button>
+                        <button onclick="clearCompletedTasks()" style="background:#6c757d;">清除已完成</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 任务列表 -->
+            <div id="task-list-container" style="margin-top:20px;">
+                <table style="width:100%; border-collapse:collapse; font-size:0.9em;">
+                    <thead style="background:#f8f9fa;">
+                        <tr>
+                            <th style="padding:10px; border:1px solid #ddd;">任务ID</th>
+                            <th style="padding:10px; border:1px solid #ddd;">文件名</th>
+                            <th style="padding:10px; border:1px solid #ddd;">状态</th>
+                            <th style="padding:10px; border:1px solid #ddd;">进度</th>
+                            <th style="padding:10px; border:1px solid #ddd;">成功/错误</th>
+                            <th style="padding:10px; border:1px solid #ddd;">创建时间</th>
+                            <th style="padding:10px; border:1px solid #ddd;">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="task-list-body">
+                        <tr><td colspan="7" style="padding:20px; text-align:center; color:#666;">暂无任务，请提交导入任务</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 任务详情弹窗 -->
+            <div id="task-detail-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000;">
+                <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); background:white; padding:30px; border-radius:10px; max-width:900px; max-height:80vh; overflow:auto; min-width:600px;">
+                    <h3 style="margin-bottom:15px;">任务详情</h3>
+                    <div id="task-detail-content"></div>
+                    <button onclick="closeTaskDetailModal()" style="margin-top:15px;">关闭</button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -1927,6 +2052,501 @@ private List&lt;String&gt; imageList;</pre>
             guideDiv.style.display = 'none';
         }
     }
+
+    // ==================== 数据预览功能 ====================
+
+    let previewState = {
+        sessionId: null,
+        currentPage: 1,
+        pageSize: 10,
+        totalPages: 1,
+        totalRows: 0,
+        errorCount: 0,
+        validCount: 0,
+        currentErrors: []
+    };
+
+    // 上传文件进行预览
+    async function uploadForPreview() {
+        const fileInput = document.getElementById('preview-file');
+        const pageSizeInput = document.getElementById('preview-page-size');
+        const resultDiv = document.getElementById('preview-result');
+
+        if (!fileInput.files || fileInput.files.length === 0) {
+            resultDiv.innerHTML = '<div class="result error">请选择Excel文件</div>';
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('file', fileInput.files[0]);
+        formData.append('pageSize', pageSizeInput.value);
+
+        resultDiv.innerHTML = '<div class="result">正在上传并解析...</div>';
+
+        try {
+            const response = await fetch(`${API_BASE}/api/preview/upload`, {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                previewState.sessionId = data.sessionId;
+                previewState.currentPage = data.currentPage;
+                previewState.pageSize = data.pageSize;
+                previewState.totalPages = data.totalPages;
+                previewState.totalRows = data.totalRows;
+                previewState.errorCount = data.errorCount;
+                previewState.validCount = data.validCount;
+                previewState.currentErrors = data.errors || [];
+
+                showPreviewContainer(data);
+                resultDiv.innerHTML = '';
+            } else {
+                resultDiv.innerHTML = `<div class="result error">${data.message}</div>`;
+            }
+        } catch (error) {
+            resultDiv.innerHTML = `<div class="result error">上传失败: ${error.message}</div>`;
+        }
+    }
+
+    // 显示预览容器
+    function showPreviewContainer(data) {
+        const container = document.getElementById('preview-container');
+        const statsSpan = document.getElementById('preview-stats');
+        const errorBadge = document.getElementById('preview-error-badge');
+        const showErrorsBtn = document.getElementById('show-errors-btn');
+
+        container.style.display = 'block';
+
+        statsSpan.textContent = `共 ${data.totalRows} 行数据`;
+
+        if (data.errorCount > 0) {
+            errorBadge.style.display = 'inline-block';
+            errorBadge.textContent = `${data.errorCount} 行有错误`;
+            showErrorsBtn.style.display = 'inline-block';
+        } else {
+            errorBadge.style.display = 'none';
+            showErrorsBtn.style.display = 'none';
+        }
+
+        renderPreviewTable(data.data, data.errors);
+        updatePagination();
+    }
+
+    // 渲染预览表格
+    function renderPreviewTable(data, errors) {
+        const thead = document.getElementById('preview-thead');
+        const tbody = document.getElementById('preview-tbody');
+
+        // 构建错误行索引
+        const errorMap = {};
+        if (errors) {
+            errors.forEach(err => {
+                errorMap[err.dataIndex] = err.fieldErrors;
+            });
+        }
+
+        // 渲染表头
+        if (data && data.length > 0) {
+            const columns = Object.keys(data[0]);
+            thead.innerHTML = '<tr>' + columns.map(col =>
+                `<th style="padding:10px; border:1px solid #ddd; white-space:nowrap;">${col}</th>`
+            ).join('') + '</tr>';
+
+            // 渲染数据行
+            tbody.innerHTML = data.map((row, index) => {
+                const rowErrors = errorMap[index];
+                const errorFields = rowErrors ? rowErrors.map(e => e.fieldName) : [];
+                const isErrorRow = rowErrors && rowErrors.length > 0;
+
+                return `<tr style="${isErrorRow ? 'background:#fff3cd;' : ''}">` +
+                    columns.map(col => {
+                        const hasError = errorFields.includes(col);
+                        const errorMsg = hasError ? rowErrors.find(e => e.fieldName === col)?.message : '';
+                        return `<td style="padding:8px; border:1px solid #ddd; ${hasError ? 'background:#f8d7da; color:#721c24;' : ''}"
+                                    title="${hasError ? errorMsg : ''}">
+                                    ${row[col] !== null && row[col] !== undefined ? row[col] : ''}
+                                    ${hasError ? ' ⚠️' : ''}
+                                </td>`;
+                    }).join('') +
+                    '</tr>';
+            }).join('');
+        } else {
+            thead.innerHTML = '<tr><th style="padding:10px;">无数据</th></tr>';
+            tbody.innerHTML = '';
+        }
+    }
+
+    // 更新分页控件
+    function updatePagination() {
+        const pageInfo = document.getElementById('page-info');
+        const prevBtn = document.getElementById('prev-page-btn');
+        const nextBtn = document.getElementById('next-page-btn');
+        const gotoInput = document.getElementById('goto-page');
+
+        pageInfo.textContent = `第 ${previewState.currentPage} / ${previewState.totalPages} 页`;
+        prevBtn.disabled = previewState.currentPage <= 1;
+        nextBtn.disabled = previewState.currentPage >= previewState.totalPages;
+        gotoInput.max = previewState.totalPages;
+    }
+
+    // 分页导航
+    async function previewPage(direction) {
+        if (direction === 'prev' && previewState.currentPage > 1) {
+            previewState.currentPage--;
+        } else if (direction === 'next' && previewState.currentPage < previewState.totalPages) {
+            previewState.currentPage++;
+        }
+        await loadPage(previewState.currentPage);
+    }
+
+    // 跳转到指定页
+    async function gotoPage() {
+        const page = parseInt(document.getElementById('goto-page').value);
+        if (page >= 1 && page <= previewState.totalPages) {
+            previewState.currentPage = page;
+            await loadPage(page);
+        }
+    }
+
+    // 加载指定页数据
+    async function loadPage(page) {
+        try {
+            const response = await fetch(
+                `${API_BASE}/api/preview/${previewState.sessionId}/page/${page}?pageSize=${previewState.pageSize}`
+            );
+            const data = await response.json();
+
+            if (data.success) {
+                previewState.currentPage = data.currentPage;
+                previewState.currentErrors = data.errors || [];
+                renderPreviewTable(data.data, data.errors);
+                updatePagination();
+            }
+        } catch (error) {
+            console.error('加载数据失败:', error);
+        }
+    }
+
+    // 显示所有错误
+    async function showAllErrors() {
+        const modal = document.getElementById('error-modal');
+        const errorList = document.getElementById('error-list');
+
+        modal.style.display = 'block';
+        errorList.innerHTML = '<div style="text-align:center;">加载中...</div>';
+
+        try {
+            const response = await fetch(`${API_BASE}/api/preview/${previewState.sessionId}/errors?page=1&pageSize=50`);
+            const data = await response.json();
+
+            if (data.success) {
+                renderErrorList(data.errors);
+            }
+        } catch (error) {
+            errorList.innerHTML = `<div class="result error">加载错误: ${error.message}</div>`;
+        }
+    }
+
+    // 渲染错误列表
+    function renderErrorList(errors) {
+        const errorList = document.getElementById('error-list');
+
+        if (!errors || errors.length === 0) {
+            errorList.innerHTML = '<div style="text-align:center; color:#666;">没有错误数据</div>';
+            return;
+        }
+
+        errorList.innerHTML = errors.map(err => `
+            <div style="margin-bottom:15px; padding:10px; background:#f8d7da; border-radius:5px;">
+                <div style="font-weight:bold; margin-bottom:5px;">行 ${err.rowIndex}</div>
+                ${err.fieldErrors.map(fe => `
+                    <div style="margin-left:15px; font-size:0.9em;">
+                        <span style="color:#721c24;">• ${fe.fieldName || fe.propertyName}:</span> ${fe.message}
+                        ${fe.fieldValue ? `<span style="color:#666;">(值: ${fe.fieldValue})</span>` : ''}
+                    </div>
+                `).join('')}
+            </div>
+        `).join('');
+    }
+
+    // 关闭错误弹窗
+    function closeErrorModal() {
+        document.getElementById('error-modal').style.display = 'none';
+    }
+
+    // 确认导入
+    async function confirmImport(skipErrors) {
+        const resultDiv = document.getElementById('preview-result');
+
+        if (!previewState.sessionId) {
+            resultDiv.innerHTML = '<div class="result error">会话已过期，请重新上传</div>';
+            return;
+        }
+
+        resultDiv.innerHTML = '<div class="result">正在导入...</div>';
+
+        try {
+            const response = await fetch(
+                `${API_BASE}/api/preview/${previewState.sessionId}/confirm?skipErrors=${skipErrors}`,
+                { method: 'POST' }
+            );
+            const data = await response.json();
+
+            if (data.success) {
+                resultDiv.innerHTML = `<div class="result success">
+                    ${data.message}<br>
+                    导入: ${data.importedCount} 条 | 跳过: ${data.skippedCount} 条
+                </div>`;
+                document.getElementById('preview-container').style.display = 'none';
+                previewState.sessionId = null;
+            } else {
+                resultDiv.innerHTML = `<div class="result error">${data.message}</div>`;
+            }
+        } catch (error) {
+            resultDiv.innerHTML = `<div class="result error">导入失败: ${error.message}</div>`;
+        }
+    }
+
+    // 取消预览
+    async function cancelPreview() {
+        if (previewState.sessionId) {
+            try {
+                await fetch(`${API_BASE}/api/preview/${previewState.sessionId}`, { method: 'DELETE' });
+            } catch (e) {}
+        }
+        document.getElementById('preview-container').style.display = 'none';
+        document.getElementById('preview-result').innerHTML = '';
+        previewState.sessionId = null;
+    }
+
+    // ==================== 异步导入功能 ====================
+
+    // 提交异步导入任务
+    async function submitAsyncImport() {
+        const fileInput = document.getElementById('async-import-file');
+        const skipErrors = document.getElementById('async-skip-errors').checked;
+        const resultDiv = document.getElementById('async-submit-result');
+
+        if (!fileInput.files || fileInput.files.length === 0) {
+            resultDiv.innerHTML = '<div class="result error">请选择Excel文件</div>';
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('file', fileInput.files[0]);
+        formData.append('skipErrors', skipErrors);
+
+        resultDiv.innerHTML = '<div class="result">正在提交任务...</div>';
+
+        try {
+            const response = await fetch(`${API_BASE}/api/async-import/submit`, {
+                method: 'POST',
+                body: formData
+            });
+            const data = await response.json();
+
+            if (data.success) {
+                resultDiv.innerHTML = `<div class="result success">
+                    任务已提交！任务ID: ${data.taskId.substring(0, 8)}...
+                </div>`;
+                // 订阅进度并刷新列表
+                subscribeTaskProgress(data.taskId);
+                refreshTaskList();
+            } else {
+                resultDiv.innerHTML = `<div class="result error">${data.message}</div>`;
+            }
+        } catch (error) {
+            resultDiv.innerHTML = `<div class="result error">提交失败: ${error.message}</div>`;
+        }
+    }
+
+    // 订阅任务进度
+    function subscribeTaskProgress(taskId) {
+        const eventSource = new EventSource(`${API_BASE}/api/async-import/subscribe/${taskId}`);
+
+        eventSource.addEventListener('progress', function(event) {
+            const data = JSON.parse(event.data);
+            console.log('任务进度:', data);
+
+            // 更新任务列表中的进度
+            refreshTaskList();
+
+            if (data.type === 'complete' || data.type === 'error') {
+                eventSource.close();
+            }
+        });
+
+        eventSource.onerror = function() {
+            eventSource.close();
+        };
+    }
+
+    // 刷新任务列表
+    async function refreshTaskList() {
+        const tbody = document.getElementById('task-list-body');
+
+        try {
+            const response = await fetch(`${API_BASE}/api/async-import/tasks`);
+            const data = await response.json();
+
+            if (data.success && data.tasks.length > 0) {
+                tbody.innerHTML = data.tasks.map(task => {
+                    const statusColor = getStatusColor(task.status);
+                    const statusText = getStatusText(task.status);
+
+                    return `<tr>
+                        <td style="padding:8px; border:1px solid #ddd; font-family:monospace;">${task.taskId.substring(0, 8)}...</td>
+                        <td style="padding:8px; border:1px solid #ddd;">${task.fileName || '-'}</td>
+                        <td style="padding:8px; border:1px solid #ddd;">
+                            <span style="padding:3px 8px; border-radius:3px; background:${statusColor}; color:white;">${statusText}</span>
+                        </td>
+                        <td style="padding:8px; border:1px solid #ddd;">
+                            <div style="background:#e9ecef; border-radius:5px; overflow:hidden; height:20px;">
+                                <div style="background:#28a745; height:100%; width:${task.progress}%; transition:width 0.3s;"></div>
+                            </div>
+                            <span style="font-size:0.85em;">${task.progress.toFixed(1)}%</span>
+                        </td>
+                        <td style="padding:8px; border:1px solid #ddd;">
+                            <span style="color:#28a745;">${task.successCount}</span> /
+                            <span style="color:#dc3545;">${task.errorCount}</span>
+                        </td>
+                        <td style="padding:8px; border:1px solid #ddd; font-size:0.85em;">
+                            ${task.createdAt ? new Date(task.createdAt).toLocaleString() : '-'}
+                        </td>
+                        <td style="padding:8px; border:1px solid #ddd;">
+                            <button onclick="viewTaskDetail('${task.taskId}')" style="padding:5px 10px; font-size:0.85em;">详情</button>
+                            <button onclick="deleteTask('${task.taskId}')" style="padding:5px 10px; font-size:0.85em; background:#dc3545;">删除</button>
+                        </td>
+                    </tr>`;
+                }).join('');
+            } else {
+                tbody.innerHTML = '<tr><td colspan="7" style="padding:20px; text-align:center; color:#666;">暂无任务</td></tr>';
+            }
+        } catch (error) {
+            console.error('刷新任务列表失败:', error);
+        }
+    }
+
+    // 获取状态颜色
+    function getStatusColor(status) {
+        const colors = {
+            'PENDING': '#6c757d',
+            'PROCESSING': '#007bff',
+            'COMPLETED': '#28a745',
+            'FAILED': '#dc3545',
+            'CANCELLED': '#ffc107'
+        };
+        return colors[status] || '#6c757d';
+    }
+
+    // 获取状态文本
+    function getStatusText(status) {
+        const texts = {
+            'PENDING': '等待中',
+            'PROCESSING': '处理中',
+            'COMPLETED': '已完成',
+            'FAILED': '失败',
+            'CANCELLED': '已取消'
+        };
+        return texts[status] || status;
+    }
+
+    // 查看任务详情
+    async function viewTaskDetail(taskId) {
+        const modal = document.getElementById('task-detail-modal');
+        const content = document.getElementById('task-detail-content');
+
+        modal.style.display = 'block';
+        content.innerHTML = '<div style="text-align:center;">加载中...</div>';
+
+        try {
+            const response = await fetch(`${API_BASE}/api/async-import/task/${taskId}`);
+            const data = await response.json();
+
+            if (data.success) {
+                content.innerHTML = `
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px;">
+                        <div><strong>任务ID:</strong> ${data.taskId}</div>
+                        <div><strong>文件名:</strong> ${data.fileName || '-'}</div>
+                        <div><strong>状态:</strong> <span style="color:${getStatusColor(data.status)};">${getStatusText(data.status)}</span></div>
+                        <div><strong>进度:</strong> ${data.progress.toFixed(1)}%</div>
+                        <div><strong>总行数:</strong> ${data.totalRows}</div>
+                        <div><strong>已处理:</strong> ${data.processedRows}</div>
+                        <div><strong>成功:</strong> <span style="color:#28a745;">${data.successCount}</span></div>
+                        <div><strong>错误:</strong> <span style="color:#dc3545;">${data.errorCount}</span></div>
+                        <div><strong>创建时间:</strong> ${data.createdAt ? new Date(data.createdAt).toLocaleString() : '-'}</div>
+                        <div><strong>完成时间:</strong> ${data.completedAt ? new Date(data.completedAt).toLocaleString() : '-'}</div>
+                    </div>
+                    ${data.errorMessage ? `<div style="background:#f8d7da; padding:10px; border-radius:5px; margin-bottom:15px;"><strong>错误信息:</strong> ${data.errorMessage}</div>` : ''}
+                    ${data.errors && data.errors.length > 0 ? `
+                        <h4>错误详情 (显示前20条):</h4>
+                        <div style="max-height:200px; overflow-y:auto; background:#f8f9fa; padding:10px; border-radius:5px;">
+                            ${data.errors.map(err => `
+                                <div style="margin-bottom:10px; padding:8px; background:#fff3cd; border-radius:3px;">
+                                    <div><strong>行 ${err.rowIndex}:</strong></div>
+                                    ${err.fieldErrors.map(fe => `<div style="margin-left:15px; font-size:0.9em;">• ${fe.fieldName}: ${fe.message}</div>`).join('')}
+                                </div>
+                            `).join('')}
+                        </div>
+                    ` : ''}
+                    ${data.previewData && data.previewData.length > 0 ? `
+                        <h4 style="margin-top:15px;">成功数据预览 (前20条):</h4>
+                        <div style="max-height:200px; overflow:auto; font-size:0.85em;">
+                            <table style="width:100%; border-collapse:collapse;">
+                                <thead style="background:#f8f9fa; position:sticky; top:0;">
+                                    <tr>${Object.keys(data.previewData[0]).map(k => `<th style="padding:5px; border:1px solid #ddd;">${k}</th>`).join('')}</tr>
+                                </thead>
+                                <tbody>
+                                    ${data.previewData.map(row => `<tr>${Object.values(row).map(v => `<td style="padding:5px; border:1px solid #ddd;">${v !== null ? v : ''}</td>`).join('')}</tr>`).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    ` : ''}
+                `;
+            } else {
+                content.innerHTML = `<div class="result error">${data.message}</div>`;
+            }
+        } catch (error) {
+            content.innerHTML = `<div class="result error">加载失败: ${error.message}</div>`;
+        }
+    }
+
+    // 关闭任务详情弹窗
+    function closeTaskDetailModal() {
+        document.getElementById('task-detail-modal').style.display = 'none';
+    }
+
+    // 删除任务
+    async function deleteTask(taskId) {
+        if (!confirm('确定要删除这个任务吗？')) return;
+
+        try {
+            await fetch(`${API_BASE}/api/async-import/task/${taskId}`, { method: 'DELETE' });
+            refreshTaskList();
+        } catch (error) {
+            console.error('删除任务失败:', error);
+        }
+    }
+
+    // 清除已完成的任务
+    async function clearCompletedTasks() {
+        try {
+            const response = await fetch(`${API_BASE}/api/async-import/tasks/completed`, { method: 'DELETE' });
+            const data = await response.json();
+            alert(data.message);
+            refreshTaskList();
+        } catch (error) {
+            console.error('清除任务失败:', error);
+        }
+    }
+
+    // 页面加载时刷新任务列表
+    document.addEventListener('DOMContentLoaded', function() {
+        refreshTaskList();
+    });
 </script>
 </body>
 </html>
