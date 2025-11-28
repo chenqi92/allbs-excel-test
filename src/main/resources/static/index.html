@@ -583,6 +583,62 @@
                     </div>
                     <div id="skip-import-result"></div>
                 </div>
+
+                <div class="card">
+                    <h3>4. 大文件导入（带进度）<span class="badge badge-advanced">高级</span></h3>
+                    <p>导入大文件时实时显示进度，支持跳过校验错误，只导入正确数据</p>
+
+                    <!-- 步骤1：下载模板 -->
+                    <div class="card-controls" style="margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #e0e0e0;">
+                        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                            <span style="font-weight: 500; color: #667eea;">① 下载模板：</span>
+                            <div class="input-group">
+                                <label>数据量:</label>
+                                <input type="number" id="large-template-count" value="10000" min="100" max="100000" step="1000" style="width: 100px;">
+                            </div>
+                            <button onclick="downloadLargeTemplate()" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                                📥 下载大文件模板
+                            </button>
+                        </div>
+                        <p style="font-size: 0.85em; color: #666; margin-top: 8px; margin-bottom: 0;">
+                            💡 提示：先下载模板，可以直接导入或修改后导入测试
+                        </p>
+                    </div>
+
+                    <!-- 步骤2：上传导入 -->
+                    <div class="card-controls">
+                        <span style="font-weight: 500; color: #667eea;">② 上传文件：</span>
+                        <input type="file" id="large-import-file" class="file-input" accept=".xlsx,.xls">
+                        <label for="large-import-file" class="file-label">选择文件</label>
+                        <button class="upload-btn" onclick="importWithProgress()">开始导入</button>
+                    </div>
+
+                    <!-- 步骤3：导入选项 -->
+                    <div class="card-controls" style="margin-top: 10px;">
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 8px; background: #f8f9fa; border-radius: 5px;">
+                            <input type="checkbox" id="skip-errors-checkbox" style="width: 18px; height: 18px; cursor: pointer;">
+                            <span style="font-size: 0.95em; color: #333;">
+                                <strong>容错模式</strong>：跳过校验错误，只导入正确的数据
+                            </span>
+                        </label>
+                    </div>
+                    <p style="font-size: 0.85em; color: #666; margin-top: 8px;">
+                        ⚙️ <strong>容错模式</strong>：遇到校验错误时跳过错误行，继续导入正确数据<br>
+                        ⚙️ <strong>严格模式</strong>：发现任何错误时拒绝导入，要求修正后重新上传
+                    </p>
+
+                    <!-- 实时进度展示 -->
+                    <div id="progress-large-import" class="progress-container">
+                        <div class="progress-bar-wrapper">
+                            <div class="progress-bar" style="width: 0%">0%</div>
+                        </div>
+                        <div class="progress-info">
+                            <span class="progress-status">准备中...</span>
+                            <span class="progress-detail">0/0</span>
+                        </div>
+                    </div>
+                    <div id="large-import-result"></div>
+                </div>
             </div>
         </div>
 
@@ -1356,6 +1412,108 @@ private List&lt;String&gt; imageList;</pre>
 
     function importSkipEmpty() {
         uploadFile('skip-import-file', '/api/import/skip-empty', 'skip-import-result');
+    }
+
+    // 下载大文件模板
+    function downloadLargeTemplate() {
+        const count = document.getElementById('large-template-count').value;
+        window.open(`${API_BASE}/api/import/large-template?count=${count}`);
+    }
+
+    // 大文件导入（带进度）
+    function importWithProgress() {
+        const fileInput = document.getElementById('large-import-file');
+        const file = fileInput.files[0];
+        const skipErrors = document.getElementById('skip-errors-checkbox').checked;
+
+        if (!file) {
+            showResult('large-import-result', '⚠️ 请先选择文件', 'error');
+            return;
+        }
+
+        const sessionId = generateSessionId();
+        const formData = new FormData();
+        formData.append('file', file);
+
+        // 建立 SSE 连接监听进度
+        connectProgress('progress-large-import', sessionId);
+
+        // 上传文件（带上 sessionId 和 skipErrors 参数）
+        fetch(`${API_BASE}/api/import/with-progress?sessionId=${sessionId}&skipErrors=${skipErrors}`, {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    let message = `✅ ${data.message}<br>`;
+
+                    // 显示统计信息
+                    message += `<div style="margin: 15px 0; padding: 15px; background: #f0f8ff; border-radius: 8px; border-left: 4px solid #4facfe;">`;
+                    message += `<div style="font-size: 1.1em; font-weight: bold; color: #333; margin-bottom: 10px;">📊 导入统计</div>`;
+                    message += `<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px;">`;
+                    message += `<div><span style="color: #666;">总行数：</span><strong style="color: #333; font-size: 1.1em;">${data.totalRows || data.successCount}</strong></div>`;
+                    message += `<div><span style="color: #666;">成功：</span><strong style="color: #28a745; font-size: 1.1em;">${data.successCount}</strong></div>`;
+                    message += `<div><span style="color: #666;">失败：</span><strong style="color: ${data.errorCount > 0 ? '#dc3545' : '#999'}; font-size: 1.1em;">${data.errorCount}</strong></div>`;
+                    if (data.skipRate) {
+                        message += `<div><span style="color: #666;">跳过率：</span><strong style="color: #ff6b6b; font-size: 1.1em;">${data.skipRate}</strong></div>`;
+                    }
+                    message += `</div></div>`;
+
+                    // 如果有错误摘要
+                    if (data.errorSummary && data.errorSummary.length > 0) {
+                        message += `<div style="margin-top: 15px; padding: 12px; background: #fff3cd; border-radius: 5px; border-left: 4px solid #ffc107;">`;
+                        message += `<div style="font-weight: bold; color: #856404; margin-bottom: 8px;">⚠️ 错误数据摘要（已跳过）：</div>`;
+                        message += `<ul style="margin: 0; padding-left: 20px; font-size: 0.9em; color: #856404;">`;
+                        data.errorSummary.forEach(err => {
+                            message += `<li>${err}</li>`;
+                        });
+                        message += `</ul></div>`;
+                    }
+
+                    // 数据预览
+                    if (data.previewData && data.previewData.length > 0) {
+                        message += `<details style="margin-top: 15px;">`;
+                        message += `<summary style="cursor: pointer; color: #667eea; font-weight: 500; padding: 8px; background: #f8f9fa; border-radius: 5px;">`;
+                        message += `👁️ 查看前${data.previewData.length}条数据${data.hasMore ? '（共' + data.successCount + '条）' : ''}`;
+                        message += `</summary>`;
+                        message += `<pre style="max-height: 300px; overflow: auto; font-size: 0.85em; background: #f8f9fa; padding: 15px; border-radius: 5px; margin-top: 10px;">${JSON.stringify(data.previewData, null, 2)}</pre>`;
+                        message += `</details>`;
+                    }
+
+                    showResult('large-import-result', message, 'success');
+                } else {
+                    let errorMessage = `❌ ${data.message}<br>`;
+
+                    // 显示错误统计
+                    if (data.validCount !== undefined && data.errorCount !== undefined) {
+                        errorMessage += `<div style="margin: 10px 0; padding: 10px; background: #f8d7da; border-radius: 5px; border-left: 4px solid #dc3545;">`;
+                        errorMessage += `<div style="font-weight: bold; color: #721c24; margin-bottom: 5px;">错误统计：</div>`;
+                        errorMessage += `<div style="color: #721c24;">正确数据: ${data.validCount} 行 | 错误数据: ${data.errorCount} 行</div>`;
+                        errorMessage += `</div>`;
+                    }
+
+                    // 显示错误详情
+                    if (data.errors && data.errors.length > 0) {
+                        errorMessage += `<details style="margin-top: 10px;">`;
+                        errorMessage += `<summary style="cursor: pointer; color: #dc3545; font-weight: 500;">查看错误详情</summary>`;
+                        errorMessage += `<ul style="margin-top: 10px; padding-left: 20px; font-size: 0.9em; color: #721c24;">`;
+                        data.errors.forEach(err => {
+                            errorMessage += `<li>${err}</li>`;
+                        });
+                        errorMessage += `</ul></details>`;
+                    }
+
+                    errorMessage += `<p style="margin-top: 10px; padding: 10px; background: #d1ecf1; border-radius: 5px; color: #0c5460; font-size: 0.9em;">`;
+                    errorMessage += `💡 提示：可以勾选"容错模式"跳过错误数据，只导入正确的数据`;
+                    errorMessage += `</p>`;
+
+                    showResult('large-import-result', errorMessage, 'error');
+                }
+            })
+            .catch(error => {
+                showResult('large-import-result', `❌ 上传失败: ${error.message}`, 'error');
+            });
     }
 
     // 字典转换示例函数

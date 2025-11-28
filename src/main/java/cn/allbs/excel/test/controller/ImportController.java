@@ -2,8 +2,10 @@ package cn.allbs.excel.test.controller;
 
 import cn.allbs.excel.annotation.ExportExcel;
 import cn.allbs.excel.annotation.ImportExcel;
+import cn.allbs.excel.annotation.ImportProgress;
 import cn.allbs.excel.annotation.Sheet;
 import cn.allbs.excel.test.entity.UserDTO;
+import cn.allbs.excel.test.listener.SseImportProgressListener;
 import cn.allbs.excel.vo.ErrorMessage;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
@@ -229,5 +231,99 @@ public class ImportController {
         result.put("count", users.size());
         result.put("data", users);
         return ResponseEntity.ok(result);
+    }
+
+    /**
+     * 5. 大文件导入（带进度）
+     * 支持跳过校验错误，只导入正确的数据
+     */
+    @PostMapping("/with-progress")
+    @ImportProgress(listener = SseImportProgressListener.class, interval = 100)
+    public ResponseEntity<?> importWithProgress(
+            @ImportExcel List<UserDTO> users,
+            @RequestAttribute(name = "excelErrors", required = false) List<ErrorMessage> excelErrors,
+            @RequestParam(value = "skipErrors", defaultValue = "false") boolean skipErrors
+    ) {
+        Map<String, Object> result = new HashMap<>();
+
+        // 计算统计信息
+        int totalRows = users.size() + (excelErrors != null ? excelErrors.size() : 0);
+        int successCount = users.size();
+        int errorCount = excelErrors != null ? excelErrors.size() : 0;
+
+        if (!CollectionUtils.isEmpty(excelErrors)) {
+            if (skipErrors) {
+                // 跳过错误模式：只导入正确的数据
+                result.put("success", true);
+                result.put("message", String.format("导入完成（跳过了 %d 行错误数据）", errorCount));
+                result.put("successCount", successCount);
+                result.put("errorCount", errorCount);
+                result.put("totalRows", totalRows);
+                result.put("skipRate", String.format("%.2f%%", (errorCount * 100.0 / totalRows)));
+
+                // 返回错误摘要
+                List<String> errorSummary = excelErrors.stream()
+                        .limit(10)  // 只返回前10个错误
+                        .flatMap(em -> em.getErrorMessages().stream()
+                                .map(msg -> "行号 " + em.getLineNum() + "：" + msg))
+                        .collect(Collectors.toList());
+                if (errorCount > 10) {
+                    errorSummary.add("... 还有 " + (errorCount - 10) + " 行错误数据被跳过");
+                }
+                result.put("errorSummary", errorSummary);
+            } else {
+                // 严格模式：有错误则拒绝导入
+                List<String> errors = excelErrors.stream()
+                        .limit(20)  // 只返回前20个错误
+                        .flatMap(em -> em.getErrorMessages().stream()
+                                .map(msg -> "行号 " + em.getLineNum() + "：" + msg))
+                        .collect(Collectors.toList());
+                if (errorCount > 20) {
+                    errors.add("... 还有 " + (errorCount - 20) + " 行错误");
+                }
+
+                result.put("success", false);
+                result.put("message", String.format("发现 %d 行数据有错误，请修正后重新导入", errorCount));
+                result.put("errors", errors);
+                result.put("validCount", successCount);
+                result.put("errorCount", errorCount);
+                return ResponseEntity.badRequest().body(result);
+            }
+        } else {
+            result.put("success", true);
+            result.put("message", "导入成功");
+            result.put("successCount", successCount);
+            result.put("errorCount", 0);
+            result.put("totalRows", totalRows);
+        }
+
+        // 不返回所有数据，避免响应太大
+        result.put("previewData", users.size() > 10 ? users.subList(0, 10) : users);
+        result.put("hasMore", users.size() > 10);
+
+        return ResponseEntity.ok(result);
+    }
+
+    /**
+     * 6. 下载大文件导入模板（用于测试进度功能）
+     */
+    @GetMapping("/large-template")
+    @ExportExcel(
+            name = "大文件导入模板",
+            sheets = @Sheet(sheetName = "用户信息", clazz = UserDTO.class)
+    )
+    public List<UserDTO> downloadLargeTemplate(@RequestParam(value = "count", defaultValue = "10000") int count) {
+        List<UserDTO> users = new java.util.ArrayList<>();
+        for (int i = 1; i <= count; i++) {
+            UserDTO user = new UserDTO();
+            user.setId((long) i);
+            user.setUsername("用户" + i);
+            user.setEmail("user" + i + "@example.com");
+            user.setCreateTime(java.time.LocalDateTime.now().minusDays(i % 30));
+            user.setAge(20 + (i % 50));
+            user.setStatus(i % 3 == 0 ? "正常" : (i % 3 == 1 ? "禁用" : "待审核"));
+            users.add(user);
+        }
+        return users;
     }
 }

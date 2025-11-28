@@ -79,13 +79,17 @@ public class TestDataService {
     }
 
     private String getPositionByDepartment(String dept, int index) {
-        return switch (dept) {
-            case "技术部" -> POSITIONS_TECH[index % POSITIONS_TECH.length];
-            case "市场部" -> POSITIONS_MARKET[index % POSITIONS_MARKET.length];
-            case "人力资源部" -> POSITIONS_HR[index % POSITIONS_HR.length];
-            case "财务部" -> POSITIONS_FINANCE[index % POSITIONS_FINANCE.length];
-            default -> "员工";
-        };
+        if ("技术部".equals(dept)) {
+            return POSITIONS_TECH[index % POSITIONS_TECH.length];
+        } else if ("市场部".equals(dept)) {
+            return POSITIONS_MARKET[index % POSITIONS_MARKET.length];
+        } else if ("人力资源部".equals(dept)) {
+            return POSITIONS_HR[index % POSITIONS_HR.length];
+        } else if ("财务部".equals(dept)) {
+            return POSITIONS_FINANCE[index % POSITIONS_FINANCE.length];
+        } else {
+            return "员工";
+        }
     }
 
     /**
