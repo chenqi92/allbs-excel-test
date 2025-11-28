@@ -223,7 +223,7 @@
             height: 100%;
             background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
             border-radius: 10px;
-            transition: width 0.3s ease;
+            transition: none; /* 移除过渡动画，让进度条立即跟随数值变化 */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -1243,9 +1243,11 @@ private List&lt;String&gt; imageList;</pre>
                     break;
 
                 case 'progress':
-                    const percentage = Math.round(data.percentage);
+                    // 使用原始百分比值（不四舍五入）来设置进度条宽度，实现平滑过渡
+                    const percentage = Math.min(data.percentage, 100); // 确保不超过100%
+                    const displayPercentage = percentage.toFixed(1); // 显示时保留1位小数
                     progressBar.style.width = percentage + '%';
-                    progressBar.textContent = percentage + '%';
+                    progressBar.textContent = displayPercentage + '%';
                     progressStatus.textContent = '导出中...';
                     progressStatus.className = 'progress-status';
                     progressDetail.textContent = `${data.currentRow}/${data.totalRows}`;
