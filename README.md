@@ -22,7 +22,7 @@
 
 ## 📦 依赖要求
 
-- JDK 17+
+- JDK 11+
 - Spring Boot 2.7+ 或 3.x
 
 ## 🚀 快速开始
@@ -33,7 +33,7 @@
 <dependency>
     <groupId>cn.allbs</groupId>
     <artifactId>allbs-excel</artifactId>
-    <version>3.0.1</version>
+    <version>3.1.0</version>
 </dependency>
 ```
 
